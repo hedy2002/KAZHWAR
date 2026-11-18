@@ -6,6 +6,19 @@
   <meta name="theme-color" content="#f6f7f1">
   <meta name="description" content="Thoughtfully grown plants and garden essentials, delivered to your door." id="page-description">
   <title>Gulnar — Plants for your kind of home</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./gulnar-app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./gulnar-app-icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Gulnar">
+  <script>
+    window.__gulnarInstallPrompt = null;
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      window.__gulnarInstallPrompt = event;
+    });
+  </script>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,7 +128,15 @@
     </div>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
+  <aside class="install-banner" id="install-banner" hidden aria-labelledby="install-title">
+    <img src="./gulnar-app-icon.svg" alt="" width="42" height="42">
+    <div class="install-banner-copy">
+      <strong id="install-title">Take Gulnar with you</strong>
+      <p id="install-description"></p>
+    </div>
+    <button class="install-action" id="install-action" type="button" hidden>Install</button>
+    <button class="install-dismiss" id="install-dismiss" type="button" aria-label="Not now">×</button>
+  </aside>
   <div class="plant-chat-widget">
     <section class="plant-chat-panel" id="plant-chat-panel" role="dialog" aria-modal="false" aria-labelledby="plant-chat-title" hidden>
       <header class="plant-chat-header">

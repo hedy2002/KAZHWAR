@@ -148,6 +148,9 @@
   Object.assign(featureTranslations.en, { paymentCardHint: "Pay to the displayed number using QiCard / Mastercard." });
   Object.assign(featureTranslations.ar, { paymentCardHint: "أرسل المبلغ إلى الرقم الظاهر باستخدام QiCard أو Mastercard." });
   Object.assign(featureTranslations.ckb, { paymentCardHint: "بە QiCard یان Mastercard پارە بۆ ژمارەی پیشاندراو بنێرە." });
+  Object.assign(featureTranslations.en, { installTitle: "Take Gulnar with you", installReady: "Install Gulnar for quick access on this device.", installAndroidHelp: "Open your browser menu and choose Install app or Add to Home screen.", installIOSHelp: "Tap Share, then choose Add to Home Screen.", installDesktopHelp: "Use your browser’s install option to add Gulnar to your desktop.", installAction: "Install", installDismiss: "Not now", installFailed: "Gulnar could not be installed. Try your browser’s install menu." });
+  Object.assign(featureTranslations.ar, { installTitle: "اصطحب جولنار معك", installReady: "ثبّت جولنار للوصول السريع من هذا الجهاز.", installAndroidHelp: "افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية.", installIOSHelp: "اضغط على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».", installDesktopHelp: "استخدم خيار التثبيت في المتصفح لإضافة جولنار إلى سطح المكتب.", installAction: "تثبيت", installDismiss: "ليس الآن", installFailed: "تعذر تثبيت جولنار. جرّب قائمة التثبيت في المتصفح." });
+  Object.assign(featureTranslations.ckb, { installTitle: "گوڵنار لەگەڵ خۆت ببە", installReady: "گوڵنار دابمەزرێنە بۆ دەستگەیشتنی خێرا لەم ئامێرە.", installAndroidHelp: "لیستی وێبگەڕەکەت بکەرەوە و دامەزراندن یان زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSHelp: "دوگمەی هاوبەشکردن بکە و زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installDesktopHelp: "لە لیستی وێبگەڕەکەتدا هەڵبژاردەی دامەزراندن بەکاربهێنە بۆ زیادکردنی گوڵنار بۆ سەر مێز.", installAction: "دامەزراندن", installDismiss: "ئێستا نا", installFailed: "دامەزراندنی گوڵنار سەرکەوتوو نەبوو. لیستی دامەزراندنی وێبگەڕەکەت تاقی بکەرەوە." });
 
   const readStore = (key, fallback) => {
     try {
@@ -183,7 +186,14 @@
   let activeCategory = "All";
   let cloudCatalogReady = false;
   let realtimeSubscribed = false;
+  let cloudRefreshGeneration = 0;
   let isSupabaseAdmin = false;
+  let deferredInstallPrompt = window.__gulnarInstallPrompt || null;
+  window.__gulnarInstallPrompt = null;
+  let installPromptDismissed = false;
+  let appInstalled = false;
+  const isIOSDevice = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroidDevice = /android/i.test(navigator.userAgent);
   let pendingProductImage = null;
   let pendingProductImageUrl = "";
   let catalogStatusKey = supabaseSettingsPresent ? "catalogSyncing" : "catalogLocalMode";
@@ -284,15 +294,18 @@
 
   async function refreshCloudProducts() {
     if (!supabaseClient) return;
+    const requestGeneration = ++cloudRefreshGeneration;
     let response;
     try {
       response = await supabaseClient.from("products").select("*").order("name");
     } catch (error) {
+      if (requestGeneration !== cloudRefreshGeneration) return;
       cloudCatalogReady = false;
       console.error("Unable to load products from Supabase.", error);
       setCatalogStatus("catalogSyncError", { detail: error.message });
       return;
     }
+    if (requestGeneration !== cloudRefreshGeneration) return;
     const { data, error } = response;
     if (error) {
       cloudCatalogReady = false;
@@ -373,22 +386,16 @@
 
     setCatalogStatus("catalogSyncing");
     try {
-      await Promise.all([refreshCloudProducts(), restoreAdminSession()]);
-    } catch (error) {
-      cloudCatalogReady = false;
-      console.error("Unable to initialize the shared product catalog.", error);
-      setCatalogStatus("catalogSyncError", { detail: error.message });
-    }
-    try {
       supabaseClient
         .channel("verdant-product-catalog")
-        .on("postgres_changes", { event: "*", schema: "public", table: "products" }, refreshCloudProducts)
+        .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => { void refreshCloudProducts(); })
         .subscribe(status => {
           if (status === "SUBSCRIBED") {
             realtimeSubscribed = true;
             if (cloudCatalogReady) setCatalogStatus("catalogConnected");
+            void refreshCloudProducts();
           }
-          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
             realtimeSubscribed = false;
             setCatalogStatus("catalogUnavailable");
             console.error(`Supabase Realtime subscription status: ${status}`);
@@ -397,6 +404,13 @@
     } catch (error) {
       setCatalogStatus("catalogUnavailable");
       console.error("Unable to subscribe to Supabase Realtime.", error);
+    }
+    try {
+      await Promise.all([refreshCloudProducts(), restoreAdminSession()]);
+    } catch (error) {
+      cloudCatalogReady = false;
+      console.error("Unable to initialize the shared product catalog.", error);
+      setCatalogStatus("catalogSyncError", { detail: error.message });
     }
   }
 
@@ -570,6 +584,27 @@
     $("#plant-chat-messages").scrollTop = $("#plant-chat-messages").scrollHeight;
   };
 
+  function refreshInstallBanner() {
+    const installedDisplay = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const banner = $("#install-banner");
+    if (appInstalled || installedDisplay || installPromptDismissed) {
+      banner.hidden = true;
+      return;
+    }
+
+    banner.hidden = false;
+    $("#install-title").textContent = t("installTitle");
+    $("#install-description").textContent = t(
+      isIOSDevice ? "installIOSHelp"
+        : deferredInstallPrompt ? "installReady"
+          : isAndroidDevice ? "installAndroidHelp"
+            : "installDesktopHelp"
+    );
+    $("#install-action").textContent = t("installAction");
+    $("#install-action").hidden = !deferredInstallPrompt;
+    $("#install-dismiss").setAttribute("aria-label", t("installDismiss"));
+  }
+
   function applyLanguage() {
     const meta = languageMeta[language];
     document.documentElement.lang = language;
@@ -590,6 +625,7 @@
     $("#admin-email-wrap").hidden = !supabaseSettingsPresent;
     $("#admin-email").required = supabaseSettingsPresent;
     $("#admin-logout").hidden = !supabaseSettingsPresent;
+    refreshInstallBanner();
     syncChatToggle();
     $$("[data-step-number]").forEach(element => { element.textContent = formatNumber(element.dataset.stepNumber); });
     $("#cart-step-dot").textContent = formatNumber(1);
@@ -1524,6 +1560,39 @@
     saveStore(LANGUAGE_STORAGE, language);
     applyLanguage();
   });
+
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    refreshInstallBanner();
+  });
+  window.addEventListener("appinstalled", () => {
+    appInstalled = true;
+    deferredInstallPrompt = null;
+    refreshInstallBanner();
+  });
+  $("#install-dismiss").addEventListener("click", () => {
+    installPromptDismissed = true;
+    refreshInstallBanner();
+  });
+  $("#install-action").addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    const installEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    try {
+      await installEvent.prompt();
+      const choice = await installEvent.userChoice;
+      if (choice.outcome === "accepted") appInstalled = true;
+    } catch (error) {
+      console.error("Unable to start the Gulnar install prompt.", error);
+      showToast(t("installFailed"));
+    }
+    refreshInstallBanner();
+  });
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error => console.error("Unable to register the Gulnar service worker.", error));
+  }
 
   applyLanguage();
   setPaymentDetails();
