@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">Gulnar app icon</title>
+  <desc id="description">A white pomegranate with gold crown and seeds on a deep red background.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9D2039"/>
+      <stop offset="1" stop-color="#681326"/>
+    </linearGradient>
+    <linearGradient id="fruit" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#FFFDF8"/>
+      <stop offset="1" stop-color="#F2EDE3"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#background)"/>
+  <path
+    d="M512 300c-47 0-76 25-113 30-73 10-122 65-122 145 0 139 103 259 235 259s235-120 235-259c0-80-49-135-122-145-37-5-66-30-113-30Z"
+    fill="url(#fruit)"/>
+  <path
+    d="M512 205c-16 39-41 66-77 87l-29-28 2 47c28 23 62 37 104 42 42-5 76-19 104-42l2-47-29 28c-36-21-61-48-77-87Z"
+    fill="#D9AE5A"/>
+  <path
+    d="M512 376c-13 18-21 34-21 50a21 21 0 0 0 42 0c0-16-8-32-21-50Zm-91 53c-12 17-19 32-19 47a19 19 0 0 0 38 0c0-15-7-30-19-47Zm182 0c-12 17-19 32-19 47a19 19 0 0 0 38 0c0-15-7-30-19-47ZM455 535c-11 16-17 30-17 44a17 17 0 0 0 34 0c0-14-6-28-17-44Zm114 0c-11 16-17 30-17 44a17 17 0 0 0 34 0c0-14-6-28-17-44Z"
+    fill="#C7953D"/>
+</svg>

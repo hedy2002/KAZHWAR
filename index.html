@@ -23,6 +23,7 @@
       <a href="#shop" data-i18n="navShop">Shop all</a>
       <a href="#shop" data-nav-category="Indoor Plants" data-i18n="navIndoor">Indoor plants</a>
       <a href="#shop" data-nav-category="Outdoor Plants" data-i18n="navOutdoor">Outdoor plants</a>
+      <a href="#shop" data-nav-category="Agricultural Tools" data-i18n="categoryTools">Agricultural Tools</a>
       <a href="#story" data-i18n="navStory">Our story</a>
     </nav>
     <div class="header-actions">
@@ -68,9 +69,11 @@
           <button class="filter-chip" type="button" data-category="Medicines & Food" data-i18n="categoryCare">Medicines &amp; Food (دەرمان و خۆراک)</button>
           <button class="filter-chip" type="button" data-category="Peat Moss" data-i18n="categoryPeat">Peat Moss (پیدمۆز)</button>
           <button class="filter-chip" type="button" data-category="Ornamental Olive" data-i18n="categoryOlive">Ornamental Olive (زەیتوونی زینە)</button>
+          <button class="filter-chip" type="button" data-category="Agricultural Tools" data-i18n="categoryTools">Agricultural Tools</button>
         </div>
         <label class="search-box"><span>⌕</span><input id="product-search" type="search" placeholder="Find a plant..." aria-label="Search products" data-i18n-placeholder="searchPlaceholder" data-i18n-aria-label="searchLabel"></label>
       </div>
+      <p class="catalog-sync-status" id="catalog-sync-status" role="status" aria-live="polite"></p>
       <div class="product-grid" id="product-grid" aria-live="polite"></div>
       <div class="empty-state" id="empty-products" hidden><span>☘</span><h3 data-i18n="emptyProductsTitle">No leaves found.</h3><p data-i18n="emptyProductsText">Try another search or category.</p></div>
     </section>
@@ -201,6 +204,7 @@
       <button class="close-button admin-login-close" data-close="admin-login" type="button" aria-label="Close admin sign in">×</button>
       <h2 id="admin-login-title" data-i18n="adminLoginTitle">Admin sign in</h2>
       <form id="admin-login-form">
+        <label class="field-label" id="admin-email-wrap" hidden><span class="label-text" data-i18n="adminEmailLabel">Admin email</span><input id="admin-email" type="email" autocomplete="username"></label>
         <label class="field-label"><span class="label-text" data-i18n="adminPasswordLabel">Admin password</span><input id="admin-password" type="password" autocomplete="current-password" required></label>
         <p class="login-error" id="admin-login-error" role="alert" hidden data-i18n="adminPasswordIncorrect">Incorrect admin password.</p>
         <button class="button button-dark button-full" type="submit" data-i18n="adminLoginButton">Open admin</button>
@@ -212,7 +216,7 @@
     <button class="overlay-scrim" data-close="admin" aria-label="Close admin panel" data-i18n-aria-label="closeAdmin"></button>
     <aside class="admin-panel" aria-label="Admin panel" data-i18n-aria-label="adminTitle">
       <div class="drawer-header"><div><span class="eyebrow" data-i18n="adminEyebrow">YOUR LITTLE GREEN EMPIRE</span><h2 data-i18n="adminTitle">Shop studio</h2></div><button class="close-button" data-close="admin" aria-label="Close admin panel" data-i18n-aria-label="closeAdmin">×</button></div>
-      <div class="admin-notice" data-i18n="adminNotice">Demo admin panel · changes are saved in this browser only.</div>
+      <div class="admin-notice-row"><div class="admin-notice" id="admin-notice" data-i18n="adminNotice">Demo admin panel · changes are saved in this browser only.</div><button class="button button-light small-button" id="admin-logout" type="button" data-i18n="adminSignOut" hidden>Sign out</button></div>
       <div class="admin-tabs" role="tablist">
         <button class="admin-tab active" data-tab="products" role="tab" aria-selected="true" data-i18n="products">Products</button>
         <button class="admin-tab" data-tab="orders" role="tab" aria-selected="false"><span data-i18n="orders">Orders</span> <span class="order-tab-count" id="pending-order-count"></span></button>
@@ -226,8 +230,18 @@
           <form id="product-form" class="admin-product-form">
             <input type="hidden" name="id">
             <label class="field-label"><span class="label-text" data-i18n="productName">Product name</span><input name="name" required></label>
-            <label class="field-label"><span class="label-text" data-i18n="category">Category</span><select name="category" required><option value="Indoor Plants" data-i18n="categoryIndoor">Indoor plants</option><option value="Outdoor Plants" data-i18n="categoryOutdoor">Outdoor plants</option><option value="Medicines & Food" data-i18n="categoryCare">Medicines &amp; Food</option><option value="Peat Moss" data-i18n="categoryPeat">Peat Moss</option><option value="Ornamental Olive" data-i18n="categoryOlive">Ornamental Olive</option></select></label>
-            <label class="field-label full-field"><span class="label-text" data-i18n="imageUrl">Image URL</span><input name="image" type="url" required placeholder="https://..." data-i18n-placeholder="imagePlaceholder"></label>
+            <label class="field-label"><span class="label-text" data-i18n="category">Category</span><select name="category" required><option value="Indoor Plants" data-i18n="categoryIndoor">Indoor plants</option><option value="Outdoor Plants" data-i18n="categoryOutdoor">Outdoor plants</option><option value="Medicines & Food" data-i18n="categoryCare">Medicines &amp; Food</option><option value="Peat Moss" data-i18n="categoryPeat">Peat Moss</option><option value="Ornamental Olive" data-i18n="categoryOlive">Ornamental Olive</option><option value="Agricultural Tools" data-i18n="categoryTools">Agricultural Tools</option></select></label>
+            <label class="field-label full-field"><span class="label-text" data-i18n="imageUrl">Image URL (optional)</span><input name="image" type="url" placeholder="https://..." data-i18n-placeholder="imagePlaceholder"></label>
+            <div class="product-image-controls full-field">
+              <button class="button button-light" id="product-gallery-button" type="button" data-i18n="chooseImage">Gallery / Files</button>
+              <button class="button button-light" id="product-camera-button" type="button" data-i18n="takePhoto">Use camera</button>
+              <input id="product-gallery-input" type="file" accept="image/*" hidden>
+              <input id="product-camera-input" type="file" accept="image/*" capture="environment" hidden>
+            </div>
+            <div class="product-image-preview full-field" id="product-image-preview" hidden>
+              <img id="product-image-preview-img" alt="" data-i18n-alt="productImagePreview">
+              <span id="product-image-preview-status"></span>
+            </div>
             <div class="form-grid admin-price-grid"><label class="field-label"><span class="label-text" data-i18n="wholesalePrice">Wholesale price (IQD)</span><input name="wholesale" type="number" min="0" required></label><label class="field-label"><span class="label-text" data-i18n="retailPrice">Retail price (IQD)</span><input name="retail" type="number" min="0" required></label><label class="field-label"><span class="label-text" data-i18n="stockQuantity">Stock quantity</span><input name="stock" type="number" min="0" step="1" required></label></div>
             <label class="field-label full-field"><span class="label-text" data-i18n="notes">Notes</span><textarea name="notes" rows="2" placeholder="Plant care, size, details..." data-i18n-placeholder="productNotesPlaceholder"></textarea></label>
             <div class="form-actions"><button type="button" class="button button-light" id="cancel-product" data-i18n="cancel">Cancel</button><button type="submit" class="button button-dark" data-i18n="saveProduct">Save product</button></div>
@@ -247,6 +261,8 @@
       </section>
     </aside>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

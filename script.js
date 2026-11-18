@@ -3,6 +3,17 @@
 
   const FIB_DEFAULT = "7000000000000";
   const LANGUAGE_STORAGE = "verdant.language";
+  const SUPABASE_CONFIG = window.VERDANT_SUPABASE_CONFIG || {};
+  const supabaseSettingsPresent = Boolean(SUPABASE_CONFIG.url || SUPABASE_CONFIG.anonKey);
+  let supabaseClient = null;
+  if (supabaseSettingsPresent && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
+    try {
+      if (!window.supabase?.createClient) throw new Error("Supabase client library did not load.");
+      supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    } catch (error) {
+      console.error("Unable to initialize the Supabase client.", error);
+    }
+  }
   const languageMeta = {
     en: { dir: "ltr", locale: "en-IQ" },
     ar: { dir: "rtl", locale: "ar-IQ" },
@@ -162,6 +173,13 @@
   }));
   let activeQuoteId = readStore("verdant.activeQuote", "");
   let activeCategory = "All";
+  let cloudCatalogReady = false;
+  let realtimeSubscribed = false;
+  let isSupabaseAdmin = false;
+  let pendingProductImage = null;
+  let pendingProductImageUrl = "";
+  let catalogStatusKey = supabaseSettingsPresent ? "catalogSyncing" : "catalogLocalMode";
+  let catalogStatusValues = {};
   let receiptData = "";
   let receiptFileName = "";
   let lastOrderPayment = "FIB";
@@ -198,7 +216,8 @@
     "Outdoor Plants": t("categoryOutdoorDisplay"),
     "Medicines & Food": t("categoryCareDisplay"),
     "Peat Moss": t("categoryPeatDisplay"),
-    "Ornamental Olive": t("categoryOliveDisplay")
+    "Ornamental Olive": t("categoryOliveDisplay"),
+    "Agricultural Tools": t("categoryToolsDisplay")
   })[category] || category;
   const localizedProductText = (product, field) => {
     const property = field === "product" ? "name" : "notes";
@@ -211,6 +230,313 @@
   const saveCart = () => saveStore(STORAGE.cart, cart);
   const saveOrders = () => saveStore(STORAGE.orders, orders);
   const saveSettings = () => saveStore(STORAGE.settings, settings);
+
+  Object.assign(featureTranslations.en, {
+    categoryTools: "Agricultural Tools", categoryToolsDisplay: "Agricultural Tools",
+    catalogLocalMode: "Local demo mode: products are saved in this browser.", catalogSyncing: "Connecting to the shared product catalog…", catalogConnected: "Product catalog is connected and updates live.", catalogConfigMissing: "Supabase settings are incomplete or its client library failed to load. Product changes are disabled.", catalogUnavailable: "The shared product catalog is unavailable. Try again after reconnecting.", catalogSyncError: "Catalog sync failed: {detail}",
+    adminNoticeLocal: "Demo admin panel · changes are saved in this browser only.", adminNoticeCloud: "Products are shared across devices. Orders remain local to this browser.", adminEmailLabel: "Admin email", adminLoginFailure: "Could not sign in: {detail}", adminNotAuthorized: "This account is not authorized to manage products.", adminConfigError: "Supabase is not configured. See SUPABASE_SETUP.md.", adminSignOut: "Sign out", adminSignedOut: "Signed out.", adminSignOutError: "Could not sign out: {detail}",
+    imageRequired: "Add an image URL or choose a photo.", imageUrlInvalid: "Enter a valid image URL or choose a photo.", imageCompressing: "Compressing image…", imageReady: "Image ready (compressed)", imageCurrent: "Current product image", productImagePreview: "Product image preview", productImageError: "Could not read or compress this image.", productSaveError: "Could not save product: {detail}", productDeleteError: "Could not delete product: {detail}", productImageCleanupError: "The catalog update succeeded, but an unused image could not be removed."
+  });
+  Object.assign(featureTranslations.ar, {
+    categoryTools: "الأدوات الزراعية", categoryToolsDisplay: "الأدوات الزراعية",
+    catalogLocalMode: "وضع تجريبي محلي: تُحفظ المنتجات في هذا المتصفح.", catalogSyncing: "جارٍ الاتصال بكتالوج المنتجات المشترك…", catalogConnected: "كتالوج المنتجات متصل والتحديثات مباشرة.", catalogConfigMissing: "إعدادات Supabase غير مكتملة أو تعذر تحميل مكتبته. تم تعطيل تغييرات المنتجات.", catalogUnavailable: "كتالوج المنتجات المشترك غير متاح. حاول مجددًا بعد إعادة الاتصال.", catalogSyncError: "فشل مزامنة الكتالوج: {detail}",
+    adminNoticeLocal: "لوحة تجريبية · تُحفظ التغييرات في هذا المتصفح فقط.", adminNoticeCloud: "المنتجات مشتركة بين الأجهزة. تبقى الطلبات محلية في هذا المتصفح.", adminEmailLabel: "البريد الإلكتروني للإدارة", adminLoginFailure: "تعذر تسجيل الدخول: {detail}", adminNotAuthorized: "هذا الحساب غير مصرح له بإدارة المنتجات.", adminConfigError: "لم يتم إعداد Supabase. راجع SUPABASE_SETUP.md.", adminSignOut: "تسجيل الخروج", adminSignedOut: "تم تسجيل الخروج.", adminSignOutError: "تعذر تسجيل الخروج: {detail}",
+    imageRequired: "أضف رابط صورة أو اختر صورة.", imageUrlInvalid: "أدخل رابط صورة صحيحًا أو اختر صورة.", imageCompressing: "جارٍ ضغط الصورة…", imageReady: "الصورة جاهزة (مضغوطة)", imageCurrent: "صورة المنتج الحالية", productImagePreview: "معاينة صورة المنتج", productImageError: "تعذرت قراءة الصورة أو ضغطها.", productSaveError: "تعذر حفظ المنتج: {detail}", productDeleteError: "تعذر حذف المنتج: {detail}", productImageCleanupError: "نجح تحديث الكتالوج، لكن تعذرت إزالة صورة لم تعد مستخدمة."
+  });
+  Object.assign(featureTranslations.ckb, {
+    categoryTools: "کەرەستەکانی کشتوکاڵ", categoryToolsDisplay: "کەرەستەکانی کشتوکاڵ",
+    catalogLocalMode: "دۆخی نموونەییی ناوخۆیی: بەرهەمەکان لەم وێبگەڕەدا پاشەکەوت دەکرێن.", catalogSyncing: "پەیوەندی بە کەتەلۆگی هاوبەشی بەرهەمەکانەوە دەکرێت…", catalogConnected: "کەتەلۆگی بەرهەمەکان پەیوەستە و نوێکارییەکان ڕاستەوخۆن.", catalogConfigMissing: "ڕێکخستنەکانی Supabase تەواو نین یان کتێبخانەکەی بار نەکرا. گۆڕانکاریی بەرهەمەکان ناچالاک کراوە.", catalogUnavailable: "کەتەلۆگی هاوبەشی بەرهەمەکان بەردەست نییە. دوای پەیوەندییەوە هەوڵ بدەرەوە.", catalogSyncError: "هاوکاتکردنی کەتەلۆگ سەرکەوتوو نەبوو: {detail}",
+    adminNoticeLocal: "پانێڵی نموونەیی · گۆڕانکارییەکان تەنها لەم وێبگەڕەدا پاشەکەوت دەکرێن.", adminNoticeCloud: "بەرهەمەکان لە نێوان ئامێرەکاندا هاوبەشن. داواکارییەکان لەم وێبگەڕەدا دەمێننەوە.", adminEmailLabel: "ئیمەیڵی بەڕێوەبەر", adminLoginFailure: "چوونەژوورەوە سەرکەوتوو نەبوو: {detail}", adminNotAuthorized: "ئەم هەژمارە مۆڵەتی بەڕێوەبردنی بەرهەمەکانی نییە.", adminConfigError: "Supabase ڕێک نەخراوە. SUPABASE_SETUP.md ببینە.", adminSignOut: "چوونەدەرەوە", adminSignedOut: "چوونەدەرەوە سەرکەوتوو بوو.", adminSignOutError: "چوونەدەرەوە سەرکەوتوو نەبوو: {detail}",
+    imageRequired: "لینکی وێنە دابنێ یان وێنەیەک هەڵبژێرە.", imageUrlInvalid: "لینکێکی دروستی وێنە بنووسە یان وێنەیەک هەڵبژێرە.", imageCompressing: "وێنەکە پەستاندەکرێت…", imageReady: "وێنە ئامادەیە (پەستاندراو)", imageCurrent: "وێنەی ئێستای بەرهەم", productImagePreview: "پێشبینینی وێنەی بەرهەم", productImageError: "خوێندنەوە یان پەستاندنی وێنەکە سەرکەوتوو نەبوو.", productSaveError: "پاشەکەوتکردنی بەرهەم سەرکەوتوو نەبوو: {detail}", productDeleteError: "سڕینەوەی بەرهەم سەرکەوتوو نەبوو: {detail}", productImageCleanupError: "نوێکردنەوەی کەتەلۆگ سەرکەوتوو بوو، بەڵام وێنەیەکی بەکارنەهاتوو نەسڕایەوە."
+  });
+
+  const rowToProduct = row => ({
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    image: row.image,
+    imagePath: row.image_path || "",
+    wholesale: Number(row.wholesale),
+    retail: Number(row.retail),
+    stock: Number(row.stock),
+    notes: row.notes || ""
+  });
+  const productToRow = product => ({
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    image: product.image,
+    image_path: product.imagePath || null,
+    wholesale: product.wholesale,
+    retail: product.retail,
+    stock: product.stock,
+    notes: product.notes,
+    updated_at: new Date().toISOString()
+  });
+
+  async function refreshCloudProducts() {
+    if (!supabaseClient) return;
+    let response;
+    try {
+      response = await supabaseClient.from("products").select("*").order("name");
+    } catch (error) {
+      cloudCatalogReady = false;
+      console.error("Unable to load products from Supabase.", error);
+      setCatalogStatus("catalogSyncError", { detail: error.message });
+      return;
+    }
+    const { data, error } = response;
+    if (error) {
+      cloudCatalogReady = false;
+      console.error("Unable to load products from Supabase.", error);
+      setCatalogStatus("catalogSyncError", { detail: error.message });
+      return;
+    }
+    if (!Array.isArray(data)) {
+      cloudCatalogReady = false;
+      const error = new Error("Supabase returned an invalid product list.");
+      console.error("Unable to load products from Supabase.", error);
+      setCatalogStatus("catalogSyncError", { detail: error.message });
+      return;
+    }
+    products = data.map(rowToProduct);
+    cloudCatalogReady = true;
+    saveProducts();
+    renderProducts();
+    renderCart();
+    renderAdminProducts();
+    setCatalogStatus(realtimeSubscribed ? "catalogConnected" : "catalogSyncing");
+  }
+
+  async function restoreAdminSession() {
+    let response;
+    try {
+      response = await supabaseClient.auth.getSession();
+    } catch (error) {
+      console.error("Unable to restore the Supabase session.", error);
+      return;
+    }
+    const { data, error } = response;
+    if (error) {
+      console.error("Unable to restore the Supabase session.", error);
+      return;
+    }
+    if (!data.session) return;
+    let membershipResponse;
+    try {
+      membershipResponse = await supabaseClient
+        .from("product_admins")
+        .select("user_id")
+        .eq("user_id", data.session.user.id)
+        .maybeSingle();
+    } catch (membershipError) {
+      console.error("Unable to check the product admin membership.", membershipError);
+      return;
+    }
+    const { data: membership, error: membershipError } = membershipResponse;
+    if (membershipError) {
+      console.error("Unable to check the product admin membership.", membershipError);
+      return;
+    }
+    isSupabaseAdmin = Boolean(membership);
+  }
+
+  async function initializeCatalogSync() {
+    if (!supabaseSettingsPresent) {
+      setCatalogStatus("catalogLocalMode");
+      window.addEventListener("storage", event => {
+        if (event.key !== STORAGE.products) return;
+        try {
+          products = event.newValue ? JSON.parse(event.newValue) : seedProducts.map(product => ({ ...product }));
+          renderProducts();
+          renderCart();
+          renderAdminProducts();
+        } catch (error) {
+          console.error("Unable to refresh products from another browser tab.", error);
+          setCatalogStatus("catalogSyncError", { detail: error.message });
+        }
+      });
+      return;
+    }
+    if (!supabaseClient) {
+      setCatalogStatus("catalogConfigMissing");
+      return;
+    }
+
+    setCatalogStatus("catalogSyncing");
+    try {
+      await Promise.all([refreshCloudProducts(), restoreAdminSession()]);
+    } catch (error) {
+      cloudCatalogReady = false;
+      console.error("Unable to initialize the shared product catalog.", error);
+      setCatalogStatus("catalogSyncError", { detail: error.message });
+    }
+    try {
+      supabaseClient
+        .channel("verdant-product-catalog")
+        .on("postgres_changes", { event: "*", schema: "public", table: "products" }, refreshCloudProducts)
+        .subscribe(status => {
+          if (status === "SUBSCRIBED") {
+            realtimeSubscribed = true;
+            if (cloudCatalogReady) setCatalogStatus("catalogConnected");
+          }
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            realtimeSubscribed = false;
+            setCatalogStatus("catalogUnavailable");
+            console.error(`Supabase Realtime subscription status: ${status}`);
+          }
+        });
+    } catch (error) {
+      setCatalogStatus("catalogUnavailable");
+      console.error("Unable to subscribe to Supabase Realtime.", error);
+    }
+  }
+
+  function compressProductImage(file) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith("image/")) {
+        reject(new Error(t("productImageError")));
+        return;
+      }
+      const sourceUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        try {
+          URL.revokeObjectURL(sourceUrl);
+          const scale = Math.min(1, 1280 / Math.max(image.naturalWidth, image.naturalHeight));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error(t("productImageError"));
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(blob => {
+            if (blob) resolve(blob);
+            else reject(new Error(t("productImageError")));
+          }, "image/jpeg", 0.78);
+        } catch (error) {
+          URL.revokeObjectURL(sourceUrl);
+          reject(error);
+        }
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(sourceUrl);
+        reject(new Error(t("productImageError")));
+      };
+      image.src = sourceUrl;
+    });
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error(t("productImageError")));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function clearPendingProductImage() {
+    if (pendingProductImageUrl) URL.revokeObjectURL(pendingProductImageUrl);
+    pendingProductImage = null;
+    pendingProductImageUrl = "";
+  }
+
+  async function uploadProductImage(blob) {
+    const path = `products/${Date.now()}-${Math.random().toString(36).slice(2, 9)}.jpg`;
+    const { error } = await supabaseClient.storage
+      .from("product-images")
+      .upload(path, blob, { contentType: "image/jpeg", cacheControl: "31536000" });
+    if (error) throw error;
+    return { path, url: supabaseClient.storage.from("product-images").getPublicUrl(path).data.publicUrl };
+  }
+
+  async function removeCloudImage(path) {
+    if (!path) return;
+    const { error } = await supabaseClient.storage.from("product-images").remove([path]);
+    if (error) throw error;
+  }
+
+  async function persistProduct(product, existingProduct, imageUrl) {
+    let imageCleanupFailed = false;
+    if (pendingProductImage) {
+      if (supabaseSettingsPresent) {
+        if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
+        const uploaded = await uploadProductImage(pendingProductImage);
+        product.image = uploaded.url;
+        product.imagePath = uploaded.path;
+      } else {
+        product.image = await blobToDataUrl(pendingProductImage);
+        product.imagePath = "";
+      }
+    } else if (imageUrl) {
+      product.image = imageUrl;
+      product.imagePath = "";
+    } else if (existingProduct) {
+      product.image = existingProduct.image;
+      product.imagePath = existingProduct.imagePath || "";
+    } else {
+      throw new Error(t("imageRequired"));
+    }
+
+    if (supabaseSettingsPresent) {
+      if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
+      const uploadedPath = pendingProductImage ? product.imagePath : "";
+      let saveResponse;
+      try {
+        saveResponse = await supabaseClient.from("products").upsert(productToRow(product)).select("*").single();
+      } catch (error) {
+        if (uploadedPath) {
+          try {
+            await removeCloudImage(uploadedPath);
+          } catch (cleanupError) {
+            console.error("Unable to remove the image uploaded for a failed product save.", cleanupError);
+          }
+        }
+        throw error;
+      }
+      const { data, error } = saveResponse;
+      if (error) {
+        if (uploadedPath) {
+          try {
+            await removeCloudImage(uploadedPath);
+          } catch (cleanupError) {
+            console.error("Unable to remove the image uploaded for a failed product save.", cleanupError);
+          }
+        }
+        throw error;
+      }
+      const savedProduct = rowToProduct(data);
+      products = products.filter(item => item.id !== savedProduct.id).concat(savedProduct);
+      saveProducts();
+      renderProducts();
+      renderCart();
+      renderAdminProducts();
+      if (existingProduct?.imagePath && existingProduct.imagePath !== savedProduct.imagePath) {
+        try {
+          await removeCloudImage(existingProduct.imagePath);
+        } catch (error) {
+          console.error("Unable to remove the replaced product image.", error);
+          imageCleanupFailed = true;
+        }
+      }
+      return { imageCleanupFailed };
+    }
+
+    const existingIndex = products.findIndex(item => item.id === product.id);
+    const previousProducts = products;
+    products = [...products];
+    if (existingIndex >= 0) products[existingIndex] = product;
+    else products.push(product);
+    if (!saveProducts()) {
+      products = previousProducts;
+      return;
+    }
+    renderProducts();
+    renderCart();
+    renderAdminProducts();
+    return { imageCleanupFailed: false };
+  }
   const chatIntentKeywords = {
     delivery: ["delivery", "deliver", "shipping", "ship", "fee", "توصيل", "التوصيل", "الشحن", "رسوم", "گەیاندن", "کرێی گەیاندن"],
     fertilizer: ["fertiliz", "chemical", "pesticide", "سماد", "أسمدة", "الأسمدة", "تسميد", "مبيد", "پەین", "کیمیاوی", "دەرمان"],
@@ -252,6 +578,11 @@
     $$("[data-i18n-aria-label]").forEach(element => { element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel)); });
     $$("[data-i18n-title]").forEach(element => { element.title = t(element.dataset.i18nTitle); });
     $$("[data-i18n-alt]").forEach(element => { element.alt = t(element.dataset.i18nAlt); });
+    refreshCatalogStatus();
+    $("#admin-notice").textContent = t(supabaseSettingsPresent ? "adminNoticeCloud" : "adminNoticeLocal");
+    $("#admin-email-wrap").hidden = !supabaseSettingsPresent;
+    $("#admin-email").required = supabaseSettingsPresent;
+    $("#admin-logout").hidden = !supabaseSettingsPresent;
     syncChatToggle();
     $$("[data-step-number]").forEach(element => { element.textContent = formatNumber(element.dataset.stepNumber); });
     $("#cart-step-dot").textContent = formatNumber(1);
@@ -275,6 +606,17 @@
     toast.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
+
+  function setCatalogStatus(key, values = {}) {
+    catalogStatusKey = key;
+    catalogStatusValues = values;
+    refreshCatalogStatus();
+  }
+
+  function refreshCatalogStatus() {
+    const status = $("#catalog-sync-status");
+    if (status) status.textContent = t(catalogStatusKey, catalogStatusValues);
   }
 
   function updateDiscountBanner() {
@@ -523,17 +865,35 @@
 
   function openProductForm(product) {
     const form = $("#product-form");
+    clearPendingProductImage();
     form.reset();
     form.elements.id.value = product ? product.id : "";
     $("#product-form-heading").textContent = t(product ? "editProduct" : "addProduct");
     if (product) {
-      ["name", "category", "image", "wholesale", "retail", "stock", "notes"].forEach(key => { form.elements[key].value = product[key]; });
+      ["name", "category", "wholesale", "retail", "stock", "notes"].forEach(key => { form.elements[key].value = product[key]; });
+      form.elements.image.value = /^https?:\/\//i.test(product.image) ? product.image : "";
+      showProductImagePreview(product.image, t("imageCurrent"));
     } else {
       form.elements.category.value = "Indoor Plants";
       form.elements.image.value = "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=800&q=80";
+      showProductImagePreview(form.elements.image.value, t("imageCurrent"));
     }
     $("#product-form-wrap").hidden = false;
     $("#product-form-wrap").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function showProductImagePreview(src, status) {
+    const preview = $("#product-image-preview");
+    const image = $("#product-image-preview-img");
+    if (!src) {
+      preview.hidden = true;
+      image.removeAttribute("src");
+      $("#product-image-preview-status").textContent = "";
+      return;
+    }
+    image.src = src;
+    $("#product-image-preview-status").textContent = status;
+    preview.hidden = false;
   }
 
   function setPaymentDetails() {
@@ -725,23 +1085,105 @@
     if (adminClickCount >= 3) {
       event.preventDefault();
       adminClickCount = 0;
-      openOverlay("admin-login-overlay");
-      $("#admin-password").focus();
+      if (supabaseSettingsPresent && isSupabaseAdmin) {
+        openOverlay("admin-overlay");
+      } else {
+        openOverlay("admin-login-overlay");
+        (supabaseSettingsPresent ? $("#admin-email") : $("#admin-password")).focus();
+      }
     } else {
       adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 700);
     }
   });
-  $("#admin-login-form").addEventListener("submit", event => {
+  $("#admin-login-form").addEventListener("submit", async event => {
     event.preventDefault();
-    if ($("#admin-password").value !== "1234") {
-      $("#admin-login-error").hidden = false;
+    const loginError = $("#admin-login-error");
+    loginError.hidden = true;
+    if (supabaseSettingsPresent) {
+      if (!supabaseClient) {
+        loginError.textContent = t("adminConfigError");
+        loginError.hidden = false;
+        return;
+      }
+      let signInResponse;
+      try {
+        signInResponse = await supabaseClient.auth.signInWithPassword({
+          email: $("#admin-email").value.trim(),
+          password: $("#admin-password").value
+        });
+      } catch (error) {
+        console.error("Supabase admin sign-in failed.", error);
+        loginError.textContent = t("adminLoginFailure", { detail: error.message });
+        loginError.hidden = false;
+        return;
+      }
+      const { data, error } = signInResponse;
+      if (error) {
+        console.error("Supabase admin sign-in failed.", error);
+        loginError.textContent = t("adminLoginFailure", { detail: error.message });
+        loginError.hidden = false;
+        $("#admin-password").select();
+        return;
+      }
+      if (!data.user) {
+        loginError.textContent = t("adminLoginFailure", { detail: "No user was returned." });
+        loginError.hidden = false;
+        return;
+      }
+      let membershipResponse;
+      try {
+        membershipResponse = await supabaseClient
+          .from("product_admins")
+          .select("user_id")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+      } catch (membershipError) {
+        console.error("Unable to check the product admin membership.", membershipError);
+        loginError.textContent = t("adminLoginFailure", { detail: membershipError.message });
+        loginError.hidden = false;
+        return;
+      }
+      const { data: membership, error: membershipError } = membershipResponse;
+      if (membershipError) {
+        console.error("Unable to check the product admin membership.", membershipError);
+        loginError.textContent = t("adminLoginFailure", { detail: membershipError.message });
+        loginError.hidden = false;
+        return;
+      }
+      if (!membership) {
+        isSupabaseAdmin = false;
+        try {
+          await supabaseClient.auth.signOut();
+        } catch (error) {
+          console.error("Unable to end a non-admin Supabase session.", error);
+        }
+        loginError.textContent = t("adminNotAuthorized");
+        loginError.hidden = false;
+        return;
+      }
+      isSupabaseAdmin = true;
+    } else if ($("#admin-password").value !== "1234") {
+      loginError.textContent = t("adminPasswordIncorrect");
+      loginError.hidden = false;
       $("#admin-password").select();
       return;
     }
-    $("#admin-login-error").hidden = true;
     event.currentTarget.reset();
     closeOverlay("admin-login-overlay");
     openOverlay("admin-overlay");
+  });
+  $("#admin-logout").addEventListener("click", async () => {
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error("Unable to sign out of Supabase.", error);
+      showToast(t("adminSignOutError", { detail: error.message }));
+      return;
+    }
+    isSupabaseAdmin = false;
+    closeOverlay("admin-overlay");
+    showToast(t("adminSignedOut"));
   });
   $$("[data-close]").forEach(button => button.addEventListener("click", () => closeOverlay(`${button.dataset.close}-overlay`)));
   document.addEventListener("keydown", event => {
@@ -914,18 +1356,54 @@
     if (button.dataset.tab === "products") renderAdminProducts();
   }));
   $("#add-product-button").addEventListener("click", () => openProductForm(null));
-  $("#cancel-product").addEventListener("click", () => { $("#product-form-wrap").hidden = true; });
-  $("#product-form").addEventListener("submit", event => {
+  $("#cancel-product").addEventListener("click", () => {
+    clearPendingProductImage();
+    $("#product-form-wrap").hidden = true;
+  });
+  $("#product-gallery-button").addEventListener("click", () => $("#product-gallery-input").click());
+  $("#product-camera-button").addEventListener("click", () => $("#product-camera-input").click());
+  ["#product-gallery-input", "#product-camera-input"].forEach(selector => {
+    $(selector).addEventListener("change", async event => {
+      const file = event.target.files[0];
+      event.target.value = "";
+      if (!file) return;
+      clearPendingProductImage();
+      $("#product-form").elements.image.value = "";
+      $("#product-image-preview-status").textContent = t("imageCompressing");
+      $("#product-image-preview").hidden = false;
+      try {
+        pendingProductImage = await compressProductImage(file);
+        pendingProductImageUrl = URL.createObjectURL(pendingProductImage);
+        showProductImagePreview(pendingProductImageUrl, t("imageReady"));
+      } catch (error) {
+        console.error("Unable to prepare the selected product image.", error);
+        showProductImagePreview("", "");
+        showToast(error.message || t("productImageError"));
+      }
+    });
+  });
+  $("#product-form").elements.image.addEventListener("input", event => {
+    if (event.target.value.trim()) {
+      clearPendingProductImage();
+      showProductImagePreview(event.target.value.trim(), t("imageCurrent"));
+      return;
+    }
+    const currentProduct = productById($("#product-form").elements.id.value);
+    if (currentProduct) showProductImagePreview(currentProduct.image, t("imageCurrent"));
+  });
+  $("#product-form").addEventListener("submit", async event => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     const id = data.get("id") || `plant-${Date.now()}`;
+    const existingProduct = productById(id);
+    const imageUrl = data.get("image").trim();
     const product = {
       id,
       name: data.get("name").trim(),
       category: data.get("category"),
-      image: data.get("image").trim(),
+      image: imageUrl,
       wholesale: Number(data.get("wholesale")),
       retail: Number(data.get("retail")),
       stock: Number(data.get("stock")),
@@ -937,17 +1415,34 @@
       form.elements.retail.setCustomValidity("");
       return;
     }
-    const existingIndex = products.findIndex(item => item.id === id);
-    if (existingIndex >= 0) products[existingIndex] = product;
-    else products.push(product);
-    if (!saveProducts()) return;
+    if (imageUrl && !/^https?:\/\//i.test(imageUrl)) {
+      showToast(t("imageUrlInvalid"));
+      return;
+    }
+    if (!pendingProductImage && !imageUrl && !existingProduct) {
+      showToast(t("imageRequired"));
+      return;
+    }
+    if (supabaseSettingsPresent && (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin)) {
+      showToast(t("catalogUnavailable"));
+      return;
+    }
+    let saveResult;
+    try {
+      saveResult = await persistProduct(product, existingProduct, imageUrl);
+      if (!saveResult) return;
+    } catch (error) {
+      console.error("Unable to save product.", error);
+      showToast(t("productSaveError", { detail: error.message }));
+      return;
+    }
+    clearPendingProductImage();
     $("#product-form-wrap").hidden = true;
-    renderProducts();
-    renderCart();
-    renderAdminProducts();
-    showToast(t(existingIndex >= 0 ? "productUpdated" : "productAdded"));
+    showToast(saveResult.imageCleanupFailed
+      ? t("productImageCleanupError")
+      : t(existingProduct ? "productUpdated" : "productAdded"));
   });
-  $("#admin-product-list").addEventListener("click", event => {
+  $("#admin-product-list").addEventListener("click", async event => {
     const edit = event.target.closest("[data-edit]");
     const remove = event.target.closest("[data-delete]");
     if (edit) openProductForm(productById(edit.dataset.edit));
@@ -955,14 +1450,44 @@
       const product = productById(remove.dataset.delete);
       if (!product) return;
       if (!confirm(t("deleteConfirm", { name: localizedProductText(product, "product") }))) return;
+      if (supabaseSettingsPresent && (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin)) {
+        showToast(t("catalogUnavailable"));
+        return;
+      }
+      if (supabaseSettingsPresent) {
+        try {
+          const { error } = await supabaseClient.from("products").delete().eq("id", product.id);
+          if (error) throw error;
+        } catch (error) {
+          console.error("Unable to delete product.", error);
+          showToast(t("productDeleteError", { detail: error.message }));
+          return;
+        }
+      }
+      const previousProducts = products;
+      let imageCleanupFailed = false;
       products = products.filter(item => item.id !== product.id);
       cart = cart.filter(item => item.id !== product.id);
-      if (!saveProducts()) return;
+      if (!supabaseSettingsPresent && !saveProducts()) {
+        products = previousProducts;
+        return;
+      }
+      if (supabaseSettingsPresent) saveProducts();
       saveCart();
       renderProducts();
       renderCart();
       renderAdminProducts();
-      showToast(t("productRemoved", { name: localizedProductText(product, "product") }));
+      if (supabaseSettingsPresent && product.imagePath) {
+        try {
+          await removeCloudImage(product.imagePath);
+        } catch (error) {
+          console.error("Unable to remove the deleted product image.", error);
+          imageCleanupFailed = true;
+        }
+      }
+      showToast(imageCleanupFailed
+        ? t("productImageCleanupError")
+        : t("productRemoved", { name: localizedProductText(product, "product") }));
     }
   });
   $("#settings-form").addEventListener("submit", event => {
@@ -1030,4 +1555,5 @@
 
   applyLanguage();
   setPaymentDetails();
+  initializeCatalogSync();
 })();
