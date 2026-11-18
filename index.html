@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f7f1">
+  <meta name="description" content="Thoughtfully grown plants and garden essentials, delivered to your door." id="page-description">
+  <title>Verdant — Plants for your kind of home</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="announcement" id="discount-banner" hidden>
+    <span class="announcement-spark">✳</span> <span data-i18n="discountLead">A little something for your space:</span> <strong id="banner-discount"></strong> <span data-i18n="discountTail">off everything</span>
+  </div>
+  <header class="site-header">
+    <a class="brand" id="nursery-logo" href="#" data-i18n-aria-label="brandLabel" aria-label="Verdant home"><span class="brand-mark">v.</span><span>verdant<span class="brand-period">.</span></span></a>
+    <nav class="main-nav" aria-label="Main navigation" data-i18n-aria-label="mainNavigation">
+      <a href="#shop" data-i18n="navShop">Shop all</a>
+      <a href="#shop" data-nav-category="Indoor Plants" data-i18n="navIndoor">Indoor plants</a>
+      <a href="#shop" data-nav-category="Outdoor Plants" data-i18n="navOutdoor">Outdoor plants</a>
+      <a href="#story" data-i18n="navStory">Our story</a>
+    </nav>
+    <div class="header-actions">
+      <label class="language-picker"><span class="language-icon" aria-hidden="true">文</span><select id="language-switcher" aria-label="Choose language"><option value="en">English</option><option value="ckb">کوردی (سۆرانی)</option><option value="ar">العربية</option></select></label>
+      <button class="orders-button" id="orders-open" type="button" data-i18n="myOrders">My orders</button>
+      <button class="cart-button" id="cart-open" type="button" aria-label="Open bag" data-i18n-aria-label="openBag"><span class="bag-icon">♧</span><span data-i18n="bag">Bag</span><span class="cart-count" id="cart-count">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="heroEyebrow">A softer kind of living</span></div>
+        <h1 data-i18n-html="heroTitle">Make room<br>for <em>something</em><br>growing.</h1>
+        <p data-i18n="heroDescription">Thoughtfully grown plants and garden essentials to make your everyday a little more alive.</p>
+        <a class="button button-dark hero-cta" href="#shop"><span data-i18n="heroCta">Find your green</span><span>↗</span></a>
+        <div class="hero-note"><span class="note-avatars">✿</span><span><span data-i18n="heroLoved">Loved by plant people</span><br><strong data-i18n="heroHome">in every kind of home</strong></span></div>
+      </div>
+      <div class="hero-art">
+        <div class="hero-image-wrap"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1400&q=85" alt="Sunlit leafy plants in a warm home" data-i18n-alt="heroImageAlt"></div>
+        <div class="hero-sticker"><span data-i18n-html="heroSticker">GROW<br>AT YOUR<br>OWN PACE</span><b>✳</b></div>
+        <div class="hero-caption"><span data-i18n="heroCaption">Bring the outside in</span></div>
+      </div>
+      <div class="hero-side-label" data-i18n="heroSide">ROOTED IN THE EVERYDAY · EST. 2024</div>
+    </section>
+
+    <section class="benefits" aria-label="Our promises" data-i18n-aria-label="benefitsLabel">
+      <div><span class="benefit-icon">✿</span><span><strong data-i18n="benefitGrown">Grown with care</strong><small data-i18n="benefitHealthy">Happy, healthy plants</small></span></div>
+      <div><span class="benefit-icon">↗</span><span><strong data-i18n="benefitDoor">At your doorstep</strong>      <small id="benefit-delivery" data-i18n="deliveryVaries">Delivery fee varies based on product size</small></span></div>
+      <div><span class="benefit-icon">♡</span><span><strong data-i18n="benefitHelp">Here to help</strong><small data-i18n="benefitAdvice">Real people, real advice</small></span></div>
+    </section>
+
+    <section class="shop-section" id="shop">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="shopEyebrow">A little green goes a long way</span></div><h2 data-i18n-html="shopTitle">Find your <em>happy place.</em></h2></div>
+        <p data-i18n="shopDescription">From the sunniest windowsill to your garden gate, there's a plant for that.</p>
+      </div>
+      <div class="shop-toolbar">
+        <div class="category-filters" role="group" aria-label="Filter products by category" data-i18n-aria-label="categoryFilters">
+          <button class="filter-chip active" type="button" data-category="All"><span data-i18n="categoryAll">Everything</span> <span id="all-count"></span></button>
+          <button class="filter-chip" type="button" data-category="Indoor Plants" data-i18n="categoryIndoor">Indoor plants</button>
+          <button class="filter-chip" type="button" data-category="Outdoor Plants" data-i18n="categoryOutdoor">Outdoor plants</button>
+          <button class="filter-chip" type="button" data-category="Medicines & Food" data-i18n="categoryCare">Medicines &amp; Food (دەرمان و خۆراک)</button>
+          <button class="filter-chip" type="button" data-category="Peat Moss" data-i18n="categoryPeat">Peat Moss (پیدمۆز)</button>
+          <button class="filter-chip" type="button" data-category="Ornamental Olive" data-i18n="categoryOlive">Ornamental Olive (زەیتوونی زینە)</button>
+        </div>
+        <label class="search-box"><span>⌕</span><input id="product-search" type="search" placeholder="Find a plant..." aria-label="Search products" data-i18n-placeholder="searchPlaceholder" data-i18n-aria-label="searchLabel"></label>
+      </div>
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      <div class="empty-state" id="empty-products" hidden><span>☘</span><h3 data-i18n="emptyProductsTitle">No leaves found.</h3><p data-i18n="emptyProductsText">Try another search or category.</p></div>
+    </section>
+
+    <section class="care-section" id="plant-care">
+      <div class="section-heading care-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="careEyebrow">A little care goes a long way</span></div><h2 data-i18n="careTitle">A happier <em>plant starts here.</em></h2></div><p data-i18n="careIntro">Simple guidance for healthy roots, leaves, and blooms.</p></div>
+      <div class="care-tips">
+        <article class="care-tip"><span aria-hidden="true">💧</span><h3 data-i18n="careWaterTitle">Watering</h3><p data-i18n="careWaterText">Check the top 2–3 cm of soil. Water when dry and let excess drain away.</p></article>
+        <article class="care-tip"><span aria-hidden="true">☀</span><h3 data-i18n="careLightTitle">Sunlight</h3><p data-i18n="careLightText">Most indoor plants prefer bright, indirect light; protect leaves from harsh midday sun.</p></article>
+        <article class="care-tip"><span aria-hidden="true">🌱</span><h3 data-i18n="careRoutineTitle">Everyday care</h3><p data-i18n="careRoutineText">Use a pot with drainage, turn plants occasionally, and follow care notes for each variety.</p></article>
+      </div>
+      <div class="faq-list" aria-label="Frequently asked questions" data-i18n-aria-label="faqTitle">
+        <h3 data-i18n="faqTitle">Frequently asked questions</h3>
+        <details><summary data-i18n="faqDeliveryQuestion">How is the delivery fee decided?</summary><p data-i18n="faqDeliveryAnswer">It depends on product size. We’ll share a delivery price for your approval before payment.</p></details>
+        <details><summary data-i18n="faqPaymentQuestion">Which payment methods are available?</summary><p data-i18n="faqPaymentAnswer">Pay by FIB transfer with a receipt, or QiCard / Mastercard after agreeing to the delivery price.</p></details>
+        <details><summary data-i18n="faqPlantQuestion">How often should I water my plant?</summary><p data-i18n="faqPlantAnswer">It varies by plant and season. Check the soil first and water when the top layer is dry.</p></details>
+      </div>
+    </section>
+
+    <section class="story-section" id="story">
+      <div class="story-image"><img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=1100&q=85" alt="Potted green plants and plant cuttings" data-i18n-alt="storyImageAlt"></div>
+      <div class="story-copy"><div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="storyEyebrow">A note from our little corner</span></div><h2 data-i18n-html="storyTitle">More green.<br><em>Less perfect.</em></h2><p data-i18n="storyDescription">We think plants make a place feel like yours. So we pick the good ones, share what we know, and leave the rest to you. No green thumb required.</p><a class="text-link" href="#shop"><span data-i18n="storyLink">A plant for every pace</span><span>↗</span></a><span class="story-doodle">✳</span></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark">v.</span><span>verdant<span class="brand-period">.</span></span></a>
+    <p data-i18n="footerLine">A little more alive, every day.</p>
+    <span><span data-i18n="footerMade">Made for growing things</span> <span class="footer-heart">♥</span></span>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="plant-chat-widget">
+    <section class="plant-chat-panel" id="plant-chat-panel" role="dialog" aria-modal="false" aria-labelledby="plant-chat-title" hidden>
+      <header class="plant-chat-header">
+        <h2 id="plant-chat-title" data-i18n="chatTitle">🌿 گوڵستانی AI</h2>
+        <button class="plant-chat-close" id="plant-chat-close" type="button" aria-label="Close plant assistant" data-i18n-aria-label="chatClose">×</button>
+      </header>
+      <div class="plant-chat-messages" id="plant-chat-messages" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="chat-message chat-assistant" data-i18n="chatWelcome">سڵاو! دەتوانم یارمەتیت بدەم لە چاودێریی ڕووەک، ئاودان، پەین و گەیاندن.</div>
+      </div>
+      <form class="plant-chat-form" id="plant-chat-form">
+        <input id="plant-chat-input" type="text" maxlength="500" autocomplete="off" placeholder="پرسیارێک لەسەر ڕووەک، ئاودان یان گەیاندن..." aria-label="Ask the plant assistant" data-i18n-placeholder="chatPlaceholder" data-i18n-aria-label="chatInputLabel">
+        <button class="plant-chat-send" type="submit" aria-label="Send message" data-i18n-aria-label="chatSend"><span aria-hidden="true">➤</span></button>
+      </form>
+    </section>
+    <button class="plant-chat-toggle" id="plant-chat-toggle" type="button" aria-controls="plant-chat-panel" aria-expanded="false" aria-label="Open plant assistant" data-i18n-aria-label="chatOpen"><span aria-hidden="true">🌿</span></button>
+  </div>
+
+  <div class="overlay" id="cart-overlay" hidden>
+    <button class="overlay-scrim" data-close="cart" aria-label="Close cart" data-i18n-aria-label="closeCart"></button>
+    <aside class="cart-drawer" aria-label="Your bag" data-i18n-aria-label="cartTitle">
+      <div class="drawer-header"><div><span class="eyebrow" data-i18n="cartEyebrow">YOUR LITTLE GREEN HAUL</span><h2><span data-i18n="cartTitle">Your bag</span> <span id="drawer-count"></span></h2></div><button class="close-button" data-close="cart" aria-label="Close cart" data-i18n-aria-label="closeCart">×</button></div>
+      <div class="checkout-progress"><span class="step-dot current" id="cart-step-dot">1</span><span class="progress-label current" id="cart-step-label" data-i18n="progressBag">Your bag</span><span class="progress-line"></span><span class="step-dot" id="checkout-step-dot">2</span><span class="progress-label" id="checkout-step-label" data-i18n="progressDetails">Your details</span></div>
+      <section class="checkout-step" id="cart-step">
+        <div class="cart-items" id="cart-items"></div>
+        <section class="recommendations" id="cart-recommendations" aria-labelledby="cart-recommendations-title"></section>
+        <div class="cart-empty" id="cart-empty" hidden><span>☘</span><h3 data-i18n="cartEmptyTitle">Your bag is taking a breather.</h3><p data-i18n="cartEmptyText">Let's find a plant to bring home.</p><button class="button button-dark" data-close="cart" data-i18n="keepBrowsing">Keep browsing</button></div>
+        <label class="field-label notes-label" for="delivery-notes"><span class="label-text" data-i18n="deliveryNoteLabel">A note for your delivery</span> <span data-i18n="optional">optional</span></label>
+        <textarea id="delivery-notes" rows="2" placeholder="Anything we should know? A gate code, a sunny spot..." data-i18n-placeholder="deliveryNotePlaceholder"></textarea>
+        <div class="totals">
+          <div class="total-row"><span data-i18n="subtotal">Subtotal</span><span id="cart-subtotal">0 IQD</span></div>
+          <div class="total-row discount-row" id="cart-discount-row" hidden><span data-i18n="discountLine">Little green discount</span><span id="cart-discount">−0 IQD</span></div>
+          <div class="total-row"><span data-i18n="delivery">Delivery</span><span id="delivery-fee" data-i18n="deliveryVaries">Varies by product size</span></div>
+          <div class="total-row grand-total"><strong data-i18n="subtotal">Subtotal</strong><strong id="cart-total">0 IQD</strong></div>
+        </div>
+        <button class="button button-dark button-full" id="go-checkout" type="button"><span data-i18n="continueCheckout">Continue to details</span> <span>→</span></button>
+        <p class="secure-note" id="delivery-fee-notice" data-i18n="deliveryVaries">Delivery fee varies based on product size.</p>
+      </section>
+      <section class="checkout-step" id="checkout-step" hidden>
+        <button class="back-link" id="back-to-cart" type="button"><span>←</span> <span data-i18n="backToBag">Back to your bag</span></button>
+        <form id="checkout-form">
+          <div class="form-section-title"><span data-step-number="1">01</span><h3 data-i18n="checkoutAddressTitle">Where should we find you?</h3></div>
+          <div class="form-grid">
+            <label class="field-label"><span class="label-text" data-i18n="yourName">Your name</span><input name="name" autocomplete="name" required placeholder="e.g. Noor Ahmed" data-i18n-placeholder="namePlaceholder"></label>
+            <label class="field-label"><span class="label-text" data-i18n="phoneNumber">Phone number</span><input name="phone" type="tel" autocomplete="tel" required placeholder="+964 7XX XXX XXXX" data-i18n-placeholder="phonePlaceholder"></label>
+            <label class="field-label full-field"><span class="label-text" data-i18n="deliveryAddress">Delivery address</span><textarea name="address" autocomplete="street-address" rows="2" required placeholder="Area, street, building, apartment..." data-i18n-placeholder="addressPlaceholder"></textarea></label>
+            <label class="field-label full-field"><span class="label-text" data-i18n="deliveryPreference">Delivery preference</span><select name="instruction"><option value="Call on arrival" data-i18n="instructionCall">Call me on arrival</option><option value="Leave at the door" data-i18n="instructionLeave">Leave it at the door</option><option value="Hand to me" data-i18n="instructionHand">Hand it to me</option><option value="Call before delivery" data-i18n="instructionBefore">Call before delivery</option></select></label>
+            <label class="field-label"><span class="label-text" data-i18n="deliveryDate">Delivery date</span><input name="deliveryDate" id="delivery-date" type="date" required></label>
+            <label class="field-label"><span class="label-text" data-i18n="deliveryTime">Time slot</span><select name="deliveryTime" required><option value="Morning" data-i18n="timeMorning">Morning (9 am–12 pm)</option><option value="Afternoon" data-i18n="timeAfternoon">Afternoon (12–4 pm)</option><option value="Evening" data-i18n="timeEvening">Evening (4–8 pm)</option></select></label>
+            <label class="gift-choice full-field"><input type="checkbox" name="isGift" id="is-gift"><span data-i18n="isGift">Is this a gift?</span></label>
+            <label class="field-label full-field" id="gift-message-wrap" hidden><span class="label-text" data-i18n="giftMessage">Greeting card message</span><textarea name="giftMessage" rows="2" maxlength="300" data-i18n-placeholder="giftMessagePlaceholder"></textarea></label>
+          </div>
+          <div class="payment-section" id="payment-section" hidden>
+          <div class="form-section-title payment-title"><span data-step-number="2">02</span><h3 data-i18n="paymentTitle">How would you like to pay?</h3></div>
+          <div class="payment-options">
+            <label class="payment-option"><input type="radio" name="payment" value="FIB" checked><span class="payment-option-copy"><strong data-i18n="paymentFib">FIB transfer</strong><small data-i18n="paymentFibHint">Upload your transfer receipt</small></span><span class="payment-brand fib-brand">FIB</span></label>
+            <div class="payment-detail" id="fib-detail"><div class="fib-account"><span data-i18n="fibAccountLabel">Transfer to this account</span><strong id="fib-account-number">7000000000000</strong><button type="button" id="copy-fib" class="copy-button" data-i18n="copy">Copy</button></div><div class="field-label"><span class="label-text" data-i18n="receiptLabel">Payment receipt</span> <span data-i18n="receiptHint">required · image</span><div class="receipt-upload-actions"><button type="button" id="receipt-gallery" class="button button-light" data-i18n="chooseImage">Gallery / Files</button><button type="button" id="receipt-camera" class="button button-light" data-i18n="takePhoto">Use camera</button></div><input id="receipt-file" type="file" accept="image/*" hidden><div class="receipt-preview" id="receipt-preview" hidden></div></div></div>
+            <label class="payment-option"><input type="radio" name="payment" value="QiCard / Mastercard"><span class="payment-option-copy"><strong data-i18n="paymentCard">QiCard / Mastercard</strong><small data-i18n="paymentCardHint">Debit or credit card</small></span><span class="payment-brand card-brands">QI <span>▰</span></span></label>
+            <div class="payment-detail" id="card-detail" hidden>
+              <label class="saved-card"><input type="radio" name="cardType" id="use-saved-card" value="saved" checked><span data-i18n="useSavedCard">Use saved card</span></label>
+              <div id="saved-card-select"><label class="field-label"><span class="label-text" data-i18n="savedCardLabel">Saved card</span><select name="savedCard"><option value="qicard-4821" data-i18n="savedQiCard">QiCard ending 4821</option><option value="mastercard-0936" data-i18n="savedMastercard">Mastercard ending 0936</option></select></label></div>
+              <label class="saved-card"><input type="radio" name="cardType" id="add-new-card" value="new"><span data-i18n="useNewCard">Use a new card instead</span></label>
+              <div class="new-card-fields" id="new-card-fields" hidden>
+                <label class="field-label"><span class="label-text" data-i18n="cardNumber">Card number</span><input name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="0000 0000 0000 0000" data-i18n-placeholder="cardNumberPlaceholder"></label>
+                <div class="form-grid card-subfields"><label class="field-label"><span class="label-text" data-i18n="expiry">Expiry</span><input name="expiry" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" data-i18n-placeholder="expiryPlaceholder"></label><label class="field-label"><span class="label-text" data-i18n="cvv">CVV</span><input name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="•••" maxlength="4" data-i18n-placeholder="cvvPlaceholder"></label></div>
+                <p class="privacy-note" data-i18n="cardPrivacy">Card details are used for this demo checkout only and are not saved.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="checkout-total"><span id="checkout-total-label" data-i18n="subtotal">Subtotal</span><strong id="checkout-total">0 IQD</strong></div>
+          <button class="button button-dark button-full place-order-button" type="submit"><span id="checkout-submit-label" data-i18n="requestDeliveryPrice">Request delivery price</span> <span>→</span></button>
+          <p class="secure-note" data-i18n="deliveryTerms">By placing your order, you agree to our delivery terms.</p>
+        </form>
+      </section>
+      <section class="order-success" id="order-success" hidden><div class="success-flower">✿</div><span class="eyebrow" data-i18n="successEyebrow">A LITTLE SOMETHING IS GROWING</span><h2 data-i18n-html="successTitle">Order placed,<br><em>plant parent.</em></h2><p id="success-copy">Your plants will be on their way soon.</p><span class="order-number" id="success-order-number"></span><button class="button button-dark button-full" id="finish-order" type="button" data-i18n="finishOrder">Back to the garden</button></section>
+    </aside>
+  </div>
+
+  <div class="overlay" id="customer-orders-overlay" hidden>
+    <button class="overlay-scrim" data-close="customer-orders" aria-label="Close orders" data-i18n-aria-label="closeOrders"></button>
+    <aside class="orders-panel">
+      <div class="drawer-header"><div><span class="eyebrow" data-i18n="ordersEyebrow">YOUR GARDEN JOURNEY</span><h2 data-i18n="myOrders">My orders</h2></div><button class="close-button" data-close="customer-orders" aria-label="Close orders">×</button></div>
+      <p class="secure-note" data-i18n="localOrderNotice">Orders in this demo are saved in this browser.</p>
+      <div id="customer-order-list" class="customer-order-list"></div>
+    </aside>
+  </div>
+
+  <div class="overlay" id="product-overlay" hidden>
+    <button class="overlay-scrim" data-close="product" aria-label="Close product details"></button>
+    <aside class="product-detail-panel"><button class="close-button product-close" data-close="product" aria-label="Close product details">×</button><div id="product-detail-content"></div></aside>
+  </div>
+
+  <div class="overlay admin-login-overlay" id="admin-login-overlay" hidden>
+    <button class="overlay-scrim" data-close="admin-login" aria-label="Close admin sign in"></button>
+    <section class="admin-login-card" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+      <button class="close-button admin-login-close" data-close="admin-login" type="button" aria-label="Close admin sign in">×</button>
+      <h2 id="admin-login-title" data-i18n="adminLoginTitle">Admin sign in</h2>
+      <form id="admin-login-form">
+        <label class="field-label"><span class="label-text" data-i18n="adminPasswordLabel">Admin password</span><input id="admin-password" type="password" autocomplete="current-password" required></label>
+        <p class="login-error" id="admin-login-error" role="alert" hidden data-i18n="adminPasswordIncorrect">Incorrect admin password.</p>
+        <button class="button button-dark button-full" type="submit" data-i18n="adminLoginButton">Open admin</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="overlay" id="admin-overlay" hidden>
+    <button class="overlay-scrim" data-close="admin" aria-label="Close admin panel" data-i18n-aria-label="closeAdmin"></button>
+    <aside class="admin-panel" aria-label="Admin panel" data-i18n-aria-label="adminTitle">
+      <div class="drawer-header"><div><span class="eyebrow" data-i18n="adminEyebrow">YOUR LITTLE GREEN EMPIRE</span><h2 data-i18n="adminTitle">Shop studio</h2></div><button class="close-button" data-close="admin" aria-label="Close admin panel" data-i18n-aria-label="closeAdmin">×</button></div>
+      <div class="admin-notice" data-i18n="adminNotice">Demo admin panel · changes are saved in this browser only.</div>
+      <div class="admin-tabs" role="tablist">
+        <button class="admin-tab active" data-tab="products" role="tab" aria-selected="true" data-i18n="products">Products</button>
+        <button class="admin-tab" data-tab="orders" role="tab" aria-selected="false"><span data-i18n="orders">Orders</span> <span class="order-tab-count" id="pending-order-count"></span></button>
+        <button class="admin-tab" data-tab="settings" role="tab" aria-selected="false" data-i18n="settings">Settings</button>
+      </div>
+      <section class="admin-content" id="admin-products">
+        <div class="admin-section-heading"><div><span class="eyebrow" data-i18n="adminProductsEyebrow">THE GOOD STUFF</span><h3><span data-i18n="products">Products</span> <span id="admin-product-count"></span></h3></div><button id="add-product-button" class="button button-dark small-button" type="button" data-i18n="addPlant">+ Add a plant</button></div>
+        <div class="inventory-summary" id="inventory-summary"></div>
+        <div id="product-form-wrap" class="product-form-wrap" hidden>
+          <h4 id="product-form-heading" data-i18n="addProduct">Add a product</h4>
+          <form id="product-form" class="admin-product-form">
+            <input type="hidden" name="id">
+            <label class="field-label"><span class="label-text" data-i18n="productName">Product name</span><input name="name" required></label>
+            <label class="field-label"><span class="label-text" data-i18n="category">Category</span><select name="category" required><option value="Indoor Plants" data-i18n="categoryIndoor">Indoor plants</option><option value="Outdoor Plants" data-i18n="categoryOutdoor">Outdoor plants</option><option value="Medicines & Food" data-i18n="categoryCare">Medicines &amp; Food</option><option value="Peat Moss" data-i18n="categoryPeat">Peat Moss</option><option value="Ornamental Olive" data-i18n="categoryOlive">Ornamental Olive</option></select></label>
+            <label class="field-label full-field"><span class="label-text" data-i18n="imageUrl">Image URL</span><input name="image" type="url" required placeholder="https://..." data-i18n-placeholder="imagePlaceholder"></label>
+            <div class="form-grid admin-price-grid"><label class="field-label"><span class="label-text" data-i18n="wholesalePrice">Wholesale price (IQD)</span><input name="wholesale" type="number" min="0" required></label><label class="field-label"><span class="label-text" data-i18n="retailPrice">Retail price (IQD)</span><input name="retail" type="number" min="0" required></label><label class="field-label"><span class="label-text" data-i18n="stockQuantity">Stock quantity</span><input name="stock" type="number" min="0" step="1" required></label></div>
+            <label class="field-label full-field"><span class="label-text" data-i18n="notes">Notes</span><textarea name="notes" rows="2" placeholder="Plant care, size, details..." data-i18n-placeholder="productNotesPlaceholder"></textarea></label>
+            <div class="form-actions"><button type="button" class="button button-light" id="cancel-product" data-i18n="cancel">Cancel</button><button type="submit" class="button button-dark" data-i18n="saveProduct">Save product</button></div>
+          </form>
+        </div>
+        <div class="admin-product-list" id="admin-product-list"></div>
+      </section>
+      <section class="admin-content" id="admin-orders" hidden><div class="admin-section-heading"><div><span class="eyebrow" data-i18n="adminOrdersEyebrow">FROM YOUR CUSTOMERS</span><h3 data-i18n="orders">Orders</h3></div></div><div class="order-list" id="order-list"></div></section>
+      <section class="admin-content" id="admin-settings" hidden>
+        <div class="admin-section-heading"><div><span class="eyebrow" data-i18n="adminSettingsEyebrow">SET THE MOOD</span><h3 data-i18n="shopSettings">Shop settings</h3></div></div>
+        <form id="settings-form" class="settings-form">
+          <label class="field-label"><span class="label-text" data-i18n="storewideDiscount">Storewide discount</span> <span data-i18n="discountHelp">Applied to all product prices and cart totals</span><div class="input-suffix"><input name="discount" type="number" min="0" max="90" step="1"><span>%</span></div></label>
+          <label class="field-label"><span class="label-text" data-i18n="fibAccountNumber">FIB account number</span> <span data-i18n="fibHelp">Shown at checkout</span><input name="fibAccount" inputmode="numeric" required></label>
+          <button class="button button-dark" type="submit" data-i18n="saveSettings">Save settings</button>
+        </form>
+        <div class="profit-card"><span class="eyebrow" data-i18n="profitEyebrow">YOUR GROWING BUSINESS</span><h3 data-i18n="profitTitle">Retail margin, before discount</h3><p data-i18n="profitDescription">Per-product profit and margin are based on retail price less wholesale cost.</p><div id="profit-summary"></div></div>
+      </section>
+    </aside>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
