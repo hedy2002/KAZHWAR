@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const FIB_DEFAULT = "7000000000000";
+  const FIB_DEFAULT = "+9647728503201";
+  const FIB_LEGACY_DEFAULT = "7000000000000";
   const LANGUAGE_STORAGE = "verdant.language";
   const SUPABASE_CONFIG = window.VERDANT_SUPABASE_CONFIG || {};
   const supabaseSettingsPresent = Boolean(SUPABASE_CONFIG.url || SUPABASE_CONFIG.anonKey);
@@ -141,6 +142,12 @@
   Object.assign(featureTranslations.en, { receiptHint: "required · JPG, PNG, WebP or camera image" });
   Object.assign(featureTranslations.ar, { receiptHint: "مطلوب · JPG أو PNG أو WebP أو صورة من الكاميرا" });
   Object.assign(featureTranslations.ckb, { receiptHint: "پێویستە · JPG یان PNG یان WebP یان وێنەی کامێرا" });
+  Object.assign(featureTranslations.en, { paymentAccountLabel: "Send payment to this number", fibPaymentHint: "Complete the transfer in FIB, then upload your receipt.", qiCardPaymentHint: "Complete payment with QiCard to this number. Your order will be verified manually.", paymentNumberLabel: "FIB / Qi Card payment number", paymentNumberCopied: "Payment number copied" });
+  Object.assign(featureTranslations.ar, { paymentAccountLabel: "حوّل المبلغ إلى هذا الرقم", fibPaymentHint: "أكمل التحويل عبر FIB ثم ارفع الإيصال.", qiCardPaymentHint: "أكمل الدفع عبر QiCard إلى هذا الرقم. سيتم التحقق من طلبك يدويًا.", paymentNumberLabel: "رقم الدفع لـ FIB وQi Card", paymentNumberCopied: "تم نسخ رقم الدفع" });
+  Object.assign(featureTranslations.ckb, { paymentAccountLabel: "پارە بۆ ئەم ژمارەیە بنێرە", fibPaymentHint: "گواستنەوەکە لە FIB تەواو بکە و پاشان پسووڵەکە باربکە.", qiCardPaymentHint: "پارەدان بە QiCard بۆ ئەم ژمارەیە تەواو بکە. داواکارییەکەت بە دەستی پشتڕاست دەکرێتەوە.", paymentNumberLabel: "ژمارەی پارەدان بۆ FIB و Qi Card", paymentNumberCopied: "ژمارەی پارەدان لەبەرگیرا" });
+  Object.assign(featureTranslations.en, { paymentCardHint: "Pay to the displayed number using QiCard / Mastercard." });
+  Object.assign(featureTranslations.ar, { paymentCardHint: "أرسل المبلغ إلى الرقم الظاهر باستخدام QiCard أو Mastercard." });
+  Object.assign(featureTranslations.ckb, { paymentCardHint: "بە QiCard یان Mastercard پارە بۆ ژمارەی پیشاندراو بنێرە." });
 
   const readStore = (key, fallback) => {
     try {
@@ -166,6 +173,7 @@
   let cart = readStore(STORAGE.cart, []);
   let orders = readStore(STORAGE.orders, []);
   let settings = { discount: 0, fibAccount: FIB_DEFAULT, ...readStore(STORAGE.settings, {}) };
+  if (settings.fibAccount === FIB_LEGACY_DEFAULT) settings.fibAccount = FIB_DEFAULT;
   delete settings.deliveryFee;
   products = products.map(product => ({
     ...product,
@@ -568,7 +576,6 @@
     document.documentElement.dir = meta.dir;
     document.title = t("pageTitle");
     $("#page-description").content = t("pageDescription");
-    $("#fib-account-number").textContent = settings.fibAccount;
     const languageSelect = $("#language-switcher");
     languageSelect.value = language;
     languageSelect.setAttribute("aria-label", t("languageLabel"));
@@ -897,43 +904,11 @@
   }
 
   function setPaymentDetails() {
-    const payment = $('input[name="payment"]:checked').value;
+    const payment = $('input[name="payment"]:checked')?.value || "";
     $("#fib-detail").hidden = payment !== "FIB";
     $("#card-detail").hidden = payment !== "QiCard / Mastercard";
-    const newCard = payment === "QiCard / Mastercard" && $("#add-new-card").checked;
-    $("#new-card-fields").hidden = !newCard;
-    $("#saved-card-select").hidden = payment !== "QiCard / Mastercard" || newCard || !$("#use-saved-card").checked;
-    $("#use-saved-card").closest(".saved-card").hidden = payment !== "QiCard / Mastercard" || $("#add-new-card").checked;
-    $("#add-new-card").closest(".saved-card").hidden = payment !== "QiCard / Mastercard";
-    ["cardNumber", "expiry", "cvv"].forEach(name => {
-      $("#checkout-form").elements[name].required = newCard;
-    });
-  }
-
-  function validateCard(form) {
-    if ($('input[name="payment"]:checked').value !== "QiCard / Mastercard" || !$("#add-new-card").checked) return true;
-    const number = form.elements.cardNumber.value.replace(/\s/g, "");
-    const expiry = form.elements.expiry.value;
-    const cvv = form.elements.cvv.value;
-    if (!/^\d{12,19}$/.test(number)) {
-      form.elements.cardNumber.setCustomValidity(t("cardNumberInvalid"));
-      form.elements.cardNumber.reportValidity();
-      form.elements.cardNumber.setCustomValidity("");
-      return false;
-    }
-    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
-      form.elements.expiry.setCustomValidity(t("expiryInvalid"));
-      form.elements.expiry.reportValidity();
-      form.elements.expiry.setCustomValidity("");
-      return false;
-    }
-    if (!/^\d{3,4}$/.test(cvv)) {
-      form.elements.cvv.setCustomValidity(t("cvvInvalid"));
-      form.elements.cvv.reportValidity();
-      form.elements.cvv.setCustomValidity("");
-      return false;
-    }
-    return true;
+    $("#fib-account-number").textContent = payment === "FIB" ? settings.fibAccount : "";
+    $("#qicard-account-number").textContent = payment === "QiCard / Mastercard" ? settings.fibAccount : "";
   }
 
   function placeOrder(form) {
@@ -1003,7 +978,6 @@
       showToast(t("receiptRequired"));
       return;
     }
-    if (!validateCard(form)) return;
     for (const item of cart) {
       const product = productById(item.id);
       if (!product || product.stock < item.quantity) {
@@ -1013,15 +987,10 @@
         return;
       }
     }
-    const formData = new FormData(form);
-    const selectedCard = selectedPayment === "QiCard / Mastercard"
-      ? ($("#add-new-card").checked ? `new-${formData.get("cardNumber").slice(-4)}` : formData.get("savedCard"))
-      : "";
     const previousOrder = { ...order };
     const previousStocks = cart.map(item => ({ product: productById(item.id), stock: productById(item.id).stock }));
     cart.forEach(item => { productById(item.id).stock -= item.quantity; });
     order.payment = selectedPayment;
-    order.card = selectedCard;
     order.receipt = selectedPayment === "FIB" ? receiptData : "";
     order.deliveryFee = Number(order.deliveryFee);
     order.total = order.subtotal + order.deliveryFee;
@@ -1041,6 +1010,7 @@
     receiptFileName = "";
     $("#delivery-notes").value = "";
     $("#checkout-form").reset();
+    setPaymentDetails();
     $("#gift-message-wrap").hidden = true;
     $("#receipt-file").value = "";
     $("#receipt-preview").hidden = true;
@@ -1223,7 +1193,7 @@
   });
   $("#back-to-cart").addEventListener("click", () => showCheckoutStep("cart"));
   $("#checkout-form").addEventListener("change", event => {
-    if (event.target.name === "payment" || event.target.id === "use-saved-card" || event.target.id === "add-new-card") setPaymentDetails();
+    if (event.target.name === "payment") setPaymentDetails();
     if (event.target.id === "is-gift") {
       $("#gift-message-wrap").hidden = !event.target.checked;
       $("#checkout-form").elements.giftMessage.required = event.target.checked;
@@ -1294,14 +1264,16 @@
     };
     image.src = sourceUrl;
   });
-  $("#copy-fib").addEventListener("click", async () => {
+  const copyPaymentNumber = async () => {
     try {
       await navigator.clipboard.writeText(settings.fibAccount);
-      showToast(t("fibCopied"));
+      showToast(t("paymentNumberCopied"));
     } catch (error) {
       showToast(t("copyUnavailable"));
     }
-  });
+  };
+  $("#copy-fib").addEventListener("click", copyPaymentNumber);
+  $("#copy-qicard").addEventListener("click", copyPaymentNumber);
   $("#finish-order").addEventListener("click", () => {
     closeOverlay("cart-overlay");
     renderProducts();
@@ -1497,7 +1469,7 @@
     const data = new FormData(form);
     settings = { discount: Number(data.get("discount")), fibAccount: data.get("fibAccount").trim() };
     if (!saveSettings()) return;
-    $("#fib-account-number").textContent = settings.fibAccount;
+    setPaymentDetails();
     updateDiscountBanner();
     renderProducts();
     renderCart();
