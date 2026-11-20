@@ -88,6 +88,7 @@ create table if not exists public.store_settings (
   instagram_url text not null default 'https://www.instagram.com/ms_gardennn?bqrl=NjJ2b251MGRwMWJy',
   facebook_url text not null default '',
   tiktok_url text not null default '',
+  discounts_title_ckb text not null default 'پێشنیاری شاهانە.',
   updated_at timestamptz not null default now()
 );
 
@@ -96,8 +97,12 @@ alter table public.store_settings add column if not exists fib_account text not 
 alter table public.store_settings add column if not exists instagram_url text not null default 'https://www.instagram.com/ms_gardennn?bqrl=NjJ2b251MGRwMWJy';
 alter table public.store_settings add column if not exists facebook_url text not null default '';
 alter table public.store_settings add column if not exists tiktok_url text not null default '';
+alter table public.store_settings add column if not exists discounts_title_ckb text not null default 'پێشنیاری شاهانە.';
 alter table public.store_settings add column if not exists updated_at timestamptz not null default now();
 
+update public.store_settings set discounts_title_ckb = 'پێشنیاری شاهانە.' where discounts_title_ckb is null or btrim(discounts_title_ckb) = '';
+alter table public.store_settings alter column discounts_title_ckb set default 'پێشنیاری شاهانە.';
+alter table public.store_settings alter column discounts_title_ckb set not null;
 update public.store_settings set updated_at = now() where updated_at is null;
 alter table public.store_settings alter column updated_at set default now();
 alter table public.store_settings alter column updated_at set not null;

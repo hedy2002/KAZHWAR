@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "gulnar-shell-v6";
+const CACHE_NAME = "gulnar-shell-v8";
 const CACHE_PREFIX = "gulnar-shell-";
 const APP_SHELL = [
   "./",

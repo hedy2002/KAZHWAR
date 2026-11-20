@@ -3,6 +3,7 @@
 
   const FIB_DEFAULT = "+9647728503201";
   const FIB_LEGACY_DEFAULT = "7000000000000";
+  const DEFAULT_CKB_DISCOUNTS_TITLE = "پێشنیاری شاهانە.";
   const LANGUAGE_STORAGE = "verdant.language";
   const LOCATION_STORAGE = "verdant.location";
   const DEFAULT_INSTAGRAM_URL = "https://www.instagram.com/ms_gardennn?bqrl=NjJ2b251MGRwMWJy";
@@ -197,6 +198,7 @@
     tiktokUrl: "",
     ...readStore(STORAGE.settings, {})
   };
+  settings.discountsTitleCkb = String(settings.discountsTitleCkb || DEFAULT_CKB_DISCOUNTS_TITLE).trim() || DEFAULT_CKB_DISCOUNTS_TITLE;
   if (settings.fibAccount === FIB_LEGACY_DEFAULT) settings.fibAccount = FIB_DEFAULT;
   delete settings.deliveryFee;
   products = products.map(product => ({
@@ -341,9 +343,24 @@
   function applyStoreSettings() {
     setPaymentDetails();
     updateDiscountBanner();
+    renderDiscountsHeading();
     renderHeroSocialLinks();
     renderProducts();
     renderCart();
+  }
+
+  function renderDiscountsHeading() {
+    const heading = $("#discounts-title");
+    if (language !== "ckb") {
+      heading.innerHTML = t("discountsTitle");
+      return;
+    }
+    const title = String(settings.discountsTitleCkb || DEFAULT_CKB_DISCOUNTS_TITLE).trim() || DEFAULT_CKB_DISCOUNTS_TITLE;
+    const words = title.split(/\s+/);
+    heading.replaceChildren(document.createTextNode(words.length > 1 ? `${words.slice(0, -1).join(" ")} ` : ""));
+    const emphasis = document.createElement("em");
+    emphasis.textContent = words[words.length - 1];
+    heading.append(emphasis);
   }
 
   async function refreshCloudSettings() {
@@ -367,7 +384,8 @@
       fibAccount: data.fib_account || FIB_DEFAULT,
       instagramUrl: data.instagram_url || "",
       facebookUrl: data.facebook_url || "",
-      tiktokUrl: data.tiktok_url || ""
+      tiktokUrl: data.tiktok_url || "",
+      discountsTitleCkb: String(data.discounts_title_ckb || DEFAULT_CKB_DISCOUNTS_TITLE).trim() || DEFAULT_CKB_DISCOUNTS_TITLE
     };
     if (settings.fibAccount === FIB_LEGACY_DEFAULT) settings.fibAccount = FIB_DEFAULT;
     saveSettings();
@@ -395,6 +413,7 @@
         instagram_url: nextSettings.instagramUrl,
         facebook_url: nextSettings.facebookUrl,
         tiktok_url: nextSettings.tiktokUrl,
+        discounts_title_ckb: nextSettings.discountsTitleCkb,
         updated_at: new Date().toISOString()
       }).select("*").single();
     } catch (error) {
@@ -473,7 +492,8 @@
     comingSoonEyebrow: "A little something on the way", comingSoonTitle: "Coming <em>soon.</em>", comingSoonEmpty: "We’re preparing something lovely. Check back soon.",
     bestSellerBadge: "Best seller", newArrivalBadge: "NEW", comingSoonBadge: "Coming soon", notifyMe: "Notify me", notifyActive: "You’re on the list", notifiedToast: "You’ll be notified when this arrives.", notifyRemovedToast: "You’re no longer on the notification list.", ratingLabel: "Rating", photos: "photos",
     markBestSeller: "Feature as a best seller", markComingSoon: "Mark as coming soon", discountPercent: "Discount percentage", salePriceIqd: "Sale price (IQD)", salePriceUsd: "Sale price (USD)", productRating: "Rating (optional)", reviewCount: "Rating count (optional)", socialLinks: "Social and official pages",
-    promotionValueInvalid: "Check that discount, sale prices, and rating are valid for this product.", settingsSaveError: "Could not save shop settings: {detail}", activitySettingsUpdated: "Updated shop settings"
+    promotionValueInvalid: "Check that discount, sale prices, and rating are valid for this product.", settingsSaveError: "Could not save shop settings: {detail}", activitySettingsUpdated: "Updated shop settings",
+    discountsHeadingCkbLabel: "Discounts heading (Kurdish)", discountsHeadingCkbHelp: "Shown when the storefront language is Kurdish. Leave blank to use the default."
   });
   Object.assign(featureTranslations.ar, {
     locationLabel: "موقع التوصيل", locationSulaymaniyah: "السليمانية", locationErbil: "أربيل", locationDuhok: "دهوك", locationBaghdad: "بغداد",
@@ -486,7 +506,8 @@
     comingSoonEyebrow: "شيء جميل في الطريق", comingSoonTitle: "قريبًا <em>جدًا.</em>", comingSoonEmpty: "نجهز لكم شيئًا جميلًا. عودوا قريبًا.",
     bestSellerBadge: "الأكثر مبيعًا", newArrivalBadge: "جديد", comingSoonBadge: "قريبًا", notifyMe: "أبلغني", notifyActive: "أُضيفت إلى القائمة", notifiedToast: "سنخبرك عند توفر هذا المنتج.", notifyRemovedToast: "تمت إزالتك من قائمة التنبيهات.", ratingLabel: "التقييم", photos: "صور",
     markBestSeller: "تمييز كمنتج الأكثر مبيعًا", markComingSoon: "تمييز كمنتج سيصل قريبًا", discountPercent: "نسبة الخصم", salePriceIqd: "سعر التخفيض (دينار)", salePriceUsd: "سعر التخفيض (دولار)", productRating: "التقييم (اختياري)", reviewCount: "عدد التقييمات (اختياري)", socialLinks: "الصفحات الاجتماعية والرسمية",
-    promotionValueInvalid: "تحقق من الخصم وأسعار التخفيض والتقييم لهذا المنتج.", settingsSaveError: "تعذر حفظ إعدادات المتجر: {detail}", activitySettingsUpdated: "حدّث إعدادات المتجر"
+    promotionValueInvalid: "تحقق من الخصم وأسعار التخفيض والتقييم لهذا المنتج.", settingsSaveError: "تعذر حفظ إعدادات المتجر: {detail}", activitySettingsUpdated: "حدّث إعدادات المتجر",
+    discountsHeadingCkbLabel: "عنوان قسم التخفيضات بالكردية", discountsHeadingCkbHelp: "يظهر عند اختيار الكردية. اتركه فارغًا لاستخدام العنوان الافتراضي."
   });
   Object.assign(featureTranslations.ckb, {
     locationLabel: "شوێنی گەیاندن", locationSulaymaniyah: "سلێمانی", locationErbil: "هەولێر", locationDuhok: "دهۆک", locationBaghdad: "بەغدا",
@@ -494,12 +515,13 @@
     heroDiscountTitle: "شتە جوانەکان<br><em>گەشە دەکەن</em><br>بە نرخێکی خۆش.", heroDiscountDescription: "نرخی تایبەت بۆ هەندێک ڕووەک و پێداویستیی باخچە ببینە.", heroDiscountCta: "پێشنیارەکان ببینە", heroDiscountNote: "هەڵبژاردەی تایبەت", heroDiscountSubnote: "بە نرخێکی کەمتر", heroDiscountSticker: "پێکەوە<br>زیاتر<br>گەشە بکەین", heroDiscountCaption: "دڵخوازەکەی دواترت بدۆزەوە", heroDiscountSide: "شتە جوانەکان گەشە دەکەن · گولژن", heroDiscountImageAlt: "کۆمەڵێک ڕووەکی سەوز و گۆزەی گڵی",
     heroSocialEyebrow: "پێکەوە سەوزتر", heroSocialTitle: "بێنە<br><em>سڵاو بکە.</em>", heroSocialDescription: "پەیجە فەرمییەکانمان فۆڵۆ بکە بۆ بەرهەمی نوێ و سەرنجڕاکێشی باخچە و زیاتر.", heroSocialCta: "چیرۆکمان", heroSocialSticker: "لەگەڵمان<br>بەردەوام<br>بە", heroSocialCaption: "گولژن لە باخچەکەمانەوە", heroSocialSide: "پەیجە فەرمییەکان · گولژن", heroSocialImageAlt: "ڕووەکی سەوز کە لە باخچەیەکدا گەشە دەکات",
     bestSellersEyebrow: "خۆشەویستی کڕیارەکانمان", bestSellersTitle: "پڕفرۆشترین <em>بەرهەمەکان.</em>", viewAll: "هەمووی ببینە", bestSellersEmpty: "پڕفرۆشترین بەرهەمەکانمان بەم زووانە لێرە دەردەکەون.",
-    discountsEyebrow: "شتێکی جوانتر بە نرخێکی کەمتر", discountsTitle: "پێشنیاری <em>خۆش.</em>", discountsEmpty: "چاوت لە نرخە تایبەتەکانی بەرهەمە هەڵبژێردراوەکان بێت.",
+    discountsEyebrow: "شتێکی جوانتر بە نرخێکی کەمتر", discountsTitle: "پێشنیاری <em>شاهانە.</em>", discountsEmpty: "چاوت لە نرخە تایبەتەکانی بەرهەمە هەڵبژێردراوەکان بێت.",
     newArrivalsEyebrow: "تازە لە باخچەوە", newArrivalsTitle: "بەرهەمی <em>نوێ.</em>", newArrivalsEmpty: "بەرهەمە نوێیەکان بە گوێرەی گەیشتنیان لێرە دەردەکەون.",
     comingSoonEyebrow: "شتێکی جوان لە ڕێگادایە", comingSoonTitle: "بەم <em>زووانە.</em>", comingSoonEmpty: "شتێکی جوان ئامادە دەکەین. بەم زووانە بگەڕێوە.",
     bestSellerBadge: "پڕفرۆش", newArrivalBadge: "نوێ", comingSoonBadge: "بەم زووانە", notifyMe: "ئاگادارم بکەرەوە", notifyActive: "لە لیستەکەدایت", notifiedToast: "کاتێک بەردەست بوو ئاگادارت دەکەینەوە.", notifyRemovedToast: "لە لیستی ئاگادارکردنەوە دەرچوویت.", ratingLabel: "هەڵسەنگاندن", photos: "وێنە",
     markBestSeller: "وەک پڕفرۆش نیشانی بکە", markComingSoon: "وەک بەم زووانە نیشانی بکە", discountPercent: "ڕێژەی داشکاندن", salePriceIqd: "نرخی داشکاندن (دینار)", salePriceUsd: "نرخی داشکاندن (دۆلار)", productRating: "هەڵسەنگاندن (ئارەزوومەندانە)", reviewCount: "ژمارەی هەڵسەنگاندن (ئارەزوومەندانە)", socialLinks: "پەیجە کۆمەڵایەتی و فەرمییەکان",
-    promotionValueInvalid: "داشکاندن و نرخەکان و هەڵسەنگاندنی ئەم بەرهەمە بپشکنە.", settingsSaveError: "پاشەکەوتکردنی ڕێکخستنەکانی فرۆشگا سەرکەوتوو نەبوو: {detail}", activitySettingsUpdated: "ڕێکخستنەکانی فرۆشگای نوێ کردەوە"
+    promotionValueInvalid: "داشکاندن و نرخەکان و هەڵسەنگاندنی ئەم بەرهەمە بپشکنە.", settingsSaveError: "پاشەکەوتکردنی ڕێکخستنەکانی فرۆشگا سەرکەوتوو نەبوو: {detail}", activitySettingsUpdated: "ڕێکخستنەکانی فرۆشگای نوێ کردەوە",
+    discountsHeadingCkbLabel: "ناونیشانی داشکاندن بە کوردی", discountsHeadingCkbHelp: "تەنها کاتێک پیشان دەدرێت زمان کوردی بێت. بۆ بەکارهێنانی ناونیشانی بنەڕەتی بەتاڵی بهێڵەوە."
   });
 
   const rowToProduct = row => ({
@@ -1211,6 +1233,7 @@
     renderProducts();
     renderCart();
     renderCustomerOrders();
+    renderDiscountsHeading();
     if (!$("#admin-overlay").hidden) syncAdmin();
     if (!$("#product-form-wrap").hidden) $("#product-form-heading").textContent = t($("#product-form").elements.id.value ? "editProduct" : "addProduct");
     if (!$("#order-success").hidden) {
@@ -1559,6 +1582,7 @@
     const form = $("#settings-form");
     form.elements.discount.value = settings.discount;
     form.elements.fibAccount.value = settings.fibAccount;
+    form.elements.discountsTitleCkb.value = settings.discountsTitleCkb || DEFAULT_CKB_DISCOUNTS_TITLE;
     form.elements.instagramUrl.value = settings.instagramUrl || "";
     form.elements.facebookUrl.value = settings.facebookUrl || "";
     form.elements.tiktokUrl.value = settings.tiktokUrl || "";
@@ -2475,6 +2499,7 @@
       nextSettings = {
         discount: Number(data.get("discount")) || 0,
         fibAccount: data.get("fibAccount").trim(),
+        discountsTitleCkb: String(data.get("discountsTitleCkb") || "").trim() || DEFAULT_CKB_DISCOUNTS_TITLE,
         instagramUrl: normalizeSocialUrl(data.get("instagramUrl")),
         facebookUrl: normalizeSocialUrl(data.get("facebookUrl")),
         tiktokUrl: normalizeSocialUrl(data.get("tiktokUrl"))

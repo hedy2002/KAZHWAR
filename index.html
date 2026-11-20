@@ -140,7 +140,7 @@
       <div class="empty-state promo-empty" id="best-seller-empty" hidden><span>♡</span><p data-i18n="bestSellersEmpty">Our best sellers will be featured here soon.</p></div>
     </section>
     <section class="shop-section promo-section" id="discounts">
-      <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="discountsEyebrow">A little more for less</span></div><h2 data-i18n-html="discountsTitle">Lovely <em>offers.</em></h2></div><a class="text-link" href="#shop" data-view-all><span data-i18n="viewAll">See all</span><span>↗</span></a></div>
+      <div class="section-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> <span data-i18n="discountsEyebrow">A little more for less</span></div><h2 id="discounts-title" data-i18n-html="discountsTitle">Lovely <em>offers.</em></h2></div><a class="text-link" href="#shop" data-view-all><span data-i18n="viewAll">See all</span><span>↗</span></a></div>
       <div class="product-grid promo-grid" id="discount-grid"></div>
       <div class="empty-state promo-empty" id="discount-empty" hidden><span>✳</span><p data-i18n="discountsEmpty">Look out for special prices on selected products.</p></div>
     </section>
@@ -380,6 +380,7 @@
         <div class="admin-section-heading"><div><span class="eyebrow" data-i18n="adminSettingsEyebrow">SET THE MOOD</span><h3 data-i18n="shopSettings">Shop settings</h3></div></div>
         <form id="settings-form" class="settings-form">
           <label class="field-label"><span class="label-text" data-i18n="storewideDiscount">Storewide discount</span> <span data-i18n="discountHelp">Applied to all product prices and cart totals</span><div class="input-suffix"><input name="discount" type="number" min="0" max="90" step="1"><span>%</span></div></label>
+          <label class="field-label"><span class="label-text" data-i18n="discountsHeadingCkbLabel">Discounts heading (Kurdish)</span><span data-i18n="discountsHeadingCkbHelp">Shown when the storefront language is Kurdish. Leave blank to use the default.</span><input name="discountsTitleCkb" maxlength="100"></label>
           <label class="field-label"><span class="label-text" data-i18n="paymentNumberLabel">FIB / Qi Card payment number</span> <span data-i18n="fibHelp">Shown at checkout</span><input name="fibAccount" type="tel" inputmode="tel" required></label>
           <div class="social-settings-group">
             <h4 data-i18n="socialLinks">Social and official pages</h4>
