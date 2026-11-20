@@ -10,7 +10,13 @@
   if (supabaseSettingsPresent && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
     try {
       if (!window.supabase?.createClient) throw new Error("Supabase client library did not load.");
-      supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+      const freshApiFetch = (input, init = {}) => {
+        const method = (init.method || (input instanceof Request ? input.method : "GET")).toUpperCase();
+        return fetch(input, method === "GET" ? { ...init, cache: "no-store" } : init);
+      };
+      supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey, {
+        global: { fetch: freshApiFetch }
+      });
     } catch (error) {
       console.error("Unable to initialize the Supabase client.", error);
     }
@@ -151,7 +157,6 @@
   Object.assign(featureTranslations.en, { installTitle: "Take Gulnar with you", installReady: "Install Gulnar for quick access on this device.", installAndroidHelp: "Open your browser menu and choose Install app or Add to Home screen.", installIOSHelp: "Tap Share, then choose Add to Home Screen.", installDesktopHelp: "Use your browser’s install option to add Gulnar to your desktop.", installAction: "Install", installDismiss: "Not now", installFailed: "Gulnar could not be installed. Try your browser’s install menu." });
   Object.assign(featureTranslations.ar, { installTitle: "اصطحب جولنار معك", installReady: "ثبّت جولنار للوصول السريع من هذا الجهاز.", installAndroidHelp: "افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية.", installIOSHelp: "اضغط على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».", installDesktopHelp: "استخدم خيار التثبيت في المتصفح لإضافة جولنار إلى سطح المكتب.", installAction: "تثبيت", installDismiss: "ليس الآن", installFailed: "تعذر تثبيت جولنار. جرّب قائمة التثبيت في المتصفح." });
   Object.assign(featureTranslations.ckb, { installTitle: "گوڵنار لەگەڵ خۆت ببە", installReady: "گوڵنار دابمەزرێنە بۆ دەستگەیشتنی خێرا لەم ئامێرە.", installAndroidHelp: "لیستی وێبگەڕەکەت بکەرەوە و دامەزراندن یان زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSHelp: "دوگمەی هاوبەشکردن بکە و زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installDesktopHelp: "لە لیستی وێبگەڕەکەتدا هەڵبژاردەی دامەزراندن بەکاربهێنە بۆ زیادکردنی گوڵنار بۆ سەر مێز.", installAction: "دامەزراندن", installDismiss: "ئێستا نا", installFailed: "دامەزراندنی گوڵنار سەرکەوتوو نەبوو. لیستی دامەزراندنی وێبگەڕەکەت تاقی بکەرەوە." });
-
   const readStore = (key, fallback) => {
     try {
       const value = localStorage.getItem(key);
@@ -192,6 +197,7 @@
   window.__gulnarInstallPrompt = null;
   let installPromptDismissed = false;
   let appInstalled = false;
+  let serviceWorkerReloading = false;
   const isIOSDevice = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isAndroidDevice = /android/i.test(navigator.userAgent);
   let pendingProductImage = null;
@@ -1590,7 +1596,27 @@
     refreshInstallBanner();
   });
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("./service-worker.js")
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (serviceWorkerReloading) return;
+      serviceWorkerReloading = true;
+      window.location.reload();
+    });
+    navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+      .then(registration => {
+        if (registration.waiting && navigator.serviceWorker.controller) {
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+        registration.addEventListener("updatefound", () => {
+          const installingWorker = registration.installing;
+          if (!installingWorker) return;
+          installingWorker.addEventListener("statechange", () => {
+            if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+              (registration.waiting || installingWorker).postMessage({ type: "SKIP_WAITING" });
+            }
+          });
+        });
+        registration.update().catch(error => console.error("Unable to check for Gulnar updates.", error));
+      })
       .catch(error => console.error("Unable to register the Gulnar service worker.", error));
   }
 

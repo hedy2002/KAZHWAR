@@ -30,4 +30,6 @@ The no-Supabase demo admin password is client-side and is not secure. Configure 
 
 Orders and customer checkout data remain browser-local in this prototype; this setup synchronizes the product catalog only. Keep `supabase-config.js` available when deploying the static site.
 
-The install banner uses the web app manifest and service worker. It requires HTTPS in production (localhost is also supported); iPhone/iPad users receive the Share → Add to Home Screen instructions because iOS does not expose the browser install prompt event.
+The install banner uses the web app manifest and service worker. The service worker uses network-first behavior for navigation and core app files, retaining the last successful shell only for offline fallback. It does not cache database/API requests, and Supabase GETs use `cache: "no-store"`. When an updated service worker is detected, it activates automatically and the page reloads. The app checks for worker updates on each load and bypasses the browser HTTP cache for the worker script. Vercel response headers revalidate the HTML, JavaScript, CSS, config, and manifest. To pre-cache a new app shell on a code/UI release, bump `CACHE_NAME` in `service-worker.js` and deploy that file with the app; app code and data still fetch freshly from the network on page load.
+
+The PWA requires HTTPS in production (localhost is also supported); iPhone/iPad users receive the Share → Add to Home Screen instructions because iOS does not expose the browser install prompt event.
