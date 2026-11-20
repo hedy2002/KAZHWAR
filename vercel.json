@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/share",
+      "destination": "/share.html"
+    },
+    {
+      "source": "/download",
+      "destination": "/share.html"
+    }
+  ],
   "headers": [
     {
       "source": "/",
@@ -56,6 +66,51 @@
     },
     {
       "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/share",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/download",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/share.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/share-page.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/share-page.css",
       "headers": [
         {
           "key": "Cache-Control",

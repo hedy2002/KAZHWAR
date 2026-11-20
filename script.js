@@ -5,6 +5,7 @@
   const FIB_LEGACY_DEFAULT = "7000000000000";
   const LANGUAGE_STORAGE = "verdant.language";
   const SUPABASE_CONFIG = window.VERDANT_SUPABASE_CONFIG || {};
+  const APP_SHARE_URL = window.GULNAR_APP_URL || "https://gulzhin.vercel.app";
   const supabaseSettingsPresent = Boolean(SUPABASE_CONFIG.url || SUPABASE_CONFIG.anonKey);
   let supabaseClient = null;
   if (supabaseSettingsPresent && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
@@ -51,7 +52,7 @@
       heroEyebrow: "A softer kind of living", heroTitle: "Make room<br>for <em>something</em><br>growing.", heroDescription: "Thoughtfully grown plants and garden essentials to make your everyday a little more alive.", heroCta: "Find your green", heroLoved: "Loved by plant people", heroHome: "in every kind of home", heroImageAlt: "Sunlit leafy plants in a warm home", heroSticker: "GROW<br>AT YOUR<br>OWN PACE", heroCaption: "Bring the outside in", heroSide: "ROOTED IN THE EVERYDAY · EST. 2024",
       benefitsLabel: "Our promises", benefitGrown: "Grown with care", benefitHealthy: "Happy, healthy plants", benefitDoor: "At your doorstep", benefitDelivery: "Delivery for {fee}", benefitHelp: "Here to help", benefitAdvice: "Real people, real advice",
       shopEyebrow: "A little green goes a long way", shopTitle: "Find your <em>happy place.</em>", shopDescription: "From the sunniest windowsill to your garden gate, there's a plant for that.", categoryFilters: "Filter products by category", categoryAll: "Everything", categoryIndoor: "Indoor plants", categoryOutdoor: "Outdoor plants", categoryCare: "Medicines & fertilizers", searchPlaceholder: "Find a plant...", searchLabel: "Search products", emptyProductsTitle: "No leaves found.", emptyProductsText: "Try another search or category.",
-      storyImageAlt: "Potted green plants and plant cuttings", storyEyebrow: "A note from our little corner", storyTitle: "More green.<br><em>Less perfect.</em>", storyDescription: "We think plants make a place feel like yours. So we pick the good ones, share what we know, and leave the rest to you. No green thumb required.", storyLink: "A plant for every pace", footerLine: "A little more alive, every day.", footerMade: "Made for growing things",
+      storyImageAlt: "Potted green plants and plant cuttings", storyEyebrow: "A note from our little corner", storyTitle: "More green.<br><em>Less perfect.</em>", storyDescription: "We think plants make a place feel like yours. So we pick the good ones, share what we know, and leave the rest to you. No green thumb required.", storyLink: "A plant for every pace", footerLine: "A little more alive, every day.", footerMade: "Made for growing things", getApp: "Get the app", shareApp: "Share Gulnar", shareCopied: "Gulnar link copied.", shareCopyError: "Couldn't copy the Gulnar link. Please try again.", shareTitle: "Gulnar — Plants for your kind of home", shareMessage: "Explore plants, garden essentials, and helpful care tips with Gulnar.",
       closeCart: "Close cart", cartTitle: "Your bag", cartEyebrow: "YOUR LITTLE GREEN HAUL", progressBag: "Your bag", progressDetails: "Your details", cartEmptyTitle: "Your bag is taking a breather.", cartEmptyText: "Let's find a plant to bring home.", keepBrowsing: "Keep browsing", deliveryNoteLabel: "A note for your delivery", optional: "optional", deliveryNotePlaceholder: "Anything we should know? A gate code, a sunny spot...", subtotal: "Subtotal", discountLine: "Little green discount", delivery: "Delivery", fixedFee: "fixed fee", total: "Total", continueCheckout: "Continue to details", deliveryFeeNotice: "A fixed delivery fee of {fee} applies to every order.", backToBag: "Back to your bag",
       checkoutAddressTitle: "Where should we find you?", yourName: "Your name", namePlaceholder: "e.g. Noor Ahmed", phoneNumber: "Phone number", phonePlaceholder: "+964 7XX XXX XXXX", deliveryAddress: "Delivery address", addressPlaceholder: "Area, street, building, apartment...", deliveryPreference: "Delivery preference", instructionCall: "Call me on arrival", instructionLeave: "Leave it at the door", instructionHand: "Hand it to me", instructionBefore: "Call before delivery", paymentTitle: "How would you like to pay?", paymentFib: "FIB transfer", paymentFibHint: "Upload your transfer receipt", fibAccountLabel: "Transfer to this account", copy: "Copy", receiptLabel: "Payment receipt screenshot", receiptHint: "required · JPG, PNG or WebP", paymentCard: "QiCard / Mastercard", paymentCardHint: "Debit or credit card", useSavedCard: "Use saved card", savedCardLabel: "Saved card", savedQiCard: "QiCard ending 4821", savedMastercard: "Mastercard ending 0936", useNewCard: "Use a new card instead", cardNumber: "Card number", cardNumberPlaceholder: "0000 0000 0000 0000", expiry: "Expiry", expiryPlaceholder: "MM/YY", cvv: "CVV", cvvPlaceholder: "•••", cardPrivacy: "Card details are used for this demo checkout only and are not saved.", paymentCash: "Cash on delivery", paymentCashHint: "Pay when your plants arrive", currency: "IQD", totalIncludingDelivery: "Total including delivery", placeOrder: "Place your order", deliveryTerms: "By placing your order, you agree to our delivery terms.",
       successEyebrow: "A LITTLE SOMETHING IS GROWING", successTitle: "Order placed,<br><em>plant parent.</em>", successFib: "We have your order and receipt. We'll be in touch once your transfer is confirmed.", successOther: "Your order is in good hands. We'll be in touch before it arrives.", finishOrder: "Back to the garden",
@@ -67,7 +68,7 @@
       heroEyebrow: "حياة أكثر هدوءًا", heroTitle: "افسح مكانًا<br>لشيءٍ <em>ينمو</em><br>بجوارك.", heroDescription: "نباتات مزروعة بعناية ولوازم للحدائق تضفي حياة أكثر على يومك.", heroCta: "اكتشف نباتاتك", heroLoved: "محبوبة من عشاق النباتات", heroHome: "في كل بيت", heroImageAlt: "نباتات خضراء مورقة في ضوء الشمس داخل منزل دافئ", heroSticker: "ازرع<br>على<br>مهلك", heroCaption: "أدخل الطبيعة إلى منزلك", heroSide: "جذورنا في تفاصيل الحياة · منذ ٢٠٢٤",
       benefitsLabel: "وعودنا", benefitGrown: "مزروعة بعناية", benefitHealthy: "نباتات سعيدة وصحية", benefitDoor: "حتى باب منزلك", benefitDelivery: "التوصيل {fee}", benefitHelp: "نحن هنا لمساعدتك", benefitAdvice: "نصيحة من أشخاص حقيقيين",
       shopEyebrow: "لمسة خضراء تصنع فرقًا", shopTitle: "اعثر على <em>مساحتك السعيدة.</em>", shopDescription: "من نافذة مشمسة إلى حديقة منزلك، ستجد نباتًا يناسبك.", categoryFilters: "تصفية المنتجات حسب الفئة", categoryAll: "كل المنتجات", categoryIndoor: "نباتات داخلية", categoryOutdoor: "نباتات خارجية", categoryCare: "الأدوية والأسمدة", searchPlaceholder: "ابحث عن نبات...", searchLabel: "ابحث عن المنتجات", emptyProductsTitle: "لم نعثر على نباتات.", emptyProductsText: "جرّب بحثًا أو فئة أخرى.",
-      storyImageAlt: "نباتات خضراء في أصص وعُقل نباتية", storyEyebrow: "رسالة من ركننا الصغير", storyTitle: "مزيد من الخضرة.<br><em>بلا تكلف.</em>", storyDescription: "نؤمن أن النباتات تجعل المكان أقرب إليك. نختار أجملها ونشاركك ما نعرفه، والباقي متروك لك. لا تحتاج إلى خبرة في الزراعة.", storyLink: "نبات يناسب كل إيقاع", footerLine: "حياة أكثر خضرة، كل يوم.", footerMade: "صُنع لمحبي النباتات",
+      storyImageAlt: "نباتات خضراء في أصص وعُقل نباتية", storyEyebrow: "رسالة من ركننا الصغير", storyTitle: "مزيد من الخضرة.<br><em>بلا تكلف.</em>", storyDescription: "نؤمن أن النباتات تجعل المكان أقرب إليك. نختار أجملها ونشاركك ما نعرفه، والباقي متروك لك. لا تحتاج إلى خبرة في الزراعة.", storyLink: "نبات يناسب كل إيقاع", footerLine: "حياة أكثر خضرة، كل يوم.", footerMade: "صُنع لمحبي النباتات", getApp: "حمّل التطبيق", shareApp: "شارك جولنار", shareCopied: "تم نسخ رابط جولنار.", shareCopyError: "تعذر نسخ رابط جولنار. حاول مرة أخرى.", shareTitle: "جولنار — نباتات تناسب منزلك", shareMessage: "اكتشف النباتات ولوازم الحدائق ونصائح العناية المفيدة مع جولنار.",
       closeCart: "إغلاق السلة", cartTitle: "سلتك", cartEyebrow: "نباتاتك الصغيرة بانتظارك", progressBag: "السلة", progressDetails: "بياناتك", cartEmptyTitle: "سلتك تأخذ استراحة قصيرة.", cartEmptyText: "هيا نبحث عن نبات جديد لمنزلك.", keepBrowsing: "تابع التسوق", deliveryNoteLabel: "ملاحظة للتوصيل", optional: "اختياري", deliveryNotePlaceholder: "هل هناك ما ينبغي أن نعرفه؟ رمز البوابة أو مكان مشمس...", subtotal: "المجموع الفرعي", discountLine: "خصم النباتات", delivery: "التوصيل", fixedFee: "رسوم ثابتة", total: "الإجمالي", continueCheckout: "تابع إلى بياناتك", deliveryFeeNotice: "تُضاف رسوم توصيل ثابتة قدرها {fee} إلى كل طلب.", backToBag: "العودة إلى السلة",
       checkoutAddressTitle: "إلى أين نوصل طلبك؟", yourName: "الاسم", namePlaceholder: "مثال: نور أحمد", phoneNumber: "رقم الهاتف", phonePlaceholder: "+964 7XX XXX XXXX", deliveryAddress: "عنوان التوصيل", addressPlaceholder: "المنطقة، الشارع، المبنى، الشقة...", deliveryPreference: "تعليمات التوصيل", instructionCall: "اتصل بي عند الوصول", instructionLeave: "اتركه عند الباب", instructionHand: "سلّمه لي مباشرة", instructionBefore: "اتصل قبل التوصيل", paymentTitle: "كيف تود الدفع؟", paymentFib: "تحويل FIB", paymentFibHint: "ارفع إيصال التحويل", fibAccountLabel: "حوّل إلى هذا الحساب", copy: "نسخ", receiptLabel: "صورة إيصال الدفع", receiptHint: "مطلوبة · JPG أو PNG أو WebP", paymentCard: "QiCard / Mastercard", paymentCardHint: "بطاقة خصم أو ائتمان", useSavedCard: "استخدم بطاقة محفوظة", savedCardLabel: "البطاقة المحفوظة", savedQiCard: "QiCard ينتهي بـ 4821", savedMastercard: "Mastercard ينتهي بـ 0936", useNewCard: "استخدم بطاقة جديدة", cardNumber: "رقم البطاقة", cardNumberPlaceholder: "0000 0000 0000 0000", expiry: "تاريخ الانتهاء", expiryPlaceholder: "MM/YY", cvv: "رمز الأمان", cvvPlaceholder: "•••", cardPrivacy: "تُستخدم بيانات البطاقة لهذا الطلب التجريبي فقط ولا يتم حفظها.", paymentCash: "الدفع نقدًا عند الاستلام", paymentCashHint: "ادفع عند وصول نباتاتك", currency: "د.ع", totalIncludingDelivery: "الإجمالي مع التوصيل", placeOrder: "تأكيد الطلب", deliveryTerms: "بتأكيد الطلب، فإنك توافق على شروط التوصيل.",
       successEyebrow: "هناك شيء جميل في طريقه إليك", successTitle: "تم طلبك،<br><em>يا صديق النباتات.</em>", successFib: "وصلنا طلبك وإيصال التحويل. سنتواصل معك بعد تأكيد التحويل.", successOther: "طلبك بأيدٍ أمينة. سنتواصل معك قبل وصوله.", finishOrder: "العودة إلى الحديقة",
@@ -83,7 +84,7 @@
       heroEyebrow: "ژیانێکی ئارامتر", heroTitle: "شوێنێک بکەرەوە<br>بۆ شتێک کە <em>دەڕوێت</em><br>لە تەنیشتت.", heroDescription: "ڕووەک و پێداویستیی باخچە کە بە وریایی گەشەیان پێدراوە، ڕۆژانت زیندووتر دەکەن.", heroCta: "ڕووەکی خۆت بدۆزەرەوە", heroLoved: "خۆشەویستی خەڵکی ڕووەک", heroHome: "لە هەموو جۆرە ماڵێکدا", heroImageAlt: "ڕووەکی گەڵادار لە ژێر تیشکی خۆر لە ماڵێکی گەرمدا", heroSticker: "بڕوێنە<br>بە<br>هێواشی", heroCaption: "سروشت بهێنە ناو ماڵەوە", heroSide: "ڕەگمان لە ژیانی ڕۆژانەدایە · لە ٢٠٢٤ەوە",
       benefitsLabel: "بەڵێنییەکانمان", benefitGrown: "بە وریایی چێندراوە", benefitHealthy: "ڕووەکی تەندروست و دڵخۆش", benefitDoor: "تا دەرگای ماڵت", benefitDelivery: "گەیاندن {fee}", benefitHelp: "ئێمە لێرەین بۆ یارمەتیت", benefitAdvice: "ڕاوێژ لە کەسانی ڕاستەقینەوە",
       shopEyebrow: "کەمێک سەوزایی زۆر دەگۆڕێت", shopTitle: "<em>شوێنی دڵخۆشی</em> خۆت بدۆزەرەوە.", shopDescription: "لە پەنجەرەیەکی خۆرگیرەوە تا دەرگای باخچەکەت، ڕووەکێک هەیە بۆ تۆ.", categoryFilters: "پاڵاوتنی بەرهەم بەپێی جۆر", categoryAll: "هەموو بەرهەمەکان", categoryIndoor: "ڕووەکی ناوماڵ", categoryOutdoor: "ڕووەکی دەرەوە", categoryCare: "دەرمان و پەین", searchPlaceholder: "بگەڕێ بۆ ڕووەکێک...", searchLabel: "گەڕان بۆ بەرهەم", emptyProductsTitle: "هیچ ڕووەکێک نەدۆزرایەوە.", emptyProductsText: "وشەیەک یان جۆرێکی تر تاقی بکەرەوە.",
-      storyImageAlt: "ڕووەکی سەوز لە گۆزە و لقە ڕووەکییەکان", storyEyebrow: "پەیامێک لە گوێرەکەی بچووکمانەوە", storyTitle: "سەوزایی زیاتر.<br><em>کەمتر تەواو.</em>", storyDescription: "باوەڕمان وایە ڕووەک شوێنەکە دەکاتە هی تۆ. ڕووەکە باشەکان هەڵدەبژێرین، ئەوەی دەیزانین پێت دەڵێین و ماوەکەی بۆ تۆ جێدەهێڵین. پێویستت بە ئەزموونی باخچەوانی نییە.", storyLink: "ڕووەکێک بۆ هەر شێوازێک", footerLine: "هەموو ڕۆژێک، کەمێک زیاتر زیندوو.", footerMade: "بۆ خۆشەویستانی ڕووەک دروستکراوە",
+      storyImageAlt: "ڕووەکی سەوز لە گۆزە و لقە ڕووەکییەکان", storyEyebrow: "پەیامێک لە گوێرەکەی بچووکمانەوە", storyTitle: "سەوزایی زیاتر.<br><em>کەمتر تەواو.</em>", storyDescription: "باوەڕمان وایە ڕووەک شوێنەکە دەکاتە هی تۆ. ڕووەکە باشەکان هەڵدەبژێرین، ئەوەی دەیزانین پێت دەڵێین و ماوەکەی بۆ تۆ جێدەهێڵین. پێویستت بە ئەزموونی باخچەوانی نییە.", storyLink: "ڕووەکێک بۆ هەر شێوازێک", footerLine: "هەموو ڕۆژێک، کەمێک زیاتر زیندوو.", footerMade: "بۆ خۆشەویستانی ڕووەک دروستکراوە", getApp: "ئەپڵیکەیشن دابەزێنە", shareApp: "گوڵنار هاوبەش بکە", shareCopied: "بەستەری گوڵنار کۆپی کرا.", shareCopyError: "کۆپیکردنی بەستەری گوڵنار سەرکەوتوو نەبوو. دووبارە هەوڵ بدەوە.", shareTitle: "گوڵنار — ڕووەک بۆ ماڵی تۆ", shareMessage: "لەگەڵ گوڵنار ڕووەک، پێداویستیی باخچە و ئامۆژگاری چاودێریی بەسوود بدۆزەرەوە.",
       closeCart: "داخستنی سەبەتە", cartTitle: "سەبەتەکەت", cartEyebrow: "ڕووەکە بچووکەکانت چاوەڕێتن", progressBag: "سەبەتە", progressDetails: "زانیارییەکانت", cartEmptyTitle: "سەبەتەکەت پشوویەکی کورت دەدات.", cartEmptyText: "با ڕووەکێک بۆ ماڵەوە بدۆزینەوە.", keepBrowsing: "بگەڕێوە بۆ گەڕان", deliveryNoteLabel: "تێبینی بۆ گەیاندن", optional: "ئارەزوومەندانە", deliveryNotePlaceholder: "شتێک هەیە پێویست بزانین؟ کۆدی دەرگا یان شوێنێکی خۆرگیر...", subtotal: "کۆی لاوەکی", discountLine: "داشکاندنی ڕووەک", delivery: "گەیاندن", fixedFee: "کرێی جێگیر", total: "کۆی گشتی", continueCheckout: "بەردەوام بە بۆ زانیارییەکان", deliveryFeeNotice: "کرێی گەیاندنی جێگیری {fee} بۆ هەر داواکارییەک زیاد دەکرێت.", backToBag: "گەڕانەوە بۆ سەبەتە",
       checkoutAddressTitle: "داواکارییەکەت بۆ کوێ بنێرین؟", yourName: "ناوت", namePlaceholder: "بۆ نموونە: نور ئەحمەد", phoneNumber: "ژمارەی تەلەفۆن", phonePlaceholder: "+964 7XX XXX XXXX", deliveryAddress: "ناونیشانی گەیاندن", addressPlaceholder: "ناوچە، شەقام، بینا، ژوور...", deliveryPreference: "ڕێنمایی گەیاندن", instructionCall: "کاتێک گەیشت پەیوەندیم پێوە بکە", instructionLeave: "لەبەر دەرگا دایبنێ", instructionHand: "ڕاستەوخۆ پێم بدە", instructionBefore: "پێش گەیاندن پەیوەندیم پێوە بکە", paymentTitle: "چۆن دەتەوێت پارە بدەیت؟", paymentFib: "گواستنەوەی FIB", paymentFibHint: "وێنەی پسووڵەی گواستنەوە باربکە", fibAccountLabel: "بۆ ئەم هەژمارە بگوازەرەوە", copy: "لەبەرگرتنەوە", receiptLabel: "وێنەی پسووڵەی پارەدان", receiptHint: "پێویستە · JPG یان PNG یان WebP", paymentCard: "QiCard / Mastercard", paymentCardHint: "کارتی بانکی یان کرێدیت", useSavedCard: "کارتی پاشەکەوتکراو بەکاربهێنە", savedCardLabel: "کارتی پاشەکەوتکراو", savedQiCard: "QiCard کۆتایی بە 4821", savedMastercard: "Mastercard کۆتایی بە 0936", useNewCard: "لەبری ئەوە کارتی نوێ بەکاربهێنە", cardNumber: "ژمارەی کارت", cardNumberPlaceholder: "0000 0000 0000 0000", expiry: "بەسەرچوون", expiryPlaceholder: "MM/YY", cvv: "کۆدی پاراستن", cvvPlaceholder: "•••", cardPrivacy: "زانیاریی کارت تەنها بۆ ئەم داواکارییە تاقیکارییە بەکاردێت و پاشەکەوت ناکرێت.", paymentCash: "پارەدان لە کاتی وەرگرتن", paymentCashHint: "کاتێک ڕووەکەکانت گەیشتن پارە بدە", currency: "دینار", totalIncludingDelivery: "کۆی گشتی لەگەڵ گەیاندن", placeOrder: "داواکارییەکە پشتڕاست بکەرەوە", deliveryTerms: "بە ناردنی داواکارییەکەت، ڕازییت بە مەرجەکانی گەیاندن.",
       successEyebrow: "شتێکی جوان لە ڕێگادایە", successTitle: "داواکارییەکەت نێردرا،<br><em>خاوەنی ڕووەک.</em>", successFib: "داواکارییەکەت و پسووڵەکەت وەرگیرا. دوای پشتڕاستکردنەوەی گواستنەوەکە پەیوەندیت پێوە دەکەین.", successOther: "داواکارییەکەت لە دەستی ئێمەدا پارێزراوە. پێش گەیشتنی پەیوەندیت پێوە دەکەین.", finishOrder: "گەڕانەوە بۆ باخچە",
@@ -199,6 +200,10 @@
   let realtimeSubscribed = false;
   let cloudRefreshGeneration = 0;
   let isSupabaseAdmin = false;
+  let currentAdminUser = null;
+  let adminProfile = { fullName: "", title: "", avatarUrl: "", phone: "", notes: "" };
+  let adminPublicProfiles = {};
+  let adminActivities = readStore("verdant.adminActivity", []);
   let deferredInstallPrompt = window.__gulnarInstallPrompt || null;
   window.__gulnarInstallPrompt = null;
   let installPromptDismissed = false;
@@ -211,8 +216,8 @@
     && /safari\//i.test(userAgent)
     && !/(crios|fxios|edgios|opios|brave|duckduckgo|fban|fbav|fbios|instagram|telegram|tiktok|twitter|whatsapp|line\/|micromessenger|snapchat|linkedinapp|pinterest)/i.test(userAgent);
   const isAndroidDevice = /android/i.test(navigator.userAgent);
-  let pendingProductImage = null;
-  let pendingProductImageUrl = "";
+  let pendingProductImages = [];
+  let pendingProductVideo = null;
   let catalogStatusKey = supabaseSettingsPresent ? "catalogSyncing" : "catalogLocalMode";
   let catalogStatusValues = {};
   let receiptData = "";
@@ -244,7 +249,11 @@
   };
   const formatNumber = amount => new Intl.NumberFormat(languageMeta[language].locale, { maximumFractionDigits: 1 }).format(Number(amount) || 0);
   const formatMoney = amount => `${new Intl.NumberFormat(languageMeta[language].locale, { maximumFractionDigits: 0 }).format(Math.round(Number(amount) || 0))} ${t("currency")}`;
+  const formatUsd = amount => `$${new Intl.NumberFormat(languageMeta[language].locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(amount) || 0)}`;
+  const formatDualMoney = (iqd, usd) => [Number(iqd) > 0 ? formatMoney(iqd) : "", Number(usd) > 0 ? formatUsd(usd) : ""].filter(Boolean).join(" · ") || "—";
   const discountedPrice = product => Math.round(product.retail * (1 - settings.discount / 100));
+  const discountedPriceUsd = product => Math.round((Number(product.retailUsd) || 0) * (1 - settings.discount / 100) * 100) / 100;
+  const productPrice = product => formatDualMoney(discountedPrice(product), discountedPriceUsd(product));
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
   const categoryLabel = category => ({
     "Indoor Plants": t("categoryIndoorDisplay"),
@@ -270,19 +279,58 @@
     categoryTools: "Agricultural Tools", categoryToolsDisplay: "Agricultural Tools",
     catalogLocalMode: "Local demo mode: products are saved in this browser.", catalogSyncing: "Connecting to the shared product catalog…", catalogConnected: "Product catalog is connected and updates live.", catalogConfigMissing: "Supabase settings are incomplete or its client library failed to load. Product changes are disabled.", catalogUnavailable: "The shared product catalog is unavailable. Try again after reconnecting.", catalogSyncError: "Catalog sync failed: {detail}",
     adminNoticeLocal: "Demo admin panel · changes are saved in this browser only.", adminNoticeCloud: "Products are shared across devices. Orders remain local to this browser.", adminEmailLabel: "Admin email", adminLoginFailure: "Could not sign in: {detail}", adminNotAuthorized: "This account is not authorized to manage products.", adminConfigError: "Supabase is not configured. See SUPABASE_SETUP.md.", adminSignOut: "Sign out", adminSignedOut: "Signed out.", adminSignOutError: "Could not sign out: {detail}",
-    imageRequired: "Add an image URL or choose a photo.", imageUrlInvalid: "Enter a valid image URL or choose a photo.", imageCompressing: "Compressing image…", imageReady: "Image ready (compressed)", imageCurrent: "Current product image", productImagePreview: "Product image preview", productImageError: "Could not read or compress this image.", productSaveError: "Could not save product: {detail}", productDeleteError: "Could not delete product: {detail}", productImageCleanupError: "The catalog update succeeded, but an unused image could not be removed."
+    imageRequired: "Add an image URL or choose a photo.", imageUrlInvalid: "Enter a valid image URL or choose a photo.", imageCompressing: "Compressing image…", imageReady: "Image ready (compressed)", imageCurrent: "Current product image", productImagePreview: "Product image preview", productImageError: "Could not read or compress this image.", productSaveError: "Could not save product: {detail}", productDeleteError: "Could not delete product: {detail}", productImageCleanupError: "The catalog update succeeded, but unused product media could not be removed."
   });
   Object.assign(featureTranslations.ar, {
     categoryTools: "الأدوات الزراعية", categoryToolsDisplay: "الأدوات الزراعية",
     catalogLocalMode: "وضع تجريبي محلي: تُحفظ المنتجات في هذا المتصفح.", catalogSyncing: "جارٍ الاتصال بكتالوج المنتجات المشترك…", catalogConnected: "كتالوج المنتجات متصل والتحديثات مباشرة.", catalogConfigMissing: "إعدادات Supabase غير مكتملة أو تعذر تحميل مكتبته. تم تعطيل تغييرات المنتجات.", catalogUnavailable: "كتالوج المنتجات المشترك غير متاح. حاول مجددًا بعد إعادة الاتصال.", catalogSyncError: "فشل مزامنة الكتالوج: {detail}",
     adminNoticeLocal: "لوحة تجريبية · تُحفظ التغييرات في هذا المتصفح فقط.", adminNoticeCloud: "المنتجات مشتركة بين الأجهزة. تبقى الطلبات محلية في هذا المتصفح.", adminEmailLabel: "البريد الإلكتروني للإدارة", adminLoginFailure: "تعذر تسجيل الدخول: {detail}", adminNotAuthorized: "هذا الحساب غير مصرح له بإدارة المنتجات.", adminConfigError: "لم يتم إعداد Supabase. راجع SUPABASE_SETUP.md.", adminSignOut: "تسجيل الخروج", adminSignedOut: "تم تسجيل الخروج.", adminSignOutError: "تعذر تسجيل الخروج: {detail}",
-    imageRequired: "أضف رابط صورة أو اختر صورة.", imageUrlInvalid: "أدخل رابط صورة صحيحًا أو اختر صورة.", imageCompressing: "جارٍ ضغط الصورة…", imageReady: "الصورة جاهزة (مضغوطة)", imageCurrent: "صورة المنتج الحالية", productImagePreview: "معاينة صورة المنتج", productImageError: "تعذرت قراءة الصورة أو ضغطها.", productSaveError: "تعذر حفظ المنتج: {detail}", productDeleteError: "تعذر حذف المنتج: {detail}", productImageCleanupError: "نجح تحديث الكتالوج، لكن تعذرت إزالة صورة لم تعد مستخدمة."
+    imageRequired: "أضف رابط صورة أو اختر صورة.", imageUrlInvalid: "أدخل رابط صورة صحيحًا أو اختر صورة.", imageCompressing: "جارٍ ضغط الصورة…", imageReady: "الصورة جاهزة (مضغوطة)", imageCurrent: "صورة المنتج الحالية", productImagePreview: "معاينة صورة المنتج", productImageError: "تعذرت قراءة الصورة أو ضغطها.", productSaveError: "تعذر حفظ المنتج: {detail}", productDeleteError: "تعذر حذف المنتج: {detail}", productImageCleanupError: "نجح تحديث الكتالوج، لكن تعذرت إزالة وسائط منتج لم تعد مستخدمة."
   });
   Object.assign(featureTranslations.ckb, {
     categoryTools: "کەرەستەکانی کشتوکاڵ", categoryToolsDisplay: "کەرەستەکانی کشتوکاڵ",
     catalogLocalMode: "دۆخی نموونەییی ناوخۆیی: بەرهەمەکان لەم وێبگەڕەدا پاشەکەوت دەکرێن.", catalogSyncing: "پەیوەندی بە کەتەلۆگی هاوبەشی بەرهەمەکانەوە دەکرێت…", catalogConnected: "کەتەلۆگی بەرهەمەکان پەیوەستە و نوێکارییەکان ڕاستەوخۆن.", catalogConfigMissing: "ڕێکخستنەکانی Supabase تەواو نین یان کتێبخانەکەی بار نەکرا. گۆڕانکاریی بەرهەمەکان ناچالاک کراوە.", catalogUnavailable: "کەتەلۆگی هاوبەشی بەرهەمەکان بەردەست نییە. دوای پەیوەندییەوە هەوڵ بدەرەوە.", catalogSyncError: "هاوکاتکردنی کەتەلۆگ سەرکەوتوو نەبوو: {detail}",
     adminNoticeLocal: "پانێڵی نموونەیی · گۆڕانکارییەکان تەنها لەم وێبگەڕەدا پاشەکەوت دەکرێن.", adminNoticeCloud: "بەرهەمەکان لە نێوان ئامێرەکاندا هاوبەشن. داواکارییەکان لەم وێبگەڕەدا دەمێننەوە.", adminEmailLabel: "ئیمەیڵی بەڕێوەبەر", adminLoginFailure: "چوونەژوورەوە سەرکەوتوو نەبوو: {detail}", adminNotAuthorized: "ئەم هەژمارە مۆڵەتی بەڕێوەبردنی بەرهەمەکانی نییە.", adminConfigError: "Supabase ڕێک نەخراوە. SUPABASE_SETUP.md ببینە.", adminSignOut: "چوونەدەرەوە", adminSignedOut: "چوونەدەرەوە سەرکەوتوو بوو.", adminSignOutError: "چوونەدەرەوە سەرکەوتوو نەبوو: {detail}",
-    imageRequired: "لینکی وێنە دابنێ یان وێنەیەک هەڵبژێرە.", imageUrlInvalid: "لینکێکی دروستی وێنە بنووسە یان وێنەیەک هەڵبژێرە.", imageCompressing: "وێنەکە پەستاندەکرێت…", imageReady: "وێنە ئامادەیە (پەستاندراو)", imageCurrent: "وێنەی ئێستای بەرهەم", productImagePreview: "پێشبینینی وێنەی بەرهەم", productImageError: "خوێندنەوە یان پەستاندنی وێنەکە سەرکەوتوو نەبوو.", productSaveError: "پاشەکەوتکردنی بەرهەم سەرکەوتوو نەبوو: {detail}", productDeleteError: "سڕینەوەی بەرهەم سەرکەوتوو نەبوو: {detail}", productImageCleanupError: "نوێکردنەوەی کەتەلۆگ سەرکەوتوو بوو، بەڵام وێنەیەکی بەکارنەهاتوو نەسڕایەوە."
+    imageRequired: "لینکی وێنە دابنێ یان وێنەیەک هەڵبژێرە.", imageUrlInvalid: "لینکێکی دروستی وێنە بنووسە یان وێنەیەک هەڵبژێرە.", imageCompressing: "وێنەکە پەستاندەکرێت…", imageReady: "وێنە ئامادەیە (پەستاندراو)", imageCurrent: "وێنەی ئێستای بەرهەم", productImagePreview: "پێشبینینی وێنەی بەرهەم", productImageError: "خوێندنەوە یان پەستاندنی وێنەکە سەرکەوتوو نەبوو.", productSaveError: "پاشەکەوتکردنی بەرهەم سەرکەوتوو نەبوو: {detail}", productDeleteError: "سڕینەوەی بەرهەم سەرکەوتوو نەبوو: {detail}", productImageCleanupError: "نوێکردنەوەی کەتەلۆگ سەرکەوتوو بوو، بەڵام میدیای بەکارنەهاتووی بەرهەم نەسڕایەوە."
+  });
+  Object.assign(featureTranslations.en, {
+    imageUrls: "Image URLs (one per line, optional)", productVideo: "Product video URL (optional)", uploadVideo: "Upload video",
+    wholesaleUsd: "Wholesale price (USD)", retailUsd: "Retail price (USD)", creator: "Added by",
+    adminProfile: "Profile", adminActivity: "Activity", profileEyebrow: "YOUR ADMIN IDENTITY", activityEyebrow: "A RECORD OF CHANGES",
+    fullName: "Full name", displayTitle: "Display title / role", avatarUrl: "Avatar photo URL", adminNotes: "Private notes", saveProfile: "Save profile",
+    profileSaved: "Admin profile saved", activityEmpty: "No admin activity yet.", activityLoadError: "Could not load admin activity: {detail}",
+    activityProductAdded: "Added product", activityProductEdited: "Edited product", activityProductDeleted: "Deleted product",
+    activityOrderUpdated: "Updated order", activityProfileUpdated: "Updated profile", orderPrint: "Print",
+    videoUploadError: "Could not upload the video: {detail}", videoUrlInvalid: "Enter a valid video URL or choose a video file.",
+    productMediaError: "Could not save product media: {detail}", imageUrlInvalid: "Enter valid image URLs or choose photos.",
+    profileSaveError: "Could not save admin profile: {detail}", orderSaveError: "Could not save order: {detail}",
+    deletedBy: "Deleted by", orderCreated: "Created", retailRequired: "Enter a retail price in IQD or USD."
+  });
+  Object.assign(featureTranslations.ar, {
+    imageUrls: "روابط الصور (رابط في كل سطر، اختياري)", productVideo: "رابط فيديو المنتج (اختياري)", uploadVideo: "رفع فيديو",
+    wholesaleUsd: "سعر الجملة (دولار)", retailUsd: "سعر البيع (دولار)", creator: "أُضيف بواسطة",
+    adminProfile: "الملف الشخصي", adminActivity: "النشاط", profileEyebrow: "هوية المسؤول", activityEyebrow: "سجل التغييرات",
+    fullName: "الاسم الكامل", displayTitle: "المسمى / الدور", avatarUrl: "رابط الصورة الشخصية", adminNotes: "ملاحظات خاصة", saveProfile: "حفظ الملف",
+    profileSaved: "تم حفظ ملف المسؤول", activityEmpty: "لا يوجد نشاط بعد.", activityLoadError: "تعذر تحميل النشاط: {detail}",
+    activityProductAdded: "أضاف منتجًا", activityProductEdited: "عدّل منتجًا", activityProductDeleted: "حذف منتجًا",
+    activityOrderUpdated: "حدّث طلبًا", activityProfileUpdated: "حدّث الملف الشخصي", orderPrint: "طباعة",
+    videoUploadError: "تعذر رفع الفيديو: {detail}", videoUrlInvalid: "أدخل رابط فيديو صحيحًا أو اختر ملف فيديو.",
+    productMediaError: "تعذر حفظ وسائط المنتج: {detail}", imageUrlInvalid: "أدخل روابط صور صحيحة أو اختر صورًا.",
+    profileSaveError: "تعذر حفظ ملف المسؤول: {detail}", orderSaveError: "تعذر حفظ الطلب: {detail}",
+    deletedBy: "حُذف بواسطة", orderCreated: "أُنشئ", retailRequired: "أدخل سعر بيع بالدينار أو الدولار."
+  });
+  Object.assign(featureTranslations.ckb, {
+    imageUrls: "بەستەری وێنەکان (هەر بەستەرێک لە هێڵێکدا، ئارەزوومەندانە)", productVideo: "بەستەری ڤیدیۆی بەرهەم (ئارەزوومەندانە)", uploadVideo: "بارکردنی ڤیدیۆ",
+    wholesaleUsd: "نرخی کۆ (دۆلار)", retailUsd: "نرخی فرۆشتن (دۆلار)", creator: "زیادی کردووە",
+    adminProfile: "پرۆفایل", adminActivity: "چالاکی", profileEyebrow: "ناسنامەی بەڕێوەبەر", activityEyebrow: "تۆماری گۆڕانکارییەکان",
+    fullName: "ناوی تەواو", displayTitle: "ناونیشان / ڕۆڵ", avatarUrl: "بەستەری وێنەی پرۆفایل", adminNotes: "تێبینی تایبەت", saveProfile: "پاشەکەوتکردنی پرۆفایل",
+    profileSaved: "پرۆفایلی بەڕێوەبەر پاشەکەوت کرا", activityEmpty: "هێشتا چالاکی نییە.", activityLoadError: "بارکردنی چالاکی سەرکەوتوو نەبوو: {detail}",
+    activityProductAdded: "بەرهەمێکی زیاد کرد", activityProductEdited: "بەرهەمێکی دەستکاری کرد", activityProductDeleted: "بەرهەمێکی سڕییەوە",
+    activityOrderUpdated: "داواکارییەکی نوێ کردەوە", activityProfileUpdated: "پرۆفایلەکەی نوێ کردەوە", orderPrint: "چاپکردن",
+    videoUploadError: "بارکردنی ڤیدیۆ سەرکەوتوو نەبوو: {detail}", videoUrlInvalid: "بەستەری ڤیدیۆی دروست بنووسە یان فایلێکی ڤیدیۆ هەڵبژێرە.",
+    productMediaError: "پاشەکەوتکردنی میدیای بەرهەم سەرکەوتوو نەبوو: {detail}", imageUrlInvalid: "بەستەری وێنەی دروست بنووسە یان وێنە هەڵبژێرە.",
+    profileSaveError: "پاشەکەوتکردنی پرۆفایل سەرکەوتوو نەبوو: {detail}", orderSaveError: "پاشەکەوتکردنی داواکاری سەرکەوتوو نەبوو: {detail}",
+    deletedBy: "سڕایەوە لەلایەن", orderCreated: "دروستکرا", retailRequired: "نرخی فرۆشتن بە دینار یان دۆلار بنووسە."
   });
 
   const rowToProduct = row => ({
@@ -291,10 +339,16 @@
     category: row.category,
     image: row.image,
     imagePath: row.image_path || "",
+    images: Array.isArray(row.images) && row.images.length ? row.images : [{ url: row.image, path: row.image_path || "" }],
+    videoUrl: row.video_url || "",
+    videoPath: row.video_path || "",
     wholesale: Number(row.wholesale),
     retail: Number(row.retail),
+    wholesaleUsd: Number(row.wholesale_usd) || 0,
+    retailUsd: Number(row.retail_usd) || 0,
     stock: Number(row.stock),
-    notes: row.notes || ""
+    notes: row.notes || "",
+    createdBy: row.created_by || ""
   });
   const productToRow = product => ({
     id: product.id,
@@ -302,12 +356,253 @@
     category: product.category,
     image: product.image,
     image_path: product.imagePath || null,
+    images: product.images || [{ url: product.image, path: product.imagePath || "" }],
+    video_url: product.videoUrl || "",
+    video_path: product.videoPath || null,
     wholesale: product.wholesale,
     retail: product.retail,
+    wholesale_usd: product.wholesaleUsd || 0,
+    retail_usd: product.retailUsd || 0,
     stock: product.stock,
     notes: product.notes,
+    created_by: product.createdBy || null,
     updated_at: new Date().toISOString()
   });
+
+  const rowToOrder = row => {
+    const createdAt = row.created_at || new Date().toISOString();
+    return {
+      id: row.id,
+      createdAt,
+      date: new Intl.DateTimeFormat(languageMeta[language].locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(createdAt)),
+      name: row.customer_name,
+      phone: row.customer_phone,
+      address: row.customer_address,
+      instruction: row.instruction || "",
+      deliveryDate: row.delivery_date || "",
+      deliveryTime: row.delivery_time || "",
+      isGift: Boolean(row.is_gift),
+      giftMessage: row.gift_message || "",
+      notes: row.notes || "",
+      payment: row.payment || "",
+      card: row.card || "",
+      receipt: row.receipt || "",
+      customerToken: row.customer_token || "",
+      items: Array.isArray(row.items) ? row.items : [],
+      subtotal: Number(row.subtotal_iqd) || 0,
+      subtotalUsd: Number(row.subtotal_usd) || 0,
+      deliveryFee: row.delivery_fee_iqd == null ? null : Number(row.delivery_fee_iqd) || 0,
+      deliveryFeeUsd: row.delivery_fee_usd == null ? null : Number(row.delivery_fee_usd) || 0,
+      total: row.total_iqd == null ? null : Number(row.total_iqd) || 0,
+      totalUsd: row.total_usd == null ? null : Number(row.total_usd) || 0,
+      agreed: Boolean(row.agreed),
+      status: row.status || "Pending"
+    };
+  };
+  const orderToRow = order => ({
+    id: order.id,
+    created_at: order.createdAt || new Date().toISOString(),
+    customer_name: order.name,
+    customer_phone: order.phone,
+    customer_address: order.address,
+    instruction: order.instruction || "",
+    delivery_date: order.deliveryDate || null,
+    delivery_time: order.deliveryTime || "",
+    is_gift: Boolean(order.isGift),
+    gift_message: order.giftMessage || "",
+    notes: order.notes || "",
+    payment: order.payment || "",
+    card: order.card || "",
+    receipt: order.receipt || "",
+    customer_token: order.customerToken || "",
+    items: order.items || [],
+    subtotal_iqd: order.subtotal || 0,
+    subtotal_usd: order.subtotalUsd || 0,
+    delivery_fee_iqd: order.deliveryFee,
+    delivery_fee_usd: order.deliveryFeeUsd ?? null,
+    total_iqd: order.total,
+    total_usd: order.totalUsd ?? null,
+    agreed: Boolean(order.agreed),
+    status: order.status,
+    updated_at: new Date().toISOString()
+  });
+
+  function adminDisplayName() {
+    return adminProfile.fullName || currentAdminUser?.email || "Shop admin";
+  }
+
+  function renderAdminIdentity() {
+    $("#admin-display-name").textContent = adminDisplayName();
+    $("#admin-display-title").textContent = adminProfile.title || (supabaseSettingsPresent ? currentAdminUser?.email || "" : "Store administrator");
+    const avatar = $("#admin-avatar");
+    if (adminProfile.avatarUrl) {
+      avatar.src = adminProfile.avatarUrl;
+      avatar.hidden = false;
+    } else {
+      avatar.removeAttribute("src");
+      avatar.hidden = true;
+    }
+  }
+
+  async function loadAdminProfile() {
+    if (supabaseSettingsPresent && currentAdminUser) {
+      const { data, error } = await supabaseClient.from("admin_profiles")
+        .select("user_id,full_name,title,avatar_url,phone,notes")
+        .eq("user_id", currentAdminUser.id)
+        .maybeSingle();
+      if (error) throw error;
+      adminProfile = data ? {
+        fullName: data.full_name || "",
+        title: data.title || "",
+        avatarUrl: data.avatar_url || "",
+        phone: data.phone || "",
+        notes: data.notes || ""
+      } : {
+        fullName: currentAdminUser.user_metadata?.full_name || currentAdminUser.email || "",
+        title: "Administrator",
+        avatarUrl: "",
+        phone: "",
+        notes: ""
+      };
+    } else {
+      adminProfile = readStore("verdant.adminProfile", { fullName: "Shop administrator", title: "Store administrator", avatarUrl: "", phone: "", notes: "" });
+    }
+    const form = $("#admin-profile-form");
+    form.elements.fullName.value = adminProfile.fullName;
+    form.elements.title.value = adminProfile.title;
+    form.elements.avatarUrl.value = adminProfile.avatarUrl;
+    form.elements.phone.value = adminProfile.phone;
+    form.elements.notes.value = adminProfile.notes;
+    if (currentAdminUser) {
+      adminPublicProfiles[currentAdminUser.id] = {
+        user_id: currentAdminUser.id,
+        full_name: adminProfile.fullName,
+        title: adminProfile.title,
+        avatar_url: adminProfile.avatarUrl
+      };
+    }
+    renderAdminIdentity();
+  }
+
+  async function refreshAdminProfiles() {
+    const ids = [...new Set(products.map(product => product.createdBy).filter(Boolean))];
+    if (!ids.length || !supabaseClient) {
+      adminPublicProfiles = {};
+      return;
+    }
+    const { data, error } = await supabaseClient.from("admin_public_profiles")
+      .select("user_id,full_name,title,avatar_url")
+      .in("user_id", ids);
+    if (error) throw error;
+    adminPublicProfiles = {
+      ...adminPublicProfiles,
+      ...Object.fromEntries((data || []).map(profile => [profile.user_id, profile]))
+    };
+  }
+
+  async function persistOrder(order, isNew = false) {
+    if (!supabaseSettingsPresent) return;
+    if (!supabaseClient) throw new Error(t("catalogUnavailable"));
+    const query = supabaseClient.from("orders");
+    const response = isNew
+      ? await query.insert(orderToRow(order))
+      : await query.update(orderToRow(order)).eq("id", order.id);
+    if (response.error) throw response.error;
+  }
+
+  async function persistCustomerOrderAction(order, action) {
+    if (!supabaseSettingsPresent) return;
+    if (!supabaseClient || !order.customerToken) throw new Error(t("catalogUnavailable"));
+    const rpc = action === "agree" ? "customer_agree_to_order" : "customer_complete_order";
+    const args = action === "agree" ? {
+      p_order_id: order.id,
+      p_access_token: order.customerToken
+    } : {
+      p_order_id: order.id,
+      p_access_token: order.customerToken,
+      p_payment: order.payment,
+      p_card: order.card || "",
+      p_receipt: order.receipt || ""
+    };
+    const { data, error } = await supabaseClient.rpc(rpc, args);
+    if (error) throw error;
+    if (data !== true) throw new Error("Order could not be updated. Refresh and try again.");
+  }
+
+  async function refreshCloudOrders() {
+    if (!supabaseClient || !isSupabaseAdmin) return;
+    const { data, error } = await supabaseClient.from("orders").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    const cloudOrders = (data || []).map(rowToOrder);
+    const cloudIds = new Set(cloudOrders.map(order => order.id));
+    orders = [...cloudOrders, ...orders.filter(order => !cloudIds.has(order.id))];
+    saveOrders();
+    renderOrders();
+    renderCustomerOrders();
+  }
+
+  async function recordAdminActivity(action, targetType, targetId, targetName, details = {}) {
+    const entry = {
+      adminId: currentAdminUser?.id || "",
+      adminName: adminDisplayName(),
+      action,
+      targetType,
+      targetId: String(targetId || ""),
+      targetName: String(targetName || ""),
+      details,
+      createdAt: new Date().toISOString()
+    };
+    adminActivities.unshift(entry);
+    adminActivities = adminActivities.slice(0, 100);
+    saveStore("verdant.adminActivity", adminActivities);
+    renderAdminActivity();
+    if (supabaseSettingsPresent && supabaseClient && isSupabaseAdmin) {
+      try {
+        const { error } = await supabaseClient.from("admin_activity").insert({
+          admin_id: entry.adminId || null,
+          admin_name: entry.adminName,
+          action: entry.action,
+          target_type: entry.targetType,
+          target_id: entry.targetId,
+          target_name: entry.targetName,
+          details: entry.details
+        });
+        if (error) throw error;
+      } catch (error) {
+        console.error("Unable to record admin activity.", error);
+        showToast(t("activityLoadError", { detail: error.message }));
+      }
+    }
+  }
+
+  async function refreshAdminActivity() {
+    if (!supabaseSettingsPresent || !supabaseClient || !isSupabaseAdmin) {
+      adminActivities = readStore("verdant.adminActivity", []);
+      renderAdminActivity();
+      return;
+    }
+    const { data, error } = await supabaseClient.from("admin_activity").select("*").order("created_at", { ascending: false }).limit(100);
+    if (error) throw error;
+    adminActivities = (data || []).map(row => ({
+      adminId: row.admin_id || "",
+      adminName: row.admin_name,
+      action: row.action,
+      targetType: row.target_type,
+      targetId: row.target_id,
+      targetName: row.target_name,
+      details: row.details || {},
+      createdAt: row.created_at
+    }));
+    renderAdminActivity();
+  }
+
+  function renderAdminActivity() {
+    $("#activity-list").innerHTML = adminActivities.length ? adminActivities.map(item => `<article class="activity-row">
+      <strong>${escapeHtml(item.adminName)}</strong><span>${escapeHtml(t(item.action) === item.action ? item.action : t(item.action))}</span>
+      <span>${escapeHtml(item.targetName || item.targetType)}${item.targetId ? ` · ${escapeHtml(item.targetId)}` : ""}</span>
+      <time datetime="${escapeHtml(item.createdAt)}">${escapeHtml(new Intl.DateTimeFormat(languageMeta[language].locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.createdAt)))}</time>
+    </article>`).join("") : `<div class="empty-admin">${t("activityEmpty")}</div>`;
+  }
 
   async function refreshCloudProducts() {
     if (!supabaseClient) return true;
@@ -338,6 +633,11 @@
       return false;
     }
     products = data.map(rowToProduct);
+    try {
+      await refreshAdminProfiles();
+    } catch (error) {
+      console.error("Unable to load public admin profiles.", error);
+    }
     cloudCatalogReady = true;
     saveProducts();
     renderProducts();
@@ -361,6 +661,7 @@
       return;
     }
     if (!data.session) return;
+    currentAdminUser = data.session.user;
     let membershipResponse;
     try {
       membershipResponse = await supabaseClient
@@ -378,6 +679,15 @@
       return;
     }
     isSupabaseAdmin = Boolean(membership);
+    if (isSupabaseAdmin) {
+      try {
+        await loadAdminProfile();
+      } catch (error) {
+        console.error("Unable to load the restored admin profile.", error);
+      }
+    } else {
+      currentAdminUser = null;
+    }
   }
 
   async function initializeCatalogSync() {
@@ -407,6 +717,14 @@
       supabaseClient
         .channel("verdant-product-catalog")
         .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => { void refreshCloudProducts(); })
+        .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+          if (isSupabaseAdmin) {
+            refreshCloudOrders().catch(error => {
+              console.error("Unable to refresh admin orders after a database update.", error);
+              showToast(t("orderSaveError", { detail: error.message }));
+            });
+          }
+        })
         .subscribe(status => {
           if (status === "SUBSCRIBED") {
             realtimeSubscribed = true;
@@ -477,9 +795,9 @@
   }
 
   function clearPendingProductImage() {
-    if (pendingProductImageUrl) URL.revokeObjectURL(pendingProductImageUrl);
-    pendingProductImage = null;
-    pendingProductImageUrl = "";
+    pendingProductImages.forEach(image => URL.revokeObjectURL(image.previewUrl));
+    pendingProductImages = [];
+    pendingProductVideo = null;
   }
 
   async function uploadProductImage(blob) {
@@ -497,66 +815,109 @@
     if (error) throw error;
   }
 
-  async function persistProduct(product, existingProduct, imageUrl) {
+  async function uploadProductVideo(file) {
+    const extension = file.type === "video/webm" ? "webm" : file.type === "video/quicktime" ? "mov" : "mp4";
+    const path = `products/${Date.now()}-${Math.random().toString(36).slice(2, 9)}.${extension}`;
+    const { error } = await supabaseClient.storage
+      .from("product-videos")
+      .upload(path, file, { contentType: file.type, cacheControl: "31536000" });
+    if (error) throw error;
+    return { path, url: supabaseClient.storage.from("product-videos").getPublicUrl(path).data.publicUrl };
+  }
+
+  async function removeCloudVideo(path) {
+    if (!path) return;
+    const { error } = await supabaseClient.storage.from("product-videos").remove([path]);
+    if (error) throw error;
+  }
+
+  async function persistProduct(product, existingProduct, imageUrls, videoUrl) {
     let imageCleanupFailed = false;
-    if (pendingProductImage) {
-      if (supabaseSettingsPresent) {
-        if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
-        const uploaded = await uploadProductImage(pendingProductImage);
-        product.image = uploaded.url;
-        product.imagePath = uploaded.path;
-      } else {
-        product.image = await blobToDataUrl(pendingProductImage);
-        product.imagePath = "";
+    const existingImages = existingProduct?.images || [{ url: existingProduct?.image, path: existingProduct?.imagePath || "" }];
+    const retainedUrls = imageUrls.length ? imageUrls : existingImages.map(image => image.url).filter(Boolean);
+    const images = retainedUrls.map(url => existingImages.find(image => image.url === url) || { url, path: "" });
+    const uploadedImages = [];
+    let uploadedVideo = null;
+    const cleanupUploads = async () => {
+      await Promise.all(uploadedImages.map(image => removeCloudImage(image.path).catch(error => console.error("Unable to remove an image uploaded for a failed product save.", error))));
+      if (uploadedVideo) {
+        await removeCloudVideo(uploadedVideo.path).catch(error => console.error("Unable to remove the video uploaded for a failed product save.", error));
       }
-    } else if (imageUrl) {
-      product.image = imageUrl;
-      product.imagePath = "";
-    } else if (existingProduct) {
-      product.image = existingProduct.image;
-      product.imagePath = existingProduct.imagePath || "";
-    } else {
-      throw new Error(t("imageRequired"));
+    };
+    try {
+      for (const pendingImage of pendingProductImages) {
+        if (supabaseSettingsPresent) {
+          if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
+          const uploaded = await uploadProductImage(pendingImage.blob);
+          images.push(uploaded);
+          uploadedImages.push(uploaded);
+        } else {
+          const url = await blobToDataUrl(pendingImage.blob);
+          images.push({ url, path: "" });
+        }
+      }
+      if (pendingProductVideo) {
+        if (supabaseSettingsPresent) {
+          if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
+          uploadedVideo = await uploadProductVideo(pendingProductVideo);
+          product.videoUrl = uploadedVideo.url;
+          product.videoPath = uploadedVideo.path;
+        } else {
+          if (pendingProductVideo.size > 1_500_000) throw new Error("Video uploads in local demo mode are limited to 1.5 MB. Configure Supabase or use a video URL.");
+          product.videoUrl = await blobToDataUrl(pendingProductVideo);
+          product.videoPath = "";
+        }
+      } else if (videoUrl) {
+        product.videoUrl = videoUrl;
+        product.videoPath = existingProduct?.videoUrl === videoUrl ? existingProduct.videoPath || "" : "";
+      } else {
+        product.videoUrl = existingProduct?.videoUrl || "";
+        product.videoPath = existingProduct?.videoPath || "";
+      }
+    } catch (error) {
+      await cleanupUploads();
+      throw error;
     }
+    if (!images.length) throw new Error(t("imageRequired"));
+    product.images = images;
+    product.image = images[0].url;
+    product.imagePath = images[0].path || "";
 
     if (supabaseSettingsPresent) {
       if (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
-      const uploadedPath = pendingProductImage ? product.imagePath : "";
       let saveResponse;
       try {
         saveResponse = await supabaseClient.from("products").upsert(productToRow(product)).select("*").single();
       } catch (error) {
-        if (uploadedPath) {
-          try {
-            await removeCloudImage(uploadedPath);
-          } catch (cleanupError) {
-            console.error("Unable to remove the image uploaded for a failed product save.", cleanupError);
-          }
-        }
+        await cleanupUploads();
         throw error;
       }
       const { data, error } = saveResponse;
       if (error) {
-        if (uploadedPath) {
-          try {
-            await removeCloudImage(uploadedPath);
-          } catch (cleanupError) {
-            console.error("Unable to remove the image uploaded for a failed product save.", cleanupError);
-          }
-        }
+        await cleanupUploads();
         throw error;
       }
-      const savedProduct = rowToProduct(data);
+      const savedProduct = { ...rowToProduct(data), createdByName: product.createdByName };
       products = products.filter(item => item.id !== savedProduct.id).concat(savedProduct);
       saveProducts();
       renderProducts();
       renderCart();
       renderAdminProducts();
-      if (existingProduct?.imagePath && existingProduct.imagePath !== savedProduct.imagePath) {
+      const retainedImagePaths = new Set(savedProduct.images.map(image => image.path).filter(Boolean));
+      const obsoleteImagePaths = existingImages.map(image => image.path).filter(path => path && !retainedImagePaths.has(path));
+      for (const path of obsoleteImagePaths) {
         try {
-          await removeCloudImage(existingProduct.imagePath);
+          await removeCloudImage(path);
         } catch (error) {
-          console.error("Unable to remove the replaced product image.", error);
+          console.error("Unable to remove a replaced product image.", error);
+          imageCleanupFailed = true;
+        }
+      }
+      if (existingProduct?.videoPath && existingProduct.videoPath !== savedProduct.videoPath) {
+        try {
+          await removeCloudVideo(existingProduct.videoPath);
+        } catch (error) {
+          console.error("Unable to remove the replaced product video.", error);
           imageCleanupFailed = true;
         }
       }
@@ -693,18 +1054,20 @@
       `${product.name} ${product.notes} ${localizedProductText(product, "product")} ${localizedProductText(product, "notes")} ${product.category} ${categoryLabel(product.category)}`.toLowerCase().includes(query)
     );
     $("#product-grid").innerHTML = visibleProducts.map(product => {
-      const price = discountedPrice(product);
       const description = localizedProductText(product, "notes") || categoryLabel(product.category);
       const name = localizedProductText(product, "product");
+      const creator = adminPublicProfiles[product.createdBy];
+      const creatorName = creator?.full_name || product.createdByName || "";
       return `<article class="product-card">
         <div class="product-image">
           <img src="${escapeHtml(product.image)}" alt="${escapeHtml(name)}" loading="lazy">
           <span class="product-tag">${escapeHtml(categoryLabel(product.category))}</span>
+          ${(product.images || []).length > 1 ? `<span class="product-image-count">${formatNumber(product.images.length)} photos</span>` : ""}
           <button class="product-add" type="button" data-add="${escapeHtml(product.id)}" aria-label="${escapeHtml(t("addProductToBag", { name }))}" ${product.stock <= 0 ? "disabled" : ""}>${product.stock <= 0 ? "–" : "+"}</button>
         </div>
-        <div class="product-info"><div class="product-info-top"><h3>${escapeHtml(name)}</h3><span class="product-price">${formatMoney(price)}${settings.discount ? `<del class="product-original">${formatMoney(product.retail)}</del>` : ""}</span></div>
+        <div class="product-info"><div class="product-info-top"><h3>${escapeHtml(name)}</h3><span class="product-price">${productPrice(product)}${settings.discount ? `<del class="product-original">${formatDualMoney(product.retail, product.retailUsd)}</del>` : ""}</span></div>
         <p class="product-description">${escapeHtml(description)}</p>
-        <div class="stock-note">${product.stock > 0 ? t("stockAvailable", { count: formatNumber(product.stock) }) : t("stockUnavailable")}</div><button class="product-detail-link" type="button" data-view-product="${escapeHtml(product.id)}">${t("viewDetails")}</button></div>
+        <div class="stock-note">${product.stock > 0 ? t("stockAvailable", { count: formatNumber(product.stock) }) : t("stockUnavailable")}</div>${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}<button class="product-detail-link" type="button" data-view-product="${escapeHtml(product.id)}">${t("viewDetails")}</button></div>
       </article>`;
     }).join("");
     $("#empty-products").hidden = visibleProducts.length !== 0;
@@ -721,14 +1084,18 @@
   function recommendationsMarkup(excludedIds, category = "") {
     const suggestions = relatedProducts(excludedIds, 3, category);
     if (!suggestions.length) return "";
-    return `<h3>${t("youMightLike")}</h3><div class="recommendation-list">${suggestions.map(product => `<article class="recommendation-item"><img src="${escapeHtml(product.image)}" alt=""><div><strong>${escapeHtml(localizedProductText(product, "product"))}</strong><span>${formatMoney(discountedPrice(product))}</span></div><button type="button" data-add="${escapeHtml(product.id)}" aria-label="${escapeHtml(t("addProductToBag", { name: localizedProductText(product, "product") }))}">+</button></article>`).join("")}</div>`;
+    return `<h3>${t("youMightLike")}</h3><div class="recommendation-list">${suggestions.map(product => `<article class="recommendation-item"><img src="${escapeHtml(product.image)}" alt=""><div><strong>${escapeHtml(localizedProductText(product, "product"))}</strong><span>${productPrice(product)}</span></div><button type="button" data-add="${escapeHtml(product.id)}" aria-label="${escapeHtml(t("addProductToBag", { name: localizedProductText(product, "product") }))}">+</button></article>`).join("")}</div>`;
   }
 
   function openProductDetails(product) {
     if (!product) return;
     const name = localizedProductText(product, "product");
     const excluded = [product.id];
-    $("#product-detail-content").innerHTML = `<img class="product-detail-image" src="${escapeHtml(product.image)}" alt="${escapeHtml(name)}"><div class="eyebrow">${escapeHtml(categoryLabel(product.category))}</div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(localizedProductText(product, "notes"))}</p><strong class="product-detail-price">${formatMoney(discountedPrice(product))}</strong><button class="button button-dark button-full" type="button" data-add="${escapeHtml(product.id)}" ${product.stock <= 0 ? "disabled" : ""}>${t("addToBag")}</button><section class="recommendations product-recommendations">${recommendationsMarkup(excluded, product.category)}</section>`;
+    const images = product.images?.length ? product.images : [{ url: product.image }];
+    const creator = adminPublicProfiles[product.createdBy];
+    const creatorName = creator?.full_name || product.createdByName || "";
+    const video = product.videoUrl ? `<video class="product-detail-video" controls preload="none" playsinline poster="${escapeHtml(product.image)}"><source src="${escapeHtml(product.videoUrl)}"></video>` : "";
+    $("#product-detail-content").innerHTML = `<img class="product-detail-image" data-product-main-image src="${escapeHtml(images[0].url)}" alt="${escapeHtml(name)}" loading="lazy">${images.length > 1 ? `<div class="product-gallery-thumbs">${images.map((image, index) => `<button type="button" data-gallery-image="${index}" aria-label="View product image ${index + 1}" aria-pressed="${index === 0}"><img src="${escapeHtml(image.url)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}<div class="eyebrow">${escapeHtml(categoryLabel(product.category))}</div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(localizedProductText(product, "notes"))}</p>${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}<strong class="product-detail-price">${productPrice(product)}</strong>${video}<button class="button button-dark button-full" type="button" data-add="${escapeHtml(product.id)}" ${product.stock <= 0 ? "disabled" : ""}>${t("addToBag")}</button><section class="recommendations product-recommendations">${recommendationsMarkup(excluded, product.category)}</section>`;
     openOverlay("product-overlay");
   }
 
@@ -739,11 +1106,20 @@
     }, 0);
   }
 
+  function subtotalUsd() {
+    return cart.reduce((total, item) => {
+      const product = productById(item.id);
+      return total + (product ? discountedPriceUsd(product) * item.quantity : 0);
+    }, 0);
+  }
+
   function renderCart() {
     cart = cart.filter(item => productById(item.id) && item.quantity > 0);
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     const rawSubtotal = cart.reduce((sum, item) => sum + (productById(item.id)?.retail || 0) * item.quantity, 0);
+    const rawSubtotalUsd = cart.reduce((sum, item) => sum + (Number(productById(item.id)?.retailUsd) || 0) * item.quantity, 0);
     const total = subtotal();
+    const totalUsd = subtotalUsd();
     $("#cart-count").textContent = formatNumber(itemCount);
     $("#drawer-count").textContent = itemCount ? `(${formatNumber(itemCount)})` : "";
     $("#cart-items").innerHTML = cart.map(item => {
@@ -751,10 +1127,10 @@
       if (!product) return "";
       return `<article class="cart-item">
         <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">
-        <div><h3>${escapeHtml(localizedProductText(product, "product"))}</h3><p>${formatMoney(discountedPrice(product))} ${t("each")}</p>
+        <div><h3>${escapeHtml(localizedProductText(product, "product"))}</h3><p>${productPrice(product)} ${t("each")}</p>
           <div class="quantity-control"><button type="button" data-quantity="${escapeHtml(item.id)}" data-change="-1" aria-label="${escapeHtml(t("removeOne", { name: localizedProductText(product, "product") }))}">−</button><span>${formatNumber(item.quantity)}</span><button type="button" data-quantity="${escapeHtml(item.id)}" data-change="1" aria-label="${escapeHtml(t("addOne", { name: localizedProductText(product, "product") }))}" ${item.quantity >= product.stock ? "disabled" : ""}>+</button></div>
         </div>
-        <div class="cart-item-total">${formatMoney(discountedPrice(product) * item.quantity)}<button class="remove-item" type="button" data-remove="${escapeHtml(item.id)}">${t("remove")}</button></div>
+        <div class="cart-item-total">${formatDualMoney(discountedPrice(product) * item.quantity, discountedPriceUsd(product) * item.quantity)}<button class="remove-item" type="button" data-remove="${escapeHtml(item.id)}">${t("remove")}</button></div>
       </article>`;
     }).join("");
     $("#cart-empty").hidden = cart.length !== 0;
@@ -763,12 +1139,12 @@
     $("#cart-recommendations").hidden = cart.length === 0 || !relatedProducts(cart.map(item => item.id)).length;
     $("#benefit-delivery").textContent = t("deliveryVaries");
     $("#delivery-fee-notice").textContent = t("deliveryVaries");
-    $("#cart-subtotal").textContent = formatMoney(rawSubtotal);
+    $("#cart-subtotal").textContent = formatDualMoney(rawSubtotal, rawSubtotalUsd);
     $("#cart-discount-row").hidden = settings.discount <= 0;
-    $("#cart-discount").textContent = `−${formatMoney(rawSubtotal - subtotal())}`;
+    $("#cart-discount").textContent = `−${formatDualMoney(rawSubtotal - subtotal(), rawSubtotalUsd - totalUsd)}`;
     $("#delivery-fee").textContent = t("deliveryVaries");
-    $("#cart-total").textContent = formatMoney(total);
-    $("#checkout-total").textContent = formatMoney(total);
+    $("#cart-total").textContent = formatDualMoney(total, totalUsd);
+    $("#checkout-total").textContent = formatDualMoney(total, totalUsd);
     $("#go-checkout").disabled = cart.length === 0;
     $("#go-checkout").style.opacity = cart.length ? "1" : ".5";
     saveCart();
@@ -794,9 +1170,10 @@
     $("#admin-product-list").innerHTML = products.map(product => {
       const profit = product.retail - product.wholesale;
       const margin = product.retail ? (profit / product.retail) * 100 : 0;
+      const creatorName = adminPublicProfiles[product.createdBy]?.full_name || product.createdByName || "";
       return `<article class="admin-product-row">
         <img src="${escapeHtml(product.image)}" alt="">
-        <div><h4>${escapeHtml(localizedProductText(product, "product"))}</h4><p>${escapeHtml(categoryLabel(product.category))} · ${t("stockLabel")}: ${formatNumber(product.stock)}<br>${t("wholesaleLabel")} ${formatMoney(product.wholesale)} · ${t("retailLabel")} ${formatMoney(product.retail)}<br><span class="profit-inline">${t("profitLabel")} ${formatMoney(profit)} ${t("perItem")} · ${formatNumber(margin)}% ${t("marginLabel")}</span>${product.notes ? `<br>${escapeHtml(localizedProductText(product, "notes"))}` : ""}</p></div>
+        <div><h4>${escapeHtml(localizedProductText(product, "product"))}</h4><p>${escapeHtml(categoryLabel(product.category))} · ${t("stockLabel")}: ${formatNumber(product.stock)}<br>${t("wholesaleLabel")} ${formatDualMoney(product.wholesale, product.wholesaleUsd)} · ${t("retailLabel")} ${formatDualMoney(product.retail, product.retailUsd)}<br><span class="profit-inline">${t("profitLabel")} ${formatDualMoney(profit, Number(product.retailUsd || 0) - Number(product.wholesaleUsd || 0))} ${t("perItem")} · ${formatNumber(margin)}% ${t("marginLabel")}</span>${product.notes ? `<br>${escapeHtml(localizedProductText(product, "notes"))}` : ""}${creatorName ? `<br>${t("creator")}: ${escapeHtml(creatorName)}` : product.deletedBy ? `<br>${t("deletedBy")}: ${escapeHtml(product.deletedBy)}` : ""}</p></div>
         <div class="admin-product-actions"><button type="button" data-edit="${escapeHtml(product.id)}">${t("edit")}</button><button class="delete-product" type="button" data-delete="${escapeHtml(product.id)}">${t("delete")}</button></div>
       </article>`;
     }).join("") || `<div class="empty-admin">${t("productEmpty")}</div>`;
@@ -808,7 +1185,7 @@
     $("#pending-order-count").textContent = pending ? `(${formatNumber(pending)})` : "";
     $("#order-list").innerHTML = orders.length ? [...orders].reverse().map(order => {
       const receipt = order.receipt ? `<div><strong>${t("receiptTitle")}</strong><img class="order-receipt" src="${order.receipt}" alt="${escapeHtml(t("receiptAlt", { id: order.id }))}" title="${escapeHtml(t("openReceipt"))}"></div>` : "";
-      const items = (order.items || []).map(item => `${escapeHtml(localizedProductText({ id: item.id, name: item.name, notes: "" }, "product"))} × ${formatNumber(item.quantity)} — ${formatMoney(item.price * item.quantity)}`).join("<br>");
+      const items = (order.items || []).map(item => `${escapeHtml(localizedProductText({ id: item.id, name: item.name, notes: "" }, "product"))} × ${formatNumber(item.quantity)} — ${formatDualMoney(item.price * item.quantity, (Number(item.priceUsd) || 0) * item.quantity)}`).join("<br>");
       const statusKey = order.status === "Approved" ? "statusApproved" : order.status === "Rejected" ? "statusRejected" : order.status === "Awaiting delivery price" ? "deliveryPricePending" : order.status === "Awaiting customer agreement" ? "awaitingAgreement" : order.status === "Awaiting payment" ? "paymentPending" : "statusPending";
       const paymentKey = order.payment === "FIB" ? "paymentDisplayFib" : "paymentDisplayCard";
       const instructionKey = ({ "Call on arrival": "instructionCall", "Leave at the door": "instructionLeave", "Hand to me": "instructionHand", "Call before delivery": "instructionBefore" })[order.instruction];
@@ -816,20 +1193,22 @@
         ? t("cardNew", { last4: order.card.slice(4) })
         : order.card === "qicard-4821" ? t("savedQiCard")
           : order.card === "mastercard-0936" ? t("savedMastercard") : order.card;
-      const hasDeliveryFee = order.deliveryFee !== null && order.deliveryFee !== undefined && Number.isFinite(Number(order.deliveryFee));
-      const hasOrderTotal = order.total !== null && order.total !== undefined && Number.isFinite(Number(order.total));
-      const deliveryAmount = hasDeliveryFee ? formatMoney(order.deliveryFee) : t("deliveryPricePending");
-      const orderTotal = hasOrderTotal ? formatMoney(order.total) : "—";
+      const hasDeliveryFee = (order.deliveryFee !== null && order.deliveryFee !== undefined && Number.isFinite(Number(order.deliveryFee)))
+        || (order.deliveryFeeUsd !== null && order.deliveryFeeUsd !== undefined && Number.isFinite(Number(order.deliveryFeeUsd)));
+      const hasOrderTotal = (order.total !== null && order.total !== undefined && Number.isFinite(Number(order.total)))
+        || (order.totalUsd !== null && order.totalUsd !== undefined && Number.isFinite(Number(order.totalUsd)));
+      const deliveryAmount = hasDeliveryFee ? formatDualMoney(order.deliveryFee, order.deliveryFeeUsd) : t("deliveryPricePending");
+      const orderTotal = hasOrderTotal ? formatDualMoney(order.total, order.totalUsd) : "—";
       const schedule = order.deliveryDate ? `<br><strong>${t("orderScheduled")}:</strong> ${escapeHtml(order.deliveryDate)} · ${escapeHtml(t(order.deliveryTime === "Morning" ? "timeMorning" : order.deliveryTime === "Afternoon" ? "timeAfternoon" : "timeEvening"))}` : "";
       const gift = order.isGift ? `<br><strong>${t("orderGift")}:</strong> ${t("orderGiftYes")} · <strong>${t("greetingCard")}:</strong> ${escapeHtml(order.giftMessage || "")}` : "";
-      const priceForm = ["Awaiting delivery price", "Awaiting customer agreement"].includes(order.status) ? `<form class="delivery-price-form" data-order-price="${escapeHtml(order.id)}"><label class="field-label"><span class="label-text">${t("adminSetPrice")}</span><div class="input-suffix"><input name="deliveryFee" type="number" min="0" step="1" required value="${hasDeliveryFee ? escapeHtml(order.deliveryFee) : ""}"><span>${t("currency")}</span></div></label><button class="button button-dark small-button" type="submit">${t("saveDeliveryPrice")}</button></form>` : "";
+      const priceForm = ["Awaiting delivery price", "Awaiting customer agreement"].includes(order.status) ? `<form class="delivery-price-form" data-order-price="${escapeHtml(order.id)}"><label class="field-label"><span class="label-text">${t("adminSetPrice")} (IQD)</span><input name="deliveryFee" type="number" min="0" step="1" value="${order.deliveryFee !== null && order.deliveryFee !== undefined ? escapeHtml(order.deliveryFee) : ""}"></label><label class="field-label"><span class="label-text">${t("adminSetPrice")} (USD)</span><input name="deliveryFeeUsd" type="number" min="0" step="0.01" value="${order.deliveryFeeUsd !== null && order.deliveryFeeUsd !== undefined ? escapeHtml(order.deliveryFeeUsd) : ""}"></label><button class="button button-dark small-button" type="submit">${t("saveDeliveryPrice")}</button></form>` : "";
       return `<article class="order-card">
         <div class="order-card-header"><div><h4>${escapeHtml(order.name)}</h4><span>${escapeHtml(order.id)} · ${escapeHtml(order.date)}</span></div><span class="order-status ${order.status === "Rejected" ? "rejected" : ""}">${t(statusKey)}</span></div>
         <div class="order-details"><strong>${t("orderPhone")}:</strong> ${escapeHtml(order.phone)}<br><strong>${t("orderAddress")}:</strong> ${escapeHtml(order.address)}<br><strong>${t("orderDelivery")}:</strong> ${instructionKey ? t(instructionKey) : escapeHtml(order.instruction)}${schedule}${gift}${order.notes ? `<br><strong>${t("orderNote")}:</strong> ${escapeHtml(order.notes)}` : ""}${order.payment ? `<br><strong>${t("orderPayment")}:</strong> ${t(paymentKey)}${cardLabel ? ` · ${escapeHtml(cardLabel)}` : ""}` : ""}</div>
-        <div class="order-lines">${items}<br><strong>${t("orderSubtotal")} ${formatMoney(order.subtotal)} · ${t("delivery")} ${deliveryAmount} · ${t("orderTotal")} ${orderTotal}</strong></div>
+        <div class="order-lines">${items}<br><strong>${t("orderSubtotal")} ${formatDualMoney(order.subtotal, order.subtotalUsd)} · ${t("delivery")} ${deliveryAmount} · ${t("orderTotal")} ${orderTotal}</strong></div>
         ${priceForm}
         ${receipt}
-        ${order.status === "Pending" ? `<div class="order-actions"><button class="approve-order" type="button" data-order-action="Approved" data-order="${escapeHtml(order.id)}">${t("approve")}</button><button class="reject-order" type="button" data-order-action="Rejected" data-order="${escapeHtml(order.id)}">${t("reject")}</button></div>` : ""}
+        <div class="order-actions">${order.status === "Pending" ? `<button class="approve-order" type="button" data-order-action="Approved" data-order="${escapeHtml(order.id)}">${t("approve")}</button><button class="reject-order" type="button" data-order-action="Rejected" data-order="${escapeHtml(order.id)}">${t("reject")}</button>` : ""}<button class="button button-light small-button" type="button" data-print-order="${escapeHtml(order.id)}">${t("orderPrint")}</button></div>
       </article>`;
     }).join("") : `<div class="empty-admin">${t("noOrders")}</div>`;
   }
@@ -841,19 +1220,25 @@
           : order.status === "Awaiting payment" ? t("awaitingPayment")
             : order.status === "Approved" ? t("statusApproved")
               : order.status === "Rejected" ? t("statusRejected") : t("statusPending");
-      const fee = order.deliveryFee !== null && order.deliveryFee !== undefined && Number.isFinite(Number(order.deliveryFee)) ? formatMoney(order.deliveryFee) : t("deliveryPricePending");
-      const total = order.total !== null && order.total !== undefined && Number.isFinite(Number(order.total)) ? formatMoney(order.total) : "—";
+      const hasFee = (order.deliveryFee !== null && order.deliveryFee !== undefined && Number.isFinite(Number(order.deliveryFee)))
+        || (order.deliveryFeeUsd !== null && order.deliveryFeeUsd !== undefined && Number.isFinite(Number(order.deliveryFeeUsd)));
+      const hasTotal = (order.total !== null && order.total !== undefined && Number.isFinite(Number(order.total)))
+        || (order.totalUsd !== null && order.totalUsd !== undefined && Number.isFinite(Number(order.totalUsd)));
+      const fee = hasFee ? formatDualMoney(order.deliveryFee, order.deliveryFeeUsd) : t("deliveryPricePending");
+      const total = hasTotal ? formatDualMoney(order.total, order.totalUsd) : "—";
       const actions = order.status === "Awaiting customer agreement"
         ? `<button class="button button-dark button-full" type="button" data-customer-order-action="agree" data-order="${escapeHtml(order.id)}">${t("agreePrice")}</button>`
         : order.status === "Awaiting payment" && order.agreed
           ? `<button class="button button-dark button-full" type="button" data-customer-order-action="pay" data-order="${escapeHtml(order.id)}">${t("continuePayment")}</button>` : "";
-      return `<article class="order-card customer-order-card"><div class="order-card-header"><div><h3>${escapeHtml(order.id)}</h3><span>${escapeHtml(order.date)}</span></div><span class="order-status">${statusText}</span></div><p>${t("orderSubtotal")}: ${formatMoney(order.subtotal)}<br>${t("deliveryPrice")}: ${fee}<br>${t("orderTotal")}: ${total}</p>${actions}</article>`;
+      return `<article class="order-card customer-order-card"><div class="order-card-header"><div><h3>${escapeHtml(order.id)}</h3><span>${escapeHtml(order.date)}</span></div><span class="order-status">${statusText}</span></div><p>${t("orderSubtotal")}: ${formatDualMoney(order.subtotal, order.subtotalUsd)}<br>${t("deliveryPrice")}: ${fee}<br>${t("orderTotal")}: ${total}</p>${actions}</article>`;
     }).join("") : `<div class="empty-admin">${t("noCustomerOrders")}</div>`;
   }
 
   function syncAdmin() {
     renderAdminProducts();
     renderOrders();
+    renderAdminActivity();
+    renderAdminIdentity();
     const form = $("#settings-form");
     form.elements.discount.value = settings.discount;
     form.elements.fibAccount.value = settings.fibAccount;
@@ -868,6 +1253,16 @@
       showCheckoutStep("cart");
     } else if (id === "admin-overlay") {
       syncAdmin();
+      if (supabaseSettingsPresent && isSupabaseAdmin) {
+        refreshCloudOrders().catch(error => {
+          console.error("Unable to refresh admin orders.", error);
+          showToast(t("orderSaveError", { detail: error.message }));
+        });
+        refreshAdminActivity().catch(error => {
+          console.error("Unable to refresh admin activity.", error);
+          showToast(t("activityLoadError", { detail: error.message }));
+        });
+      }
     } else if (id === "customer-orders-overlay") {
       renderCustomerOrders();
     }
@@ -892,11 +1287,16 @@
 
   function updateCheckoutMode() {
     const quote = orders.find(order => order.id === activeQuoteId);
-    const hasAgreedQuote = Boolean(quote && quote.agreed && quote.deliveryFee !== null && quote.deliveryFee !== undefined && Number.isFinite(Number(quote.deliveryFee)));
+    const hasDeliveryFee = quote && ((quote.deliveryFee !== null && quote.deliveryFee !== undefined && Number.isFinite(Number(quote.deliveryFee)))
+    || (quote.deliveryFeeUsd !== null && quote.deliveryFeeUsd !== undefined && Number.isFinite(Number(quote.deliveryFeeUsd))));
+    const hasAgreedQuote = Boolean(quote && quote.agreed && hasDeliveryFee);
     $("#payment-section").hidden = !hasAgreedQuote;
     $("#checkout-submit-label").textContent = t(hasAgreedQuote ? "completePayment" : "requestDeliveryPrice");
     $("#checkout-total-label").textContent = t(hasAgreedQuote ? "totalIncludingDelivery" : "subtotal");
-    $("#checkout-total").textContent = formatMoney((hasAgreedQuote ? Number(quote.subtotal) : subtotal()) + (hasAgreedQuote ? Number(quote.deliveryFee) : 0));
+    $("#checkout-total").textContent = formatDualMoney(
+      (hasAgreedQuote ? Number(quote.subtotal) : subtotal()) + (hasAgreedQuote ? Number(quote.deliveryFee) : 0),
+      (hasAgreedQuote ? Number(quote.subtotalUsd) : subtotalUsd()) + (hasAgreedQuote ? Number(quote.deliveryFeeUsd) || 0 : 0)
+    );
     $$('input[name="payment"]').forEach(input => { input.required = hasAgreedQuote; });
   }
 
@@ -930,30 +1330,30 @@
     form.reset();
     form.elements.id.value = product ? product.id : "";
     $("#product-form-heading").textContent = t(product ? "editProduct" : "addProduct");
+    $("#product-video-status").textContent = "";
     if (product) {
-      ["name", "category", "wholesale", "retail", "stock", "notes"].forEach(key => { form.elements[key].value = product[key]; });
-      form.elements.image.value = /^https?:\/\//i.test(product.image) ? product.image : "";
-      showProductImagePreview(product.image, t("imageCurrent"));
+      ["name", "category", "wholesale", "retail", "wholesaleUsd", "retailUsd", "stock", "notes"].forEach(key => { form.elements[key].value = product[key] || ""; });
+      form.elements.image.value = (product.images?.length ? product.images : [{ url: product.image }]).map(image => /^https?:\/\//i.test(image.url) ? image.url : "").filter(Boolean).join("\n");
+      form.elements.videoUrl.value = /^https?:\/\//i.test(product.videoUrl || "") ? product.videoUrl : "";
+      showProductImagePreview((product.images?.length ? product.images : [{ url: product.image }]).map(image => image.url), t("imageCurrent"));
     } else {
       form.elements.category.value = "Indoor Plants";
       form.elements.image.value = "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=800&q=80";
-      showProductImagePreview(form.elements.image.value, t("imageCurrent"));
+      showProductImagePreview([form.elements.image.value], t("imageCurrent"));
     }
     $("#product-form-wrap").hidden = false;
     $("#product-form-wrap").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function showProductImagePreview(src, status) {
+  function showProductImagePreview(sources, status) {
     const preview = $("#product-image-preview");
-    const image = $("#product-image-preview-img");
-    if (!src) {
+    const urls = Array.isArray(sources) ? sources.filter(Boolean) : [];
+    if (!urls.length) {
       preview.hidden = true;
-      image.removeAttribute("src");
-      $("#product-image-preview-status").textContent = "";
+      $("#product-image-preview-list").innerHTML = "";
       return;
     }
-    image.src = src;
-    $("#product-image-preview-status").textContent = status;
+    $("#product-image-preview-list").innerHTML = `${urls.map((url, index) => `<img src="${escapeHtml(url)}" alt="" loading="lazy" title="${escapeHtml(status || "")}">`).join("")}<span>${escapeHtml(status || "")} · ${formatNumber(urls.length)} photos</span>`;
     preview.hidden = false;
   }
 
@@ -965,7 +1365,13 @@
     $("#qicard-account-number").textContent = payment === "QiCard / Mastercard" ? settings.fibAccount : "";
   }
 
-  function placeOrder(form) {
+  function createCustomerToken() {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    return [...bytes].map(byte => byte.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function placeOrder(form) {
     let order = orders.find(item => item.id === activeQuoteId);
     if (!order) {
       if (!cart.length) return;
@@ -981,6 +1387,7 @@
       const formData = new FormData(form);
       order = {
         id: `VD-${Date.now().toString().slice(-8)}`,
+        createdAt: new Date().toISOString(),
         date: new Intl.DateTimeFormat(languageMeta[language].locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date()),
         name: formData.get("name").trim(),
         phone: formData.get("phone").trim(),
@@ -994,19 +1401,32 @@
         payment: "",
         card: "",
         receipt: "",
+        customerToken: createCustomerToken(),
         items: cart.map(item => {
           const product = productById(item.id);
-          return { id: product.id, name: product.name, quantity: item.quantity, price: discountedPrice(product) };
+          return { id: product.id, name: product.name, quantity: item.quantity, price: discountedPrice(product), priceUsd: discountedPriceUsd(product) };
         }),
         subtotal: subtotal(),
+        subtotalUsd: subtotalUsd(),
         deliveryFee: null,
+        deliveryFeeUsd: null,
         total: null,
+        totalUsd: null,
         agreed: false,
         status: "Awaiting delivery price"
       };
       orders.push(order);
       if (!saveOrders()) {
         orders = orders.filter(existing => existing.id !== order.id);
+        return;
+      }
+      try {
+        await persistOrder(order, true);
+      } catch (error) {
+        orders = orders.filter(existing => existing.id !== order.id);
+        saveOrders();
+        console.error("Unable to persist the customer order.", error);
+        showToast(t("orderSaveError", { detail: error.message }));
         return;
       }
       activeQuoteId = order.id;
@@ -1047,8 +1467,19 @@
     order.payment = selectedPayment;
     order.receipt = selectedPayment === "FIB" ? receiptData : "";
     order.deliveryFee = Number(order.deliveryFee);
+    order.deliveryFeeUsd = Number(order.deliveryFeeUsd) || 0;
     order.total = order.subtotal + order.deliveryFee;
+    order.totalUsd = order.subtotalUsd + order.deliveryFeeUsd;
     order.status = "Pending";
+    try {
+      await persistCustomerOrderAction(order, "complete");
+    } catch (error) {
+      previousStocks.forEach(item => { item.product.stock = item.stock; });
+      Object.assign(order, previousOrder);
+      console.error("Unable to complete the customer order.", error);
+      showToast(t("orderSaveError", { detail: error.message }));
+      return;
+    }
     if (!saveProducts() || !saveOrders()) {
       previousStocks.forEach(item => { item.product.stock = item.stock; });
       Object.assign(order, previousOrder);
@@ -1090,6 +1521,16 @@
   }));
   $("#product-search").addEventListener("input", renderProducts);
   document.addEventListener("click", event => {
+    const galleryButton = event.target.closest("[data-gallery-image]");
+    if (galleryButton) {
+      const mainImage = $("#product-detail-content [data-product-main-image]");
+      const selectedImage = galleryButton.querySelector("img");
+      if (mainImage && selectedImage) {
+        mainImage.src = selectedImage.src;
+        $$("#product-detail-content [data-gallery-image]").forEach(button => button.setAttribute("aria-pressed", String(button === galleryButton)));
+      }
+      return;
+    }
     const addButton = event.target.closest("[data-add]");
     if (addButton) {
       addProductToCart(productById(addButton.dataset.add));
@@ -1154,6 +1595,7 @@
   });
   $("#admin-login-form").addEventListener("submit", async event => {
     event.preventDefault();
+    const loginForm = event.currentTarget;
     const loginError = $("#admin-login-error");
     loginError.hidden = true;
     if (supabaseSettingsPresent) {
@@ -1219,13 +1661,22 @@
         return;
       }
       isSupabaseAdmin = true;
+      currentAdminUser = data.user;
+      try {
+        await loadAdminProfile();
+      } catch (error) {
+        console.error("Unable to load the admin profile.", error);
+        showToast(t("profileSaveError", { detail: error.message }));
+      }
     } else if ($("#admin-password").value !== "1234") {
       loginError.textContent = t("adminPasswordIncorrect");
       loginError.hidden = false;
       $("#admin-password").select();
       return;
+    } else {
+      await loadAdminProfile();
     }
-    event.currentTarget.reset();
+    loginForm.reset();
     closeOverlay("admin-login-overlay");
     openOverlay("admin-overlay");
   });
@@ -1239,6 +1690,7 @@
       return;
     }
     isSupabaseAdmin = false;
+    currentAdminUser = null;
     closeOverlay("admin-overlay");
     showToast(t("adminSignedOut"));
   });
@@ -1286,10 +1738,15 @@
       $("#checkout-form").elements.giftMessage.required = event.target.checked;
     }
   });
-  $("#checkout-form").addEventListener("submit", event => {
+  $("#checkout-form").addEventListener("submit", async event => {
     event.preventDefault();
     if (!event.currentTarget.reportValidity()) return;
-    placeOrder(event.currentTarget);
+    try {
+      await placeOrder(event.currentTarget);
+    } catch (error) {
+      console.error("Unable to place the customer order.", error);
+      showToast(t("orderSaveError", { detail: error.message }));
+    }
   });
   const receiptInput = $("#receipt-file");
   $("#receipt-gallery").addEventListener("click", () => {
@@ -1365,33 +1822,55 @@
     closeOverlay("cart-overlay");
     renderProducts();
   });
-  $("#order-list").addEventListener("submit", event => {
+  $("#order-list").addEventListener("submit", async event => {
     const form = event.target.closest("form[data-order-price]");
     if (!form) return;
     event.preventDefault();
     if (!form.reportValidity()) return;
     const order = orders.find(item => item.id === form.dataset.orderPrice);
-    const price = Number(new FormData(form).get("deliveryFee"));
-    if (!order || !Number.isFinite(price) || price < 0) return showToast(t("priceInvalid"));
+    const formData = new FormData(form);
+    const priceValue = formData.get("deliveryFee");
+    const priceUsdValue = formData.get("deliveryFeeUsd");
+    const price = priceValue === "" ? null : Number(priceValue);
+    const priceUsd = priceUsdValue === "" ? null : Number(priceUsdValue);
+    if (!order || (price === null && priceUsd === null) || (price !== null && (!Number.isFinite(price) || price < 0)) || (priceUsd !== null && (!Number.isFinite(priceUsd) || priceUsd < 0))) return showToast(t("priceInvalid"));
     const previousOrder = { ...order };
     order.deliveryFee = price;
-    order.total = order.subtotal + price;
+    order.deliveryFeeUsd = priceUsd;
+    order.total = price === null ? null : order.subtotal + price;
+    order.totalUsd = priceUsd === null ? null : (Number(order.subtotalUsd) || 0) + priceUsd;
     order.status = "Awaiting customer agreement";
     order.agreed = false;
+    try {
+      await persistOrder(order);
+    } catch (error) {
+      Object.assign(order, previousOrder);
+      console.error("Unable to update the order delivery price.", error);
+      showToast(t("orderSaveError", { detail: error.message }));
+      return;
+    }
     if (!saveOrders()) {
       Object.assign(order, previousOrder);
       return;
     }
     renderOrders();
     renderCustomerOrders();
+    await recordAdminActivity("activityOrderUpdated", "order", order.id, order.name, { status: order.status });
     showToast(t("priceSaved"));
   });
-  $("#customer-order-list").addEventListener("click", event => {
+  $("#customer-order-list").addEventListener("click", async event => {
     const action = event.target.closest("[data-customer-order-action]");
     if (!action) return;
     const order = orders.find(item => item.id === action.dataset.order);
     if (!order) return;
     if (action.dataset.customerOrderAction === "agree" && order.status === "Awaiting customer agreement") {
+      try {
+        await persistCustomerOrderAction(order, "agree");
+      } catch (error) {
+        console.error("Unable to save the customer's delivery-price agreement.", error);
+        showToast(t("orderSaveError", { detail: error.message }));
+        return;
+      }
       order.agreed = true;
       order.status = "Awaiting payment";
       activeQuoteId = order.id;
@@ -1410,9 +1889,21 @@
       tab.classList.toggle("active", active);
       tab.setAttribute("aria-selected", String(active));
     });
-    ["products", "orders", "settings"].forEach(tab => { $(`#admin-${tab}`).hidden = tab !== button.dataset.tab; });
-    if (button.dataset.tab === "orders") renderOrders();
+    ["products", "orders", "settings", "profile", "activity"].forEach(tab => { $(`#admin-${tab}`).hidden = tab !== button.dataset.tab; });
+    if (button.dataset.tab === "orders" && supabaseSettingsPresent) {
+      refreshCloudOrders().catch(error => {
+        console.error("Unable to refresh admin orders.", error);
+        showToast(t("orderSaveError", { detail: error.message }));
+      });
+    }
+    if (button.dataset.tab === "activity") {
+      refreshAdminActivity().catch(error => {
+        console.error("Unable to refresh admin activity.", error);
+        showToast(t("activityLoadError", { detail: error.message }));
+      });
+    }
     if (button.dataset.tab === "products") renderAdminProducts();
+    if (button.dataset.tab === "profile") renderAdminIdentity();
   }));
   $("#add-product-button").addEventListener("click", () => openProductForm(null));
   $("#cancel-product").addEventListener("click", () => {
@@ -1423,32 +1914,38 @@
   $("#product-camera-button").addEventListener("click", () => $("#product-camera-input").click());
   ["#product-gallery-input", "#product-camera-input"].forEach(selector => {
     $(selector).addEventListener("change", async event => {
-      const file = event.target.files[0];
+      const files = [...event.target.files];
       event.target.value = "";
-      if (!file) return;
-      clearPendingProductImage();
-      $("#product-form").elements.image.value = "";
-      $("#product-image-preview-status").textContent = t("imageCompressing");
-      $("#product-image-preview").hidden = false;
+      if (!files.length) return;
       try {
-        pendingProductImage = await compressProductImage(file);
-        pendingProductImageUrl = URL.createObjectURL(pendingProductImage);
-        showProductImagePreview(pendingProductImageUrl, t("imageReady"));
+        const compressed = await Promise.all(files.map(compressProductImage));
+        pendingProductImages.push(...compressed.map(blob => ({ blob, previewUrl: URL.createObjectURL(blob) })));
+        const urls = $("#product-form").elements.image.value.split(/\r?\n/).map(url => url.trim()).filter(Boolean);
+        showProductImagePreview([...urls, ...pendingProductImages.map(image => image.previewUrl)], t("imageReady"));
       } catch (error) {
         console.error("Unable to prepare the selected product image.", error);
-        showProductImagePreview("", "");
+        const urls = $("#product-form").elements.image.value.split(/\r?\n/).map(url => url.trim()).filter(Boolean);
+        showProductImagePreview(urls, "");
         showToast(error.message || t("productImageError"));
       }
     });
   });
   $("#product-form").elements.image.addEventListener("input", event => {
-    if (event.target.value.trim()) {
-      clearPendingProductImage();
-      showProductImagePreview(event.target.value.trim(), t("imageCurrent"));
-      return;
-    }
-    const currentProduct = productById($("#product-form").elements.id.value);
-    if (currentProduct) showProductImagePreview(currentProduct.image, t("imageCurrent"));
+    const urls = event.target.value.split(/\r?\n/).map(url => url.trim()).filter(Boolean);
+    showProductImagePreview([...urls, ...pendingProductImages.map(image => image.previewUrl)], urls.length ? t("imageCurrent") : t("imageReady"));
+  });
+  $("#product-video-button").addEventListener("click", () => $("#product-video-input").click());
+  $("#product-video-input").addEventListener("change", event => {
+    pendingProductVideo = event.target.files[0] || null;
+    event.target.value = "";
+    if (!pendingProductVideo) return;
+    $("#product-form").elements.videoUrl.value = "";
+    $("#product-video-status").textContent = `${pendingProductVideo.name} (${formatNumber(Math.ceil(pendingProductVideo.size / 1024))} KB)`;
+  });
+  $("#product-form").elements.videoUrl.addEventListener("input", event => {
+    if (!event.target.value.trim()) return;
+    pendingProductVideo = null;
+    $("#product-video-status").textContent = "";
   });
   $("#product-form").addEventListener("submit", async event => {
     event.preventDefault();
@@ -1457,29 +1954,55 @@
     const data = new FormData(form);
     const id = data.get("id") || `plant-${Date.now()}`;
     const existingProduct = productById(id);
-    const imageUrl = data.get("image").trim();
+    const imageUrls = data.get("image").split(/\r?\n/).map(url => url.trim()).filter(Boolean);
+    const videoUrl = data.get("videoUrl").trim();
     const product = {
       id,
       name: data.get("name").trim(),
       category: data.get("category"),
-      image: imageUrl,
+      image: "",
+      images: [],
       wholesale: Number(data.get("wholesale")),
       retail: Number(data.get("retail")),
+      wholesaleUsd: Number(data.get("wholesaleUsd")) || 0,
+      retailUsd: Number(data.get("retailUsd")) || 0,
       stock: Number(data.get("stock")),
-      notes: data.get("notes").trim()
+      notes: data.get("notes").trim(),
+      videoUrl,
+      videoPath: "",
+      createdBy: existingProduct?.createdBy || currentAdminUser?.id || "",
+      createdByName: existingProduct?.createdByName || adminDisplayName()
     };
-    if (product.retail < product.wholesale) {
+    if (product.retail <= 0 && product.retailUsd <= 0) {
+      showToast(t("retailRequired"));
+      return;
+    }
+    if (product.retail > 0 && product.wholesale > product.retail) {
       form.elements.retail.setCustomValidity(t("retailTooLow"));
       form.elements.retail.reportValidity();
       form.elements.retail.setCustomValidity("");
       return;
     }
-    if (imageUrl && !/^https?:\/\//i.test(imageUrl)) {
+    if (product.retailUsd > 0 && product.wholesaleUsd > product.retailUsd) {
+      form.elements.retailUsd.setCustomValidity(t("retailTooLow"));
+      form.elements.retailUsd.reportValidity();
+      form.elements.retailUsd.setCustomValidity("");
+      return;
+    }
+    if (imageUrls.some(url => !/^https?:\/\//i.test(url) && !/^data:image\/(?:jpeg|png|webp);base64,/i.test(url))) {
       showToast(t("imageUrlInvalid"));
       return;
     }
-    if (!pendingProductImage && !imageUrl && !existingProduct) {
+    if (videoUrl && !/^https?:\/\//i.test(videoUrl)) {
+      showToast(t("videoUrlInvalid"));
+      return;
+    }
+    if (!pendingProductImages.length && !imageUrls.length && !existingProduct) {
       showToast(t("imageRequired"));
+      return;
+    }
+    if (pendingProductVideo && (!["video/mp4", "video/webm", "video/quicktime"].includes(pendingProductVideo.type) || pendingProductVideo.size > 100 * 1024 * 1024)) {
+      showToast(t("videoUploadError", { detail: "Choose an MP4, WebM, or MOV file up to 100 MB." }));
       return;
     }
     if (supabaseSettingsPresent && (!supabaseClient || !cloudCatalogReady || !isSupabaseAdmin)) {
@@ -1488,7 +2011,7 @@
     }
     let saveResult;
     try {
-      saveResult = await persistProduct(product, existingProduct, imageUrl);
+      saveResult = await persistProduct(product, existingProduct, imageUrls, videoUrl);
       if (!saveResult) return;
     } catch (error) {
       console.error("Unable to save product.", error);
@@ -1497,6 +2020,7 @@
     }
     clearPendingProductImage();
     $("#product-form-wrap").hidden = true;
+    await recordAdminActivity(existingProduct ? "activityProductEdited" : "activityProductAdded", "product", product.id, product.name);
     showToast(saveResult.imageCleanupFailed
       ? t("productImageCleanupError")
       : t(existingProduct ? "productUpdated" : "productAdded"));
@@ -1536,13 +2060,34 @@
       renderProducts();
       renderCart();
       renderAdminProducts();
-      if (supabaseSettingsPresent && product.imagePath) {
-        try {
-          await removeCloudImage(product.imagePath);
-        } catch (error) {
-          console.error("Unable to remove the deleted product image.", error);
-          imageCleanupFailed = true;
+      if (supabaseSettingsPresent) {
+        const imagePaths = (product.images || [{ path: product.imagePath }]).map(image => image.path).filter(Boolean);
+        for (const path of imagePaths) {
+          try {
+            await removeCloudImage(path);
+          } catch (error) {
+            console.error("Unable to remove a deleted product image.", error);
+            imageCleanupFailed = true;
+          }
         }
+        if (product.videoPath) {
+          try {
+            await removeCloudVideo(product.videoPath);
+          } catch (error) {
+            console.error("Unable to remove the deleted product video.", error);
+            imageCleanupFailed = true;
+          }
+        }
+      }
+      if (supabaseSettingsPresent) {
+        try {
+          await refreshAdminActivity();
+        } catch (error) {
+          console.error("Unable to refresh admin activity after deleting a product.", error);
+          showToast(t("activityLoadError", { detail: error.message }));
+        }
+      } else {
+        await recordAdminActivity("activityProductDeleted", "product", product.id, localizedProductText(product, "product"));
       }
       showToast(imageCleanupFailed
         ? t("productImageCleanupError")
@@ -1562,8 +2107,9 @@
     renderCart();
     showToast(t("settingsSaved"));
   });
-  $("#order-list").addEventListener("click", event => {
+  $("#order-list").addEventListener("click", async event => {
     const action = event.target.closest("[data-order-action]");
+    const printButton = event.target.closest("[data-print-order]");
     const receipt = event.target.closest(".order-receipt");
     if (receipt) {
       const popup = window.open();
@@ -1576,13 +2122,95 @@
       } else showToast(t("browserBlocked"));
       return;
     }
+    if (printButton) {
+      const card = printButton.closest(".order-card").cloneNode(true);
+      card.querySelectorAll(".order-actions, .delivery-price-form").forEach(element => element.remove());
+      const popup = window.open("", "_blank");
+      if (!popup) {
+        showToast(t("browserBlocked"));
+        return;
+      }
+      popup.document.title = `${t("orders")} ${printButton.dataset.printOrder}`;
+      const style = popup.document.createElement("style");
+      style.textContent = "body{font:14px Arial,sans-serif;color:#243328;margin:32px}.order-card{max-width:760px;margin:auto;padding:20px;border:1px solid #dfe4d9}.order-card-header{display:flex;justify-content:space-between}.order-details,.order-lines{line-height:1.8}.order-receipt{max-width:180px}";
+      popup.document.head.appendChild(style);
+      popup.document.body.appendChild(card);
+      popup.focus();
+      popup.print();
+      return;
+    }
     if (!action) return;
     const order = orders.find(item => item.id === action.dataset.order);
     if (!order) return;
+    const previousStatus = order.status;
     order.status = action.dataset.orderAction;
-    if (!saveOrders()) return;
+    try {
+      await persistOrder(order);
+    } catch (error) {
+      order.status = previousStatus;
+      console.error("Unable to update order status.", error);
+      showToast(t("orderSaveError", { detail: error.message }));
+      return;
+    }
+    if (!saveOrders()) {
+      order.status = previousStatus;
+      return;
+    }
     renderOrders();
+    await recordAdminActivity("activityOrderUpdated", "order", order.id, order.name, { status: order.status });
     showToast(t(order.status === "Approved" ? "orderApproved" : "orderRejected", { id: order.id }));
+  });
+
+  $("#admin-profile-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const nextProfile = {
+      fullName: data.get("fullName").trim(),
+      title: data.get("title").trim(),
+      avatarUrl: data.get("avatarUrl").trim(),
+      phone: data.get("phone").trim(),
+      notes: data.get("notes").trim()
+    };
+    if (nextProfile.avatarUrl && !/^https?:\/\//i.test(nextProfile.avatarUrl)) {
+      showToast(t("imageUrlInvalid"));
+      return;
+    }
+    const previousProfile = adminProfile;
+    adminProfile = nextProfile;
+    try {
+      if (supabaseSettingsPresent) {
+        if (!supabaseClient || !isSupabaseAdmin || !currentAdminUser) throw new Error(t("catalogUnavailable"));
+        const { error } = await supabaseClient.from("admin_profiles").upsert({
+          user_id: currentAdminUser.id,
+          full_name: nextProfile.fullName,
+          title: nextProfile.title,
+          avatar_url: nextProfile.avatarUrl,
+          phone: nextProfile.phone,
+          notes: nextProfile.notes,
+          updated_at: new Date().toISOString()
+        });
+        if (error) throw error;
+      } else if (!saveStore("verdant.adminProfile", nextProfile)) {
+        adminProfile = previousProfile;
+        return;
+      }
+      renderAdminIdentity();
+      adminPublicProfiles[currentAdminUser?.id || "local-admin"] = {
+        user_id: currentAdminUser?.id || "local-admin",
+        full_name: nextProfile.fullName,
+        title: nextProfile.title,
+        avatar_url: nextProfile.avatarUrl
+      };
+      renderProducts();
+      renderAdminProducts();
+      await recordAdminActivity("activityProfileUpdated", "admin", currentAdminUser?.id || "local-admin", nextProfile.fullName);
+      showToast(t("profileSaved"));
+    } catch (error) {
+      adminProfile = previousProfile;
+      renderAdminIdentity();
+      console.error("Unable to save the admin profile.", error);
+      showToast(t("profileSaveError", { detail: error.message }));
+    }
   });
 
   $$(".faq-list details").forEach(detail => detail.addEventListener("toggle", () => {
@@ -1610,6 +2238,44 @@
     language = event.target.value;
     saveStore(LANGUAGE_STORAGE, language);
     applyLanguage();
+  });
+
+  $("#share-app-button").addEventListener("click", async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: t("shareTitle"),
+          text: t("shareMessage"),
+          url: APP_SHARE_URL
+        });
+        $("#get-app-link").href = APP_SHARE_URL;
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        console.error("Unable to share the Gulnar app link.", error);
+      }
+    }
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(APP_SHARE_URL);
+      } else {
+        const helper = document.createElement("textarea");
+        helper.value = APP_SHARE_URL;
+        helper.setAttribute("readonly", "");
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.select();
+        const copied = document.execCommand("copy");
+        helper.remove();
+        if (!copied) throw new Error("Clipboard access is unavailable.");
+      }
+      showToast(t("shareCopied"));
+    } catch (error) {
+      console.error("Unable to copy the Gulnar app link.", error);
+      showToast(t("shareCopyError"));
+    }
   });
 
   window.addEventListener("beforeinstallprompt", event => {

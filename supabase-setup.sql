@@ -4,19 +4,165 @@ create table if not exists public.products (
   category text not null,
   image text not null,
   image_path text,
+  images jsonb not null default '[]'::jsonb,
+  video_url text not null default '',
+  video_path text,
   wholesale numeric(12, 2) not null default 0,
   retail numeric(12, 2) not null default 0,
+  wholesale_usd numeric(12, 2) not null default 0,
+  retail_usd numeric(12, 2) not null default 0,
   stock integer not null default 0,
   notes text not null default '',
+  created_by uuid references auth.users(id) on delete set null,
   updated_at timestamptz not null default now()
 );
+
+alter table public.products add column if not exists images jsonb not null default '[]'::jsonb;
+alter table public.products add column if not exists video_url text not null default '';
+alter table public.products add column if not exists video_path text;
+alter table public.products add column if not exists wholesale_usd numeric(12, 2) not null default 0;
+alter table public.products add column if not exists retail_usd numeric(12, 2) not null default 0;
+alter table public.products add column if not exists created_by uuid references auth.users(id) on delete set null;
+
+update public.products
+set images = jsonb_build_array(jsonb_build_object('url', image, 'path', coalesce(image_path, '')))
+where images = '[]'::jsonb and image <> '';
 
 create table if not exists public.product_admins (
   user_id uuid primary key references auth.users(id) on delete cascade
 );
 
+create table if not exists public.admin_profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  full_name text not null default '',
+  title text not null default '',
+  avatar_url text not null default '',
+  phone text not null default '',
+  notes text not null default '',
+  updated_at timestamptz not null default now()
+);
+
+create or replace view public.admin_public_profiles as
+  select user_id, full_name, title, avatar_url
+  from public.admin_profiles;
+
+create table if not exists public.orders (
+  id text primary key,
+  created_at timestamptz not null default now(),
+  customer_name text not null,
+  customer_phone text not null,
+  customer_address text not null,
+  customer_token text not null default '',
+  instruction text not null default '',
+  delivery_date date,
+  delivery_time text not null default '',
+  is_gift boolean not null default false,
+  gift_message text not null default '',
+  notes text not null default '',
+  payment text not null default '',
+  card text not null default '',
+  receipt text not null default '',
+  items jsonb not null default '[]'::jsonb,
+  subtotal_iqd numeric(12, 2) not null default 0,
+  subtotal_usd numeric(12, 2) not null default 0,
+  delivery_fee_iqd numeric(12, 2),
+  delivery_fee_usd numeric(12, 2),
+  total_iqd numeric(12, 2),
+  total_usd numeric(12, 2),
+  agreed boolean not null default false,
+  status text not null default 'Awaiting delivery price',
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.admin_activity (
+  id bigint generated always as identity primary key,
+  admin_id uuid references auth.users(id) on delete set null,
+  admin_name text not null default '',
+  action text not null,
+  target_type text not null,
+  target_id text not null default '',
+  target_name text not null default '',
+  details jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists orders_created_at_idx on public.orders (created_at desc);
+create index if not exists admin_activity_created_at_idx on public.admin_activity (created_at desc);
+
+create or replace function public.stamp_product_creator()
+returns trigger
+language plpgsql
+as $$
+begin
+  if tg_op = 'INSERT' then
+    new.created_by := auth.uid();
+  else
+    new.created_by := old.created_by;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists products_stamp_creator on public.products;
+create trigger products_stamp_creator
+before insert or update on public.products
+for each row execute function public.stamp_product_creator();
+
+create or replace function public.stamp_admin_activity_actor()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  profile_name text;
+begin
+  if auth.uid() is not null then
+    new.admin_id := auth.uid();
+    select full_name into profile_name
+    from public.admin_profiles
+    where user_id = auth.uid();
+    if coalesce(profile_name, '') <> '' then
+      new.admin_name := profile_name;
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists admin_activity_stamp_actor on public.admin_activity;
+create trigger admin_activity_stamp_actor
+before insert on public.admin_activity
+for each row execute function public.stamp_admin_activity_actor();
+
+create or replace function public.log_product_deletion()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  profile_name text;
+begin
+  select full_name into profile_name
+  from public.admin_profiles
+  where user_id = auth.uid();
+  insert into public.admin_activity (admin_id, admin_name, action, target_type, target_id, target_name)
+  values (auth.uid(), coalesce(nullif(profile_name, ''), 'Shop admin'), 'activityProductDeleted', 'product', old.id, old.name);
+  return old;
+end;
+$$;
+
+drop trigger if exists products_log_deletion on public.products;
+create trigger products_log_deletion
+after delete on public.products
+for each row execute function public.log_product_deletion();
+
 alter table public.products enable row level security;
 alter table public.product_admins enable row level security;
+alter table public.admin_profiles enable row level security;
+alter table public.orders enable row level security;
+alter table public.admin_activity enable row level security;
 
 drop policy if exists "Anyone can read products" on public.products;
 create policy "Anyone can read products"
@@ -51,6 +197,149 @@ grant select on public.products to anon, authenticated;
 grant insert, update, delete on public.products to authenticated;
 grant select on public.product_admins to authenticated;
 
+drop policy if exists "Admins can manage profiles" on public.admin_profiles;
+create policy "Admins can manage profiles"
+  on public.admin_profiles for all
+  to authenticated
+  using (
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+revoke all on public.admin_profiles from anon, authenticated;
+grant select, insert, update, delete on public.admin_profiles to authenticated;
+revoke all on public.admin_public_profiles from anon, authenticated;
+grant select on public.admin_public_profiles to anon, authenticated;
+
+drop policy if exists "Customers can create orders" on public.orders;
+create policy "Customers can create orders"
+  on public.orders for insert
+  to anon, authenticated
+  with check (true);
+drop policy if exists "Admins can manage orders" on public.orders;
+create policy "Admins can manage orders"
+  on public.orders for all
+  to authenticated
+  using (
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+grant insert on public.orders to anon, authenticated;
+grant select, update, delete on public.orders to authenticated;
+
+create or replace function public.customer_agree_to_order(p_order_id text, p_access_token text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.orders
+  set agreed = true, status = 'Awaiting payment', updated_at = now()
+  where id = p_order_id
+    and customer_token = p_access_token
+    and status = 'Awaiting customer agreement'
+    and (delivery_fee_iqd is not null or delivery_fee_usd is not null);
+  return found;
+end;
+$$;
+
+create or replace function public.customer_complete_order(
+  p_order_id text,
+  p_access_token text,
+  p_payment text,
+  p_card text,
+  p_receipt text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_order public.orders%rowtype;
+  line jsonb;
+  item_id text;
+  item_quantity integer;
+begin
+  select * into target_order
+  from public.orders
+  where id = p_order_id
+    and customer_token = p_access_token
+    and status = 'Awaiting payment'
+    and agreed = true
+  for update;
+  if not found or p_payment not in ('FIB', 'QiCard / Mastercard') then
+    return false;
+  end if;
+
+  for line in select value from jsonb_array_elements(target_order.items)
+  loop
+    item_id := line->>'id';
+    item_quantity := (line->>'quantity')::integer;
+    update public.products
+    set stock = stock - item_quantity, updated_at = now()
+    where id = item_id and stock >= item_quantity;
+    if not found then
+      raise exception 'Product % is no longer available in the requested quantity.', item_id;
+    end if;
+  end loop;
+
+  update public.orders
+  set payment = p_payment,
+      card = p_card,
+      receipt = p_receipt,
+      status = 'Pending',
+      updated_at = now()
+  where id = p_order_id;
+  return true;
+end;
+$$;
+
+revoke all on function public.customer_agree_to_order(text, text) from public;
+revoke all on function public.customer_complete_order(text, text, text, text, text) from public;
+grant execute on function public.customer_agree_to_order(text, text) to anon, authenticated;
+grant execute on function public.customer_complete_order(text, text, text, text, text) to anon, authenticated;
+
+drop policy if exists "Admins can read activity" on public.admin_activity;
+create policy "Admins can read activity"
+  on public.admin_activity for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+drop policy if exists "Admins can record activity" on public.admin_activity;
+create policy "Admins can record activity"
+  on public.admin_activity for insert
+  to authenticated
+  with check (
+    admin_id = auth.uid()
+    and
+    exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+grant select, insert on public.admin_activity to authenticated;
+
 insert into public.products (id, name, category, image, wholesale, retail, stock, notes)
 values
   ('monstera', 'Monstera Deliciosa', 'Indoor Plants', 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=800&q=80', 18000, 28000, 12, 'A bold, easygoing beauty. Loves bright, indirect light.'),
@@ -68,6 +357,13 @@ on conflict (id) do nothing;
 insert into storage.buckets (id, name, public)
 values ('product-images', 'product-images', true)
 on conflict (id) do update set public = excluded.public;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('product-videos', 'product-videos', true, 104857600, array['video/mp4', 'video/webm', 'video/quicktime'])
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "Anyone can read product images" on storage.objects;
 create policy "Anyone can read product images"
@@ -118,6 +414,36 @@ create policy "Product admins can delete product images"
     )
   );
 
+drop policy if exists "Anyone can read product videos" on storage.objects;
+create policy "Anyone can read product videos"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'product-videos');
+
+drop policy if exists "Product admins can upload product videos" on storage.objects;
+create policy "Product admins can upload product videos"
+  on storage.objects for insert
+  to authenticated
+  with check (
+    bucket_id = 'product-videos'
+    and exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Product admins can delete product videos" on storage.objects;
+create policy "Product admins can delete product videos"
+  on storage.objects for delete
+  to authenticated
+  using (
+    bucket_id = 'product-videos'
+    and exists (
+      select 1 from public.product_admins
+      where product_admins.user_id = auth.uid()
+    )
+  );
+
 do $$
 begin
   if not exists (
@@ -127,6 +453,14 @@ begin
       and tablename = 'products'
   ) then
     alter publication supabase_realtime add table public.products;
+  end if;
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'orders'
+  ) then
+    alter publication supabase_realtime add table public.orders;
   end if;
 end
 $$;

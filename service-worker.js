@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "gulnar-shell-v3";
+const CACHE_NAME = "gulnar-shell-v5";
 const CACHE_PREFIX = "gulnar-shell-";
 const APP_SHELL = [
   "./",
@@ -9,6 +9,9 @@ const APP_SHELL = [
   "./script.js",
   "./supabase-config.js",
   "./manifest.webmanifest",
+  "./share.html",
+  "./share-page.css",
+  "./share-page.js",
   "./gulnar-app-icon.svg",
   "./gulnar-app-icon-192.png",
   "./gulnar-app-icon-512.png"
