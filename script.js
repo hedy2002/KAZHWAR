@@ -4,6 +4,8 @@
   const FIB_DEFAULT = "+9647728503201";
   const FIB_LEGACY_DEFAULT = "7000000000000";
   const LANGUAGE_STORAGE = "verdant.language";
+  const LOCATION_STORAGE = "verdant.location";
+  const DEFAULT_INSTAGRAM_URL = "https://www.instagram.com/ms_gardennn?bqrl=NjJ2b251MGRwMWJy";
   const SUPABASE_CONFIG = window.VERDANT_SUPABASE_CONFIG || {};
   const APP_SHARE_URL = window.GULNAR_APP_URL || "https://gulzhin.vercel.app";
   const supabaseSettingsPresent = Boolean(SUPABASE_CONFIG.url || SUPABASE_CONFIG.anonKey);
@@ -34,13 +36,13 @@
     settings: "verdant.settings"
   };
   const seedProducts = [
-    { id: "monstera", name: "Monstera Deliciosa", category: "Indoor Plants", image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=800&q=80", wholesale: 18000, retail: 28000, stock: 12, notes: "A bold, easygoing beauty. Loves bright, indirect light." },
+    { id: "monstera", name: "Monstera Deliciosa", category: "Indoor Plants", image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=800&q=80", wholesale: 18000, retail: 28000, stock: 12, isBestSeller: true, notes: "A bold, easygoing beauty. Loves bright, indirect light." },
     { id: "olive", name: "Little Olive Tree", category: "Outdoor Plants", image: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=800&q=80", wholesale: 23000, retail: 36000, stock: 8, notes: "A sun-loving little tree for patios and bright corners." },
-    { id: "pothos", name: "Golden Pothos", category: "Indoor Plants", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80", wholesale: 9000, retail: 16000, stock: 18, notes: "A cheerful trailing plant that is happy in most rooms." },
-    { id: "terracotta", name: "Terracotta Planter", category: "Outdoor Plants", image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=800&q=80", wholesale: 11000, retail: 19000, stock: 10, notes: "A classic home for your favorite leafy friend." },
+    { id: "pothos", name: "Golden Pothos", category: "Indoor Plants", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80", wholesale: 9000, retail: 16000, stock: 18, isBestSeller: true, notes: "A cheerful trailing plant that is happy in most rooms." },
+    { id: "terracotta", name: "Terracotta Planter", category: "Outdoor Plants", image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=800&q=80", wholesale: 11000, retail: 19000, stock: 10, discountPercent: 15, notes: "A classic home for your favorite leafy friend." },
     { id: "fertilizer", name: "Everyday Plant Food", category: "Medicines & Food", image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80", wholesale: 6000, retail: 11000, stock: 25, notes: "A gentle feed to keep your growing things happy." },
     { id: "snake", name: "Snake Plant", category: "Indoor Plants", image: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=800&q=80", wholesale: 14000, retail: 22000, stock: 9, notes: "Architectural, resilient, and wonderfully low fuss." },
-    { id: "lavender", name: "Garden Lavender", category: "Outdoor Plants", image: "https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=800&q=80", wholesale: 12000, retail: 20000, stock: 11, notes: "Fragrant purple blooms that love a sunny spot." },
+    { id: "lavender", name: "Garden Lavender", category: "Outdoor Plants", image: "https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=800&q=80", wholesale: 12000, retail: 20000, stock: 11, discountPercent: 20, notes: "Fragrant purple blooms that love a sunny spot." },
     { id: "leaf-care", name: "Leaf & Root Care", category: "Medicines & Food", image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80", wholesale: 7000, retail: 13000, stock: 16, notes: "A handy plant care essential for your home jungle." },
     { id: "peat-moss", name: "Peat Moss", category: "Peat Moss", image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80", wholesale: 5000, retail: 8000, stock: 20, notes: "A moisture-retaining growing medium for garden mixes." },
     { id: "ornamental-olive", name: "Ornamental Olive", category: "Ornamental Olive", image: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=800&q=80", wholesale: 30000, retail: 45000, stock: 6, notes: "A sun-loving ornamental olive for patios and bright spaces." }
@@ -184,18 +186,40 @@
     }
   };
 
-  let products = readStore(STORAGE.products, null) || seedProducts.map(product => ({ ...product }));
+  let products = readStore(STORAGE.products, null) || seedProducts.map(product => ({ ...product, createdAt: new Date().toISOString() }));
   let cart = readStore(STORAGE.cart, []);
   let orders = readStore(STORAGE.orders, []);
-  let settings = { discount: 0, fibAccount: FIB_DEFAULT, ...readStore(STORAGE.settings, {}) };
+  let settings = {
+    discount: 0,
+    fibAccount: FIB_DEFAULT,
+    instagramUrl: DEFAULT_INSTAGRAM_URL,
+    facebookUrl: "",
+    tiktokUrl: "",
+    ...readStore(STORAGE.settings, {})
+  };
   if (settings.fibAccount === FIB_LEGACY_DEFAULT) settings.fibAccount = FIB_DEFAULT;
   delete settings.deliveryFee;
   products = products.map(product => ({
     ...product,
-    category: product.category === "Chemical Medicines/Fertilizers" ? "Medicines & Food" : product.category
+    category: product.category === "Chemical Medicines/Fertilizers" ? "Medicines & Food" : product.category,
+    createdAt: product.createdAt || "2000-01-01T00:00:00.000Z",
+    isBestSeller: Boolean(product.isBestSeller),
+    comingSoon: Boolean(product.comingSoon),
+    discountPercent: Number(product.discountPercent) || 0,
+    saleIqd: Number(product.saleIqd) || 0,
+    saleUsd: Number(product.saleUsd) || 0,
+    rating: Number(product.rating) || 0,
+    reviewCount: Number(product.reviewCount) || 0
   }));
+  let location = readStore(LOCATION_STORAGE, "sulaymaniyah");
+  if (!["sulaymaniyah", "erbil", "duhok", "baghdad"].includes(location)) location = "sulaymaniyah";
+  const savedProductInterests = readStore("verdant.productInterests", []);
+  let productInterests = new Set(Array.isArray(savedProductInterests) ? savedProductInterests : []);
   let activeQuoteId = readStore("verdant.activeQuote", "");
   let activeCategory = "All";
+  let activeHeroSlide = 0;
+  let heroAdvanceTimer = null;
+  let heroIsPaused = false;
   let cloudCatalogReady = false;
   let realtimeSubscribed = false;
   let cloudRefreshGeneration = 0;
@@ -251,8 +275,40 @@
   const formatMoney = amount => `${new Intl.NumberFormat(languageMeta[language].locale, { maximumFractionDigits: 0 }).format(Math.round(Number(amount) || 0))} ${t("currency")}`;
   const formatUsd = amount => `$${new Intl.NumberFormat(languageMeta[language].locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(amount) || 0)}`;
   const formatDualMoney = (iqd, usd) => [Number(iqd) > 0 ? formatMoney(iqd) : "", Number(usd) > 0 ? formatUsd(usd) : ""].filter(Boolean).join(" · ") || "—";
-  const discountedPrice = product => Math.round(product.retail * (1 - settings.discount / 100));
-  const discountedPriceUsd = product => Math.round((Number(product.retailUsd) || 0) * (1 - settings.discount / 100) * 100) / 100;
+  const productHasSpecificDiscount = product => Number(product.discountPercent) > 0 || Number(product.saleIqd) > 0 || Number(product.saleUsd) > 0;
+  const discountedValue = (product, currency) => {
+    const base = currency === "usd" ? Number(product.retailUsd) || 0 : Number(product.retail) || 0;
+    if (base <= 0) return 0;
+    const sale = currency === "usd" ? Number(product.saleUsd) || 0 : Number(product.saleIqd) || 0;
+    if (sale > 0 && sale < base) return sale;
+    const percentage = Math.min(90, Math.max(0, Number(product.discountPercent) || 0));
+    if (percentage > 0) return base * (1 - percentage / 100);
+    if (productHasSpecificDiscount(product)) return base;
+    return base * (1 - Math.min(90, Math.max(0, Number(settings.discount) || 0)) / 100);
+  };
+  const discountedPrice = product => Math.round(discountedValue(product, "iqd"));
+  const discountedPriceUsd = product => Math.round(discountedValue(product, "usd") * 100) / 100;
+  const productHasDiscount = product => discountedPrice(product) < (Number(product.retail) || 0)
+    || discountedPriceUsd(product) < (Number(product.retailUsd) || 0);
+  const productDiscountPercent = product => {
+    const manualSale = [];
+    if (Number(product.retail) > 0 && Number(product.saleIqd) > 0 && Number(product.saleIqd) < Number(product.retail)) {
+      manualSale.push((1 - Number(product.saleIqd) / Number(product.retail)) * 100);
+    }
+    if (Number(product.retailUsd) > 0 && Number(product.saleUsd) > 0 && Number(product.saleUsd) < Number(product.retailUsd)) {
+      manualSale.push((1 - Number(product.saleUsd) / Number(product.retailUsd)) * 100);
+    }
+    if (manualSale.length) return Math.round(Math.max(...manualSale));
+    const explicit = Math.min(90, Math.max(0, Number(product.discountPercent) || 0));
+    if (explicit) return Math.round(explicit);
+    const iqd = Number(product.retail) > 0 ? (1 - discountedPrice(product) / Number(product.retail)) * 100 : 0;
+    const usd = Number(product.retailUsd) > 0 ? (1 - discountedPriceUsd(product) / Number(product.retailUsd)) * 100 : 0;
+    return Math.max(0, Math.round(Math.max(iqd, usd)));
+  };
+  const isNewArrival = product => {
+    const createdAt = Date.parse(product.createdAt || "");
+    return Number.isFinite(createdAt) && createdAt <= Date.now() && Date.now() - createdAt <= 30 * 24 * 60 * 60 * 1000;
+  };
   const productPrice = product => formatDualMoney(discountedPrice(product), discountedPriceUsd(product));
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
   const categoryLabel = category => ({
@@ -274,6 +330,80 @@
   const saveCart = () => saveStore(STORAGE.cart, cart);
   const saveOrders = () => saveStore(STORAGE.orders, orders);
   const saveSettings = () => saveStore(STORAGE.settings, settings);
+  const normalizeSocialUrl = value => {
+    const url = String(value || "").trim();
+    if (!url) return "";
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") throw new Error("Social links must use HTTPS.");
+    return parsed.href;
+  };
+
+  function applyStoreSettings() {
+    setPaymentDetails();
+    updateDiscountBanner();
+    renderHeroSocialLinks();
+    renderProducts();
+    renderCart();
+  }
+
+  async function refreshCloudSettings() {
+    if (!supabaseClient) return false;
+    let response;
+    try {
+      response = await supabaseClient.from("store_settings").select("*").eq("id", "main").maybeSingle();
+    } catch (error) {
+      console.error("Unable to load public shop settings from Supabase.", error);
+      return false;
+    }
+    const { data, error } = response;
+    if (error) {
+      console.error("Unable to load public shop settings from Supabase.", error);
+      return false;
+    }
+    if (!data) return true;
+    settings = {
+      ...settings,
+      discount: Number(data.discount) || 0,
+      fibAccount: data.fib_account || FIB_DEFAULT,
+      instagramUrl: data.instagram_url || "",
+      facebookUrl: data.facebook_url || "",
+      tiktokUrl: data.tiktok_url || ""
+    };
+    if (settings.fibAccount === FIB_LEGACY_DEFAULT) settings.fibAccount = FIB_DEFAULT;
+    saveSettings();
+    applyStoreSettings();
+    return true;
+  }
+
+  async function persistStoreSettings(nextSettings) {
+    if (!supabaseSettingsPresent) {
+      const previousSettings = settings;
+      settings = nextSettings;
+      if (!saveSettings()) {
+        settings = previousSettings;
+        throw new Error(t("noStorage"));
+      }
+      return;
+    }
+    if (!supabaseClient || !isSupabaseAdmin) throw new Error(t("catalogUnavailable"));
+    let response;
+    try {
+      response = await supabaseClient.from("store_settings").upsert({
+        id: "main",
+        discount: nextSettings.discount,
+        fib_account: nextSettings.fibAccount,
+        instagram_url: nextSettings.instagramUrl,
+        facebook_url: nextSettings.facebookUrl,
+        tiktok_url: nextSettings.tiktokUrl,
+        updated_at: new Date().toISOString()
+      }).select("*").single();
+    } catch (error) {
+      throw new Error(error.message || t("catalogUnavailable"));
+    }
+    if (response.error) throw new Error(response.error.message);
+    settings = nextSettings;
+    saveSettings();
+  }
 
   Object.assign(featureTranslations.en, {
     categoryTools: "Agricultural Tools", categoryToolsDisplay: "Agricultural Tools",
@@ -332,6 +462,45 @@
     profileSaveError: "پاشەکەوتکردنی پرۆفایل سەرکەوتوو نەبوو: {detail}", orderSaveError: "پاشەکەوتکردنی داواکاری سەرکەوتوو نەبوو: {detail}",
     deletedBy: "سڕایەوە لەلایەن", orderCreated: "دروستکرا", retailRequired: "نرخی فرۆشتن بە دینار یان دۆلار بنووسە."
   });
+  Object.assign(featureTranslations.en, {
+    locationLabel: "Delivery location", locationSulaymaniyah: "Sulaymaniyah", locationErbil: "Erbil", locationDuhok: "Duhok", locationBaghdad: "Baghdad",
+    heroCarouselLabel: "Featured promotions", carouselControls: "Carousel controls", chooseSlide: "Choose a slide", previousSlide: "Previous slide", nextSlide: "Next slide", slideOne: "Slide 1", slideTwo: "Slide 2", slideThree: "Slide 3",
+    heroDiscountTitle: "Good things<br>are <em>growing</em><br>on sale.", heroDiscountDescription: "Explore special prices on selected plants and garden essentials.", heroDiscountCta: "See the offers", heroDiscountNote: "Selected favorites", heroDiscountSubnote: "priced for a little less", heroDiscountSticker: "GROW<br>MORE<br>TOGETHER", heroDiscountCaption: "Find your next favorite", heroDiscountSide: "GOOD THINGS, GROWING · GULNAR", heroDiscountImageAlt: "A collection of leafy plants and terracotta pots",
+    heroSocialEyebrow: "A little more green, together", heroSocialTitle: "Come say<br><em>hello.</em>", heroSocialDescription: "Follow our official pages for new arrivals, garden inspiration, and more.", heroSocialCta: "Our story", heroSocialSticker: "FOLLOW<br>ALONG<br>WITH US", heroSocialCaption: "Gulnar, from our garden", heroSocialSide: "OFFICIAL PAGES · GULNAR", heroSocialImageAlt: "Lush green plants growing in a garden",
+    bestSellersEyebrow: "Loved by our customers", bestSellersTitle: "Best <em>sellers.</em>", viewAll: "See all", bestSellersEmpty: "Our best sellers will be featured here soon.",
+    discountsEyebrow: "A little more for less", discountsTitle: "Lovely <em>offers.</em>", discountsEmpty: "Look out for special prices on selected products.",
+    newArrivalsEyebrow: "Fresh from the garden", newArrivalsTitle: "New <em>arrivals.</em>", newArrivalsEmpty: "New products will appear here as they arrive.",
+    comingSoonEyebrow: "A little something on the way", comingSoonTitle: "Coming <em>soon.</em>", comingSoonEmpty: "We’re preparing something lovely. Check back soon.",
+    bestSellerBadge: "Best seller", newArrivalBadge: "NEW", comingSoonBadge: "Coming soon", notifyMe: "Notify me", notifyActive: "You’re on the list", notifiedToast: "You’ll be notified when this arrives.", notifyRemovedToast: "You’re no longer on the notification list.", ratingLabel: "Rating", photos: "photos",
+    markBestSeller: "Feature as a best seller", markComingSoon: "Mark as coming soon", discountPercent: "Discount percentage", salePriceIqd: "Sale price (IQD)", salePriceUsd: "Sale price (USD)", productRating: "Rating (optional)", reviewCount: "Rating count (optional)", socialLinks: "Social and official pages",
+    promotionValueInvalid: "Check that discount, sale prices, and rating are valid for this product.", settingsSaveError: "Could not save shop settings: {detail}", activitySettingsUpdated: "Updated shop settings"
+  });
+  Object.assign(featureTranslations.ar, {
+    locationLabel: "موقع التوصيل", locationSulaymaniyah: "السليمانية", locationErbil: "أربيل", locationDuhok: "دهوك", locationBaghdad: "بغداد",
+    heroCarouselLabel: "العروض المميزة", carouselControls: "عناصر التحكم بالعرض", chooseSlide: "اختر شريحة", previousSlide: "الشريحة السابقة", nextSlide: "الشريحة التالية", slideOne: "الشريحة 1", slideTwo: "الشريحة 2", slideThree: "الشريحة 3",
+    heroDiscountTitle: "أشياء جميلة<br>تنمو <em>وتُعرض</em><br>بسعر ألطف.", heroDiscountDescription: "اكتشف أسعارًا خاصة على نباتات ولوازم حدائق مختارة.", heroDiscountCta: "شاهد العروض", heroDiscountNote: "اختيارات مميزة", heroDiscountSubnote: "بسعر أقل قليلًا", heroDiscountSticker: "لننمو<br>أكثر<br>معًا", heroDiscountCaption: "اعثر على مفضلتك التالية", heroDiscountSide: "أشياء جميلة تنمو · جولنار", heroDiscountImageAlt: "مجموعة من النباتات الخضراء وأصص التيراكوتا",
+    heroSocialEyebrow: "خضرة أكثر، معًا", heroSocialTitle: "يسعدنا<br><em>لقاؤك.</em>", heroSocialDescription: "تابع صفحاتنا الرسمية لاكتشاف المنتجات الجديدة وإلهام الحدائق والمزيد.", heroSocialCta: "قصتنا", heroSocialSticker: "تابع<br>رحلتنا<br>معًا", heroSocialCaption: "جولنار من حديقتنا", heroSocialSide: "الصفحات الرسمية · جولنار", heroSocialImageAlt: "نباتات خضراء مورقة تنمو في حديقة",
+    bestSellersEyebrow: "محبوبة من عملائنا", bestSellersTitle: "الأكثر <em>مبيعًا.</em>", viewAll: "عرض الكل", bestSellersEmpty: "ستظهر منتجاتنا الأكثر مبيعًا هنا قريبًا.",
+    discountsEyebrow: "أشياء أجمل بسعر أقل", discountsTitle: "عروض <em>لطيفة.</em>", discountsEmpty: "ترقب أسعارًا خاصة على منتجات مختارة.",
+    newArrivalsEyebrow: "جديد من الحديقة", newArrivalsTitle: "وصل <em>حديثًا.</em>", newArrivalsEmpty: "ستظهر المنتجات الجديدة هنا عند وصولها.",
+    comingSoonEyebrow: "شيء جميل في الطريق", comingSoonTitle: "قريبًا <em>جدًا.</em>", comingSoonEmpty: "نجهز لكم شيئًا جميلًا. عودوا قريبًا.",
+    bestSellerBadge: "الأكثر مبيعًا", newArrivalBadge: "جديد", comingSoonBadge: "قريبًا", notifyMe: "أبلغني", notifyActive: "أُضيفت إلى القائمة", notifiedToast: "سنخبرك عند توفر هذا المنتج.", notifyRemovedToast: "تمت إزالتك من قائمة التنبيهات.", ratingLabel: "التقييم", photos: "صور",
+    markBestSeller: "تمييز كمنتج الأكثر مبيعًا", markComingSoon: "تمييز كمنتج سيصل قريبًا", discountPercent: "نسبة الخصم", salePriceIqd: "سعر التخفيض (دينار)", salePriceUsd: "سعر التخفيض (دولار)", productRating: "التقييم (اختياري)", reviewCount: "عدد التقييمات (اختياري)", socialLinks: "الصفحات الاجتماعية والرسمية",
+    promotionValueInvalid: "تحقق من الخصم وأسعار التخفيض والتقييم لهذا المنتج.", settingsSaveError: "تعذر حفظ إعدادات المتجر: {detail}", activitySettingsUpdated: "حدّث إعدادات المتجر"
+  });
+  Object.assign(featureTranslations.ckb, {
+    locationLabel: "شوێنی گەیاندن", locationSulaymaniyah: "سلێمانی", locationErbil: "هەولێر", locationDuhok: "دهۆک", locationBaghdad: "بەغدا",
+    heroCarouselLabel: "پێشنیارە تایبەتەکان", carouselControls: "کۆنترۆڵی کارۆسێل", chooseSlide: "سلایدێک هەڵبژێرە", previousSlide: "سلایدی پێشوو", nextSlide: "سلایدی دواتر", slideOne: "سلایدی ١", slideTwo: "سلایدی ٢", slideThree: "سلایدی ٣",
+    heroDiscountTitle: "شتە جوانەکان<br><em>گەشە دەکەن</em><br>بە نرخێکی خۆش.", heroDiscountDescription: "نرخی تایبەت بۆ هەندێک ڕووەک و پێداویستیی باخچە ببینە.", heroDiscountCta: "پێشنیارەکان ببینە", heroDiscountNote: "هەڵبژاردەی تایبەت", heroDiscountSubnote: "بە نرخێکی کەمتر", heroDiscountSticker: "پێکەوە<br>زیاتر<br>گەشە بکەین", heroDiscountCaption: "دڵخوازەکەی دواترت بدۆزەوە", heroDiscountSide: "شتە جوانەکان گەشە دەکەن · گولژن", heroDiscountImageAlt: "کۆمەڵێک ڕووەکی سەوز و گۆزەی گڵی",
+    heroSocialEyebrow: "پێکەوە سەوزتر", heroSocialTitle: "بێنە<br><em>سڵاو بکە.</em>", heroSocialDescription: "پەیجە فەرمییەکانمان فۆڵۆ بکە بۆ بەرهەمی نوێ و سەرنجڕاکێشی باخچە و زیاتر.", heroSocialCta: "چیرۆکمان", heroSocialSticker: "لەگەڵمان<br>بەردەوام<br>بە", heroSocialCaption: "گولژن لە باخچەکەمانەوە", heroSocialSide: "پەیجە فەرمییەکان · گولژن", heroSocialImageAlt: "ڕووەکی سەوز کە لە باخچەیەکدا گەشە دەکات",
+    bestSellersEyebrow: "خۆشەویستی کڕیارەکانمان", bestSellersTitle: "پڕفرۆشترین <em>بەرهەمەکان.</em>", viewAll: "هەمووی ببینە", bestSellersEmpty: "پڕفرۆشترین بەرهەمەکانمان بەم زووانە لێرە دەردەکەون.",
+    discountsEyebrow: "شتێکی جوانتر بە نرخێکی کەمتر", discountsTitle: "پێشنیاری <em>خۆش.</em>", discountsEmpty: "چاوت لە نرخە تایبەتەکانی بەرهەمە هەڵبژێردراوەکان بێت.",
+    newArrivalsEyebrow: "تازە لە باخچەوە", newArrivalsTitle: "بەرهەمی <em>نوێ.</em>", newArrivalsEmpty: "بەرهەمە نوێیەکان بە گوێرەی گەیشتنیان لێرە دەردەکەون.",
+    comingSoonEyebrow: "شتێکی جوان لە ڕێگادایە", comingSoonTitle: "بەم <em>زووانە.</em>", comingSoonEmpty: "شتێکی جوان ئامادە دەکەین. بەم زووانە بگەڕێوە.",
+    bestSellerBadge: "پڕفرۆش", newArrivalBadge: "نوێ", comingSoonBadge: "بەم زووانە", notifyMe: "ئاگادارم بکەرەوە", notifyActive: "لە لیستەکەدایت", notifiedToast: "کاتێک بەردەست بوو ئاگادارت دەکەینەوە.", notifyRemovedToast: "لە لیستی ئاگادارکردنەوە دەرچوویت.", ratingLabel: "هەڵسەنگاندن", photos: "وێنە",
+    markBestSeller: "وەک پڕفرۆش نیشانی بکە", markComingSoon: "وەک بەم زووانە نیشانی بکە", discountPercent: "ڕێژەی داشکاندن", salePriceIqd: "نرخی داشکاندن (دینار)", salePriceUsd: "نرخی داشکاندن (دۆلار)", productRating: "هەڵسەنگاندن (ئارەزوومەندانە)", reviewCount: "ژمارەی هەڵسەنگاندن (ئارەزوومەندانە)", socialLinks: "پەیجە کۆمەڵایەتی و فەرمییەکان",
+    promotionValueInvalid: "داشکاندن و نرخەکان و هەڵسەنگاندنی ئەم بەرهەمە بپشکنە.", settingsSaveError: "پاشەکەوتکردنی ڕێکخستنەکانی فرۆشگا سەرکەوتوو نەبوو: {detail}", activitySettingsUpdated: "ڕێکخستنەکانی فرۆشگای نوێ کردەوە"
+  });
 
   const rowToProduct = row => ({
     id: row.id,
@@ -348,7 +517,15 @@
     retailUsd: Number(row.retail_usd) || 0,
     stock: Number(row.stock),
     notes: row.notes || "",
-    createdBy: row.created_by || ""
+    createdBy: row.created_by || "",
+    createdAt: row.created_at || row.updated_at || "2000-01-01T00:00:00.000Z",
+    isBestSeller: Boolean(row.is_best_seller),
+    comingSoon: Boolean(row.coming_soon),
+    discountPercent: Number(row.discount_percent) || 0,
+    saleIqd: Number(row.sale_iqd) || 0,
+    saleUsd: Number(row.sale_usd) || 0,
+    rating: Number(row.rating) || 0,
+    reviewCount: Number(row.review_count) || 0
   });
   const productToRow = product => ({
     id: product.id,
@@ -366,6 +543,14 @@
     stock: product.stock,
     notes: product.notes,
     created_by: product.createdBy || null,
+    created_at: product.createdAt || new Date().toISOString(),
+    is_best_seller: Boolean(product.isBestSeller),
+    coming_soon: Boolean(product.comingSoon),
+    discount_percent: Number(product.discountPercent) || 0,
+    sale_iqd: Number(product.saleIqd) || 0,
+    sale_usd: Number(product.saleUsd) || 0,
+    rating: Number(product.rating) || 0,
+    review_count: Number(product.reviewCount) || 0,
     updated_at: new Date().toISOString()
   });
 
@@ -694,9 +879,19 @@
     if (!supabaseSettingsPresent) {
       setCatalogStatus("catalogLocalMode");
       window.addEventListener("storage", event => {
+        if (event.key === LOCATION_STORAGE) {
+          location = ["sulaymaniyah", "erbil", "duhok", "baghdad"].includes(event.newValue) ? event.newValue : "sulaymaniyah";
+          $("#location-switcher").value = location;
+          return;
+        }
+        if (event.key === STORAGE.settings) {
+          settings = { ...settings, ...readStore(STORAGE.settings, {}) };
+          applyStoreSettings();
+          return;
+        }
         if (event.key !== STORAGE.products) return;
         try {
-          products = event.newValue ? JSON.parse(event.newValue) : seedProducts.map(product => ({ ...product }));
+          products = event.newValue ? JSON.parse(event.newValue) : seedProducts.map(product => ({ ...product, createdAt: new Date().toISOString() }));
           renderProducts();
           renderCart();
           renderAdminProducts();
@@ -717,6 +912,7 @@
       supabaseClient
         .channel("verdant-product-catalog")
         .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => { void refreshCloudProducts(); })
+        .on("postgres_changes", { event: "*", schema: "public", table: "store_settings" }, () => { void refreshCloudSettings(); })
         .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
           if (isSupabaseAdmin) {
             refreshCloudOrders().catch(error => {
@@ -742,7 +938,7 @@
       console.error("Unable to subscribe to Supabase Realtime.", error);
     }
     try {
-      await Promise.all([refreshCloudProducts(), restoreAdminSession()]);
+      await Promise.all([refreshCloudProducts(), refreshCloudSettings(), restoreAdminSession()]);
     } catch (error) {
       cloudCatalogReady = false;
       console.error("Unable to initialize the shared product catalog.", error);
@@ -993,6 +1189,7 @@
     const languageSelect = $("#language-switcher");
     languageSelect.value = language;
     languageSelect.setAttribute("aria-label", t("languageLabel"));
+    $("#location-switcher").value = location;
     $$("[data-i18n]").forEach(element => { element.textContent = t(element.dataset.i18n); });
     $$("[data-i18n-html]").forEach(element => { element.innerHTML = t(element.dataset.i18nHtml); });
     $$("[data-i18n-placeholder]").forEach(element => { element.placeholder = t(element.dataset.i18nPlaceholder); });
@@ -1010,6 +1207,7 @@
     $("#cart-step-dot").textContent = formatNumber(1);
     $("#checkout-step-dot").textContent = formatNumber(2);
     updateDiscountBanner();
+    setHeroSlide(activeHeroSlide);
     renderProducts();
     renderCart();
     renderCustomerOrders();
@@ -1047,36 +1245,145 @@
     $("#banner-discount").textContent = `${formatNumber(settings.discount)}%`;
   }
 
+  function renderHeroSocialLinks() {
+    const links = [
+      { label: "Instagram", url: settings.instagramUrl },
+      { label: "Facebook", url: settings.facebookUrl },
+      { label: "TikTok", url: settings.tiktokUrl }
+    ].filter(link => link.url);
+    $("#hero-social-links").innerHTML = links.map(link => {
+      try {
+        const url = normalizeSocialUrl(link.url);
+        return `<a class="hero-social-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)} <span aria-hidden="true">↗</span></a>`;
+      } catch (error) {
+        console.error(`Ignoring an invalid ${link.label} page URL.`, error);
+        return "";
+      }
+    }).join("");
+  }
+
+  function setHeroSlide(index) {
+    const slides = $$("[data-hero-slide]");
+    if (!slides.length) return;
+    activeHeroSlide = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === activeHeroSlide;
+      slide.hidden = !active;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-label", `${t(["slideOne", "slideTwo", "slideThree"][slideIndex])}`);
+    });
+    $$("[data-hero-to]").forEach((button, buttonIndex) => {
+      const active = buttonIndex === activeHeroSlide;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-current", String(active));
+    });
+  }
+
+  function updateHeroAdvanceTimer() {
+    clearInterval(heroAdvanceTimer);
+    heroAdvanceTimer = null;
+    if (heroIsPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    heroAdvanceTimer = setInterval(() => setHeroSlide(activeHeroSlide + 1), 6500);
+  }
+
+  function synchronizeHeroPause(carousel) {
+    heroIsPaused = document.hidden || carousel.matches(":hover") || carousel.contains(document.activeElement);
+    updateHeroAdvanceTimer();
+  }
+
+  function initializeHeroCarousel() {
+    const carousel = $("#hero-carousel");
+    carousel.addEventListener("click", event => {
+      const target = event.target.closest("[data-hero-to], [data-hero-next], [data-hero-previous]");
+      if (!target) return;
+      if (target.hasAttribute("data-hero-to")) setHeroSlide(Number(target.dataset.heroTo));
+      else if (target.hasAttribute("data-hero-next")) setHeroSlide(activeHeroSlide + 1);
+      else setHeroSlide(activeHeroSlide - 1);
+      updateHeroAdvanceTimer();
+    });
+    carousel.addEventListener("mouseenter", () => synchronizeHeroPause(carousel));
+    carousel.addEventListener("mouseleave", () => synchronizeHeroPause(carousel));
+    carousel.addEventListener("focusin", () => synchronizeHeroPause(carousel));
+    carousel.addEventListener("focusout", () => window.setTimeout(() => synchronizeHeroPause(carousel), 0));
+    document.addEventListener("visibilitychange", () => synchronizeHeroPause(carousel));
+    setHeroSlide(0);
+    synchronizeHeroPause(carousel);
+  }
+
+  function productCardMarkup(product) {
+    const name = localizedProductText(product, "product");
+    const description = localizedProductText(product, "notes") || categoryLabel(product.category);
+    const creator = adminPublicProfiles[product.createdBy];
+    const creatorName = creator?.full_name || product.createdByName || "";
+    const newArrival = isNewArrival(product);
+    const discountPercent = productDiscountPercent(product);
+    const badges = [
+      product.isBestSeller ? `<span class="product-badge best-seller-badge">♡ ${t("bestSellerBadge")}</span>` : "",
+      newArrival ? `<span class="product-badge new-arrival-badge">✦ ${t("newArrivalBadge")}</span>` : "",
+      productHasSpecificDiscount(product) && discountPercent > 0 ? `<span class="product-badge discount-badge">−${formatNumber(discountPercent)}%</span>` : "",
+      product.comingSoon ? `<span class="product-badge coming-soon-badge">${t("comingSoonBadge")}</span>` : ""
+    ].filter(Boolean).join("");
+    const rating = Number(product.rating) > 0
+      ? `<span class="product-rating" aria-label="${escapeHtml(t("ratingLabel"))} ${formatNumber(product.rating)} out of 5"><span aria-hidden="true">★</span> ${formatNumber(product.rating)}${Number(product.reviewCount) > 0 ? ` <small>(${formatNumber(product.reviewCount)})</small>` : ""}</span>`
+      : "";
+    const price = `${productPrice(product)}${productHasDiscount(product) ? `<del class="product-original">${formatDualMoney(product.retail, product.retailUsd)}</del>` : ""}`;
+    const action = product.comingSoon
+      ? `<button class="notify-card-button ${productInterests.has(product.id) ? "is-subscribed" : ""}" type="button" data-notify-product="${escapeHtml(product.id)}" aria-label="${escapeHtml(t(productInterests.has(product.id) ? "notifyActive" : "notifyMe"))}">♡</button>`
+      : `<button class="product-add" type="button" data-add="${escapeHtml(product.id)}" aria-label="${escapeHtml(t("addProductToBag", { name }))}" ${product.stock <= 0 ? "disabled" : ""}>${product.stock <= 0 ? "–" : "+"}</button>`;
+    return `<article class="product-card${newArrival ? " new-arrival-card" : ""}">
+      <div class="product-image">
+        <img src="${escapeHtml(product.image)}" alt="${escapeHtml(name)}" loading="lazy">
+        <span class="product-tag">${escapeHtml(categoryLabel(product.category))}</span>
+        <div class="product-badges">${badges}</div>
+        ${(product.images || []).length > 1 ? `<span class="product-image-count">${formatNumber(product.images.length)} ${t("photos")}</span>` : ""}
+        ${action}
+      </div>
+      <div class="product-info">
+        <div class="product-info-top"><h3>${escapeHtml(name)}</h3><span class="product-price">${price}</span></div>
+        ${rating ? `<div class="product-rating-row">${rating}</div>` : ""}
+        <p class="product-description">${escapeHtml(description)}</p>
+        <div class="stock-note">${product.comingSoon ? t("comingSoonBadge") : product.stock > 0 ? t("stockAvailable", { count: formatNumber(product.stock) }) : t("stockUnavailable")}</div>
+        ${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}
+        ${product.comingSoon ? `<button class="notify-product-button ${productInterests.has(product.id) ? "is-subscribed" : ""}" type="button" data-notify-product="${escapeHtml(product.id)}">${t(productInterests.has(product.id) ? "notifyActive" : "notifyMe")}</button>` : ""}
+        <button class="product-detail-link" type="button" data-view-product="${escapeHtml(product.id)}">${t("viewDetails")}</button>
+      </div>
+    </article>`;
+  }
+
+  function renderPromotionalSections() {
+    const bestSellers = products.filter(product => product.isBestSeller && !product.comingSoon);
+    const discounts = products.filter(product => productHasSpecificDiscount(product) && !product.comingSoon);
+    const arrivals = products.filter(product => isNewArrival(product) && !product.comingSoon)
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+      .slice(0, 4);
+    const comingSoon = products.filter(product => product.comingSoon);
+    [
+      ["best-seller-grid", "best-seller-empty", bestSellers, "bestSellersEmpty"],
+      ["discount-grid", "discount-empty", discounts, "discountsEmpty"],
+      ["new-arrival-grid", "new-arrival-empty", arrivals, "newArrivalsEmpty"],
+      ["coming-soon-grid", "coming-soon-empty", comingSoon, "comingSoonEmpty"]
+    ].forEach(([gridId, emptyId, items]) => {
+      $(`#${gridId}`).innerHTML = items.map(productCardMarkup).join("");
+      $(`#${emptyId}`).hidden = items.length > 0;
+    });
+  }
+
   function renderProducts() {
     const query = $("#product-search").value.trim().toLowerCase();
     const visibleProducts = products.filter(product =>
       (activeCategory === "All" || product.category === activeCategory) &&
       `${product.name} ${product.notes} ${localizedProductText(product, "product")} ${localizedProductText(product, "notes")} ${product.category} ${categoryLabel(product.category)}`.toLowerCase().includes(query)
     );
-    $("#product-grid").innerHTML = visibleProducts.map(product => {
-      const description = localizedProductText(product, "notes") || categoryLabel(product.category);
-      const name = localizedProductText(product, "product");
-      const creator = adminPublicProfiles[product.createdBy];
-      const creatorName = creator?.full_name || product.createdByName || "";
-      return `<article class="product-card">
-        <div class="product-image">
-          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(name)}" loading="lazy">
-          <span class="product-tag">${escapeHtml(categoryLabel(product.category))}</span>
-          ${(product.images || []).length > 1 ? `<span class="product-image-count">${formatNumber(product.images.length)} photos</span>` : ""}
-          <button class="product-add" type="button" data-add="${escapeHtml(product.id)}" aria-label="${escapeHtml(t("addProductToBag", { name }))}" ${product.stock <= 0 ? "disabled" : ""}>${product.stock <= 0 ? "–" : "+"}</button>
-        </div>
-        <div class="product-info"><div class="product-info-top"><h3>${escapeHtml(name)}</h3><span class="product-price">${productPrice(product)}${settings.discount ? `<del class="product-original">${formatDualMoney(product.retail, product.retailUsd)}</del>` : ""}</span></div>
-        <p class="product-description">${escapeHtml(description)}</p>
-        <div class="stock-note">${product.stock > 0 ? t("stockAvailable", { count: formatNumber(product.stock) }) : t("stockUnavailable")}</div>${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}<button class="product-detail-link" type="button" data-view-product="${escapeHtml(product.id)}">${t("viewDetails")}</button></div>
-      </article>`;
-    }).join("");
+    $("#product-grid").innerHTML = visibleProducts.map(productCardMarkup).join("");
     $("#empty-products").hidden = visibleProducts.length !== 0;
     $("#all-count").textContent = `(${formatNumber(products.length)})`;
+    renderPromotionalSections();
+    renderHeroSocialLinks();
   }
 
   function relatedProducts(excludedIds, limit = 3, category = "") {
     return products
-      .filter(product => !excludedIds.includes(product.id) && product.stock > 0)
+      .filter(product => !excludedIds.includes(product.id) && product.stock > 0 && !product.comingSoon)
       .sort((a, b) => Number(b.category === category) - Number(a.category === category))
       .slice(0, limit);
   }
@@ -1095,7 +1402,12 @@
     const creator = adminPublicProfiles[product.createdBy];
     const creatorName = creator?.full_name || product.createdByName || "";
     const video = product.videoUrl ? `<video class="product-detail-video" controls preload="none" playsinline poster="${escapeHtml(product.image)}"><source src="${escapeHtml(product.videoUrl)}"></video>` : "";
-    $("#product-detail-content").innerHTML = `<img class="product-detail-image" data-product-main-image src="${escapeHtml(images[0].url)}" alt="${escapeHtml(name)}" loading="lazy">${images.length > 1 ? `<div class="product-gallery-thumbs">${images.map((image, index) => `<button type="button" data-gallery-image="${index}" aria-label="View product image ${index + 1}" aria-pressed="${index === 0}"><img src="${escapeHtml(image.url)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}<div class="eyebrow">${escapeHtml(categoryLabel(product.category))}</div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(localizedProductText(product, "notes"))}</p>${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}<strong class="product-detail-price">${productPrice(product)}</strong>${video}<button class="button button-dark button-full" type="button" data-add="${escapeHtml(product.id)}" ${product.stock <= 0 ? "disabled" : ""}>${t("addToBag")}</button><section class="recommendations product-recommendations">${recommendationsMarkup(excluded, product.category)}</section>`;
+    const originalPrice = productHasDiscount(product) ? `<del class="product-original">${formatDualMoney(product.retail, product.retailUsd)}</del>` : "";
+    const rating = Number(product.rating) > 0 ? `<span class="product-rating"><span aria-hidden="true">★</span> ${formatNumber(product.rating)}${Number(product.reviewCount) > 0 ? ` (${formatNumber(product.reviewCount)})` : ""}</span>` : "";
+    const purchaseAction = product.comingSoon
+      ? `<button class="button button-dark button-full notify-product-button ${productInterests.has(product.id) ? "is-subscribed" : ""}" type="button" data-notify-product="${escapeHtml(product.id)}">${t(productInterests.has(product.id) ? "notifyActive" : "notifyMe")}</button>`
+      : `<button class="button button-dark button-full" type="button" data-add="${escapeHtml(product.id)}" ${product.stock <= 0 ? "disabled" : ""}>${t("addToBag")}</button>`;
+    $("#product-detail-content").innerHTML = `<img class="product-detail-image" data-product-main-image src="${escapeHtml(images[0].url)}" alt="${escapeHtml(name)}" loading="lazy">${images.length > 1 ? `<div class="product-gallery-thumbs">${images.map((image, index) => `<button type="button" data-gallery-image="${index}" aria-label="View product image ${index + 1}" aria-pressed="${index === 0}"><img src="${escapeHtml(image.url)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}<div class="eyebrow">${escapeHtml(categoryLabel(product.category))}</div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(localizedProductText(product, "notes"))}</p>${creatorName ? `<span class="product-creator">${t("creator")}: ${escapeHtml(creatorName)}</span>` : ""}${rating}<strong class="product-detail-price">${productPrice(product)} ${originalPrice}</strong>${video}${purchaseAction}<section class="recommendations product-recommendations">${recommendationsMarkup(excluded, product.category)}</section>`;
     openOverlay("product-overlay");
   }
 
@@ -1114,7 +1426,10 @@
   }
 
   function renderCart() {
-    cart = cart.filter(item => productById(item.id) && item.quantity > 0);
+    cart = cart.filter(item => {
+      const product = productById(item.id);
+      return product && !product.comingSoon && item.quantity > 0;
+    });
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     const rawSubtotal = cart.reduce((sum, item) => sum + (productById(item.id)?.retail || 0) * item.quantity, 0);
     const rawSubtotalUsd = cart.reduce((sum, item) => sum + (Number(productById(item.id)?.retailUsd) || 0) * item.quantity, 0);
@@ -1140,8 +1455,10 @@
     $("#benefit-delivery").textContent = t("deliveryVaries");
     $("#delivery-fee-notice").textContent = t("deliveryVaries");
     $("#cart-subtotal").textContent = formatDualMoney(rawSubtotal, rawSubtotalUsd);
-    $("#cart-discount-row").hidden = settings.discount <= 0;
-    $("#cart-discount").textContent = `−${formatDualMoney(rawSubtotal - subtotal(), rawSubtotalUsd - totalUsd)}`;
+    const savedIqd = rawSubtotal - total;
+    const savedUsd = rawSubtotalUsd - totalUsd;
+    $("#cart-discount-row").hidden = savedIqd <= 0 && savedUsd <= 0;
+    $("#cart-discount").textContent = `−${formatDualMoney(savedIqd, savedUsd)}`;
     $("#delivery-fee").textContent = t("deliveryVaries");
     $("#cart-total").textContent = formatDualMoney(total, totalUsd);
     $("#checkout-total").textContent = formatDualMoney(total, totalUsd);
@@ -1151,7 +1468,7 @@
   }
 
   function addProductToCart(product) {
-    if (!product || product.stock <= 0) return;
+    if (!product || product.comingSoon || product.stock <= 0) return;
     const item = cart.find(entry => entry.id === product.id);
     if (item) {
       if (item.quantity >= product.stock) return showToast(t("stockLimit"));
@@ -1242,6 +1559,9 @@
     const form = $("#settings-form");
     form.elements.discount.value = settings.discount;
     form.elements.fibAccount.value = settings.fibAccount;
+    form.elements.instagramUrl.value = settings.instagramUrl || "";
+    form.elements.facebookUrl.value = settings.facebookUrl || "";
+    form.elements.tiktokUrl.value = settings.tiktokUrl || "";
   }
 
   function openOverlay(id) {
@@ -1333,12 +1653,17 @@
     $("#product-video-status").textContent = "";
     if (product) {
       ["name", "category", "wholesale", "retail", "wholesaleUsd", "retailUsd", "stock", "notes"].forEach(key => { form.elements[key].value = product[key] || ""; });
+      form.elements.isBestSeller.checked = Boolean(product.isBestSeller);
+      form.elements.comingSoon.checked = Boolean(product.comingSoon);
+      ["discountPercent", "saleIqd", "saleUsd", "rating", "reviewCount"].forEach(key => { form.elements[key].value = Number(product[key]) || ""; });
       form.elements.image.value = (product.images?.length ? product.images : [{ url: product.image }]).map(image => /^https?:\/\//i.test(image.url) ? image.url : "").filter(Boolean).join("\n");
       form.elements.videoUrl.value = /^https?:\/\//i.test(product.videoUrl || "") ? product.videoUrl : "";
       showProductImagePreview((product.images?.length ? product.images : [{ url: product.image }]).map(image => image.url), t("imageCurrent"));
     } else {
       form.elements.category.value = "Indoor Plants";
       form.elements.image.value = "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=800&q=80";
+      form.elements.isBestSeller.checked = false;
+      form.elements.comingSoon.checked = false;
       showProductImagePreview([form.elements.image.value], t("imageCurrent"));
     }
     $("#product-form-wrap").hidden = false;
@@ -1377,7 +1702,7 @@
       if (!cart.length) return;
       for (const item of cart) {
         const product = productById(item.id);
-        if (!product || product.stock < item.quantity) {
+        if (!product || product.comingSoon || product.stock < item.quantity) {
           showToast(t("unavailable", { name: product ? localizedProductText(product, "product") : t("anItem") }));
           renderProducts();
           renderCart();
@@ -1454,7 +1779,7 @@
     }
     for (const item of cart) {
       const product = productById(item.id);
-      if (!product || product.stock < item.quantity) {
+      if (!product || product.comingSoon || product.stock < item.quantity) {
         showToast(t("unavailable", { name: product ? localizedProductText(product, "product") : t("anItem") }));
         renderProducts();
         renderCart();
@@ -1514,6 +1839,19 @@
     $$(".filter-chip").forEach(chip => chip.classList.toggle("active", chip === button));
     renderProducts();
   }));
+  $("#location-switcher").addEventListener("change", event => {
+    location = event.target.value;
+    saveStore(LOCATION_STORAGE, location);
+  });
+  $$("[data-view-all]").forEach(link => link.addEventListener("click", event => {
+    event.preventDefault();
+    activeCategory = "All";
+    $("#product-search").value = "";
+    $$(".filter-chip").forEach(chip => chip.classList.toggle("active", chip.dataset.category === "All"));
+    renderProducts();
+    $("#shop").scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
+  initializeHeroCarousel();
   $$("[data-nav-category]").forEach(link => link.addEventListener("click", () => {
     activeCategory = link.dataset.navCategory;
     $$(".filter-chip").forEach(chip => chip.classList.toggle("active", chip.dataset.category === activeCategory));
@@ -1521,6 +1859,24 @@
   }));
   $("#product-search").addEventListener("input", renderProducts);
   document.addEventListener("click", event => {
+    const notifyButton = event.target.closest("[data-notify-product]");
+    if (notifyButton) {
+      const product = productById(notifyButton.dataset.notifyProduct);
+      if (!product) return;
+      const wasSubscribed = productInterests.has(product.id);
+      if (wasSubscribed) productInterests.delete(product.id);
+      else productInterests.add(product.id);
+      if (!saveStore("verdant.productInterests", [...productInterests])) {
+        if (wasSubscribed) productInterests.add(product.id);
+        else productInterests.delete(product.id);
+        return;
+      }
+      const inDetails = Boolean(notifyButton.closest("#product-detail-content"));
+      renderProducts();
+      if (inDetails) openProductDetails(product);
+      showToast(t(wasSubscribed ? "notifyRemovedToast" : "notifiedToast"));
+      return;
+    }
     const galleryButton = event.target.closest("[data-gallery-image]");
     if (galleryButton) {
       const mainImage = $("#product-detail-content [data-product-main-image]");
@@ -1968,6 +2324,14 @@
       retailUsd: Number(data.get("retailUsd")) || 0,
       stock: Number(data.get("stock")),
       notes: data.get("notes").trim(),
+      createdAt: existingProduct?.createdAt || new Date().toISOString(),
+      isBestSeller: data.get("isBestSeller") === "on",
+      comingSoon: data.get("comingSoon") === "on",
+      discountPercent: Number(data.get("discountPercent")) || 0,
+      saleIqd: Number(data.get("saleIqd")) || 0,
+      saleUsd: Number(data.get("saleUsd")) || 0,
+      rating: Number(data.get("rating")) || 0,
+      reviewCount: Number(data.get("reviewCount")) || 0,
       videoUrl,
       videoPath: "",
       createdBy: existingProduct?.createdBy || currentAdminUser?.id || "",
@@ -1987,6 +2351,13 @@
       form.elements.retailUsd.setCustomValidity(t("retailTooLow"));
       form.elements.retailUsd.reportValidity();
       form.elements.retailUsd.setCustomValidity("");
+      return;
+    }
+    if (product.discountPercent < 0 || product.discountPercent > 90
+      || (product.saleIqd > 0 && (product.retail <= 0 || product.saleIqd >= product.retail))
+      || (product.saleUsd > 0 && (product.retailUsd <= 0 || product.saleUsd >= product.retailUsd))
+      || product.rating < 0 || product.rating > 5 || product.reviewCount < 0) {
+      showToast(t("promotionValueInvalid"));
       return;
     }
     if (imageUrls.some(url => !/^https?:\/\//i.test(url) && !/^data:image\/(?:jpeg|png|webp);base64,/i.test(url))) {
@@ -2094,18 +2465,28 @@
         : t("productRemoved", { name: localizedProductText(product, "product") }));
     }
   });
-  $("#settings-form").addEventListener("submit", event => {
+  $("#settings-form").addEventListener("submit", async event => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    settings = { discount: Number(data.get("discount")), fibAccount: data.get("fibAccount").trim() };
-    if (!saveSettings()) return;
-    setPaymentDetails();
-    updateDiscountBanner();
-    renderProducts();
-    renderCart();
-    showToast(t("settingsSaved"));
+    let nextSettings;
+    try {
+      nextSettings = {
+        discount: Number(data.get("discount")) || 0,
+        fibAccount: data.get("fibAccount").trim(),
+        instagramUrl: normalizeSocialUrl(data.get("instagramUrl")),
+        facebookUrl: normalizeSocialUrl(data.get("facebookUrl")),
+        tiktokUrl: normalizeSocialUrl(data.get("tiktokUrl"))
+      };
+      await persistStoreSettings(nextSettings);
+      applyStoreSettings();
+      await recordAdminActivity("activitySettingsUpdated", "settings", "main", "Shop settings");
+      showToast(t("settingsSaved"));
+    } catch (error) {
+      console.error("Unable to save shop settings.", error);
+      showToast(t("settingsSaveError", { detail: error.message }));
+    }
   });
   $("#order-list").addEventListener("click", async event => {
     const action = event.target.closest("[data-order-action]");
