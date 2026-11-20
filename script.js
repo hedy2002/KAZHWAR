@@ -154,9 +154,9 @@
   Object.assign(featureTranslations.en, { paymentCardHint: "Pay to the displayed number using QiCard / Mastercard." });
   Object.assign(featureTranslations.ar, { paymentCardHint: "أرسل المبلغ إلى الرقم الظاهر باستخدام QiCard أو Mastercard." });
   Object.assign(featureTranslations.ckb, { paymentCardHint: "بە QiCard یان Mastercard پارە بۆ ژمارەی پیشاندراو بنێرە." });
-  Object.assign(featureTranslations.en, { installTitle: "Take Gulnar with you", installReady: "Install Gulnar for quick access on this device.", installAndroidHelp: "Open your browser menu and choose Install app or Add to Home screen.", installIOSHelp: "Tap Share, then choose Add to Home Screen.", installDesktopHelp: "Use your browser’s install option to add Gulnar to your desktop.", installAction: "Install", installDismiss: "Not now", installFailed: "Gulnar could not be installed. Try your browser’s install menu." });
-  Object.assign(featureTranslations.ar, { installTitle: "اصطحب جولنار معك", installReady: "ثبّت جولنار للوصول السريع من هذا الجهاز.", installAndroidHelp: "افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية.", installIOSHelp: "اضغط على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».", installDesktopHelp: "استخدم خيار التثبيت في المتصفح لإضافة جولنار إلى سطح المكتب.", installAction: "تثبيت", installDismiss: "ليس الآن", installFailed: "تعذر تثبيت جولنار. جرّب قائمة التثبيت في المتصفح." });
-  Object.assign(featureTranslations.ckb, { installTitle: "گوڵنار لەگەڵ خۆت ببە", installReady: "گوڵنار دابمەزرێنە بۆ دەستگەیشتنی خێرا لەم ئامێرە.", installAndroidHelp: "لیستی وێبگەڕەکەت بکەرەوە و دامەزراندن یان زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSHelp: "دوگمەی هاوبەشکردن بکە و زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installDesktopHelp: "لە لیستی وێبگەڕەکەتدا هەڵبژاردەی دامەزراندن بەکاربهێنە بۆ زیادکردنی گوڵنار بۆ سەر مێز.", installAction: "دامەزراندن", installDismiss: "ئێستا نا", installFailed: "دامەزراندنی گوڵنار سەرکەوتوو نەبوو. لیستی دامەزراندنی وێبگەڕەکەت تاقی بکەرەوە." });
+  Object.assign(featureTranslations.en, { installTitle: "Take Gulnar with you", installReady: "Install Gulnar for quick access on this device.", installAndroidHelp: "Open your browser menu and choose Install app or Add to Home screen.", installIOSHelp: "Tap Share, then choose Add to Home Screen.", installIOSOpenSafari: "Not in Safari? Open this link in Safari, then tap Share → Add to Home Screen.", installDesktopHelp: "Use your browser’s install option to add Gulnar to your desktop.", installAction: "Install", installDismiss: "Not now", installFailed: "Gulnar could not be installed. Try your browser’s install menu." });
+  Object.assign(featureTranslations.ar, { installTitle: "اصطحب جولنار معك", installReady: "ثبّت جولنار للوصول السريع من هذا الجهاز.", installAndroidHelp: "افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية.", installIOSHelp: "اضغط على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».", installIOSOpenSafari: "لست في Safari؟ افتح هذا الرابط في Safari، ثم اضغط على مشاركة ← إضافة إلى الشاشة الرئيسية.", installDesktopHelp: "استخدم خيار التثبيت في المتصفح لإضافة جولنار إلى سطح المكتب.", installAction: "تثبيت", installDismiss: "ليس الآن", installFailed: "تعذر تثبيت جولنار. جرّب قائمة التثبيت في المتصفح." });
+  Object.assign(featureTranslations.ckb, { installTitle: "گوڵنار لەگەڵ خۆت ببە", installReady: "گوڵنار دابمەزرێنە بۆ دەستگەیشتنی خێرا لەم ئامێرە.", installAndroidHelp: "لیستی وێبگەڕەکەت بکەرەوە و دامەزراندن یان زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSHelp: "دوگمەی هاوبەشکردن بکە و زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSOpenSafari: "لە Safari نیت؟ ئەم لینکە لە Safari بکەرەوە، پاشان Share بکە و Add to Home Screen هەڵبژێرە.", installDesktopHelp: "لە لیستی وێبگەڕەکەتدا هەڵبژاردەی دامەزراندن بەکاربهێنە بۆ زیادکردنی گوڵنار بۆ سەر مێز.", installAction: "دامەزراندن", installDismiss: "ئێستا نا", installFailed: "دامەزراندنی گوڵنار سەرکەوتوو نەبوو. لیستی دامەزراندنی وێبگەڕەکەت تاقی بکەرەوە." });
   Object.assign(featureTranslations.en, { refreshApp: "Refresh", refreshingApp: "Refreshing…", refreshFailed: "Unable to refresh right now. Please try again." });
   Object.assign(featureTranslations.ar, { refreshApp: "تحديث", refreshingApp: "جارٍ التحديث…", refreshFailed: "تعذر التحديث الآن. يرجى المحاولة مرة أخرى." });
   Object.assign(featureTranslations.ckb, { refreshApp: "نوێکردنەوە", refreshingApp: "نوێ دەکرێتەوە...", refreshFailed: "ئێستا نوێکردنەوە سەرکەوتوو نەبوو. تکایە دووبارە هەوڵ بدەرەوە." });
@@ -201,7 +201,12 @@
   let installPromptDismissed = false;
   let appInstalled = false;
   let serviceWorkerReloading = false;
-  const isIOSDevice = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const userAgent = navigator.userAgent;
+  const isIOSDevice = /iphone|ipad|ipod/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isIOSSafari = isIOSDevice
+    && /version\/[\d.]+/i.test(userAgent)
+    && /safari\//i.test(userAgent)
+    && !/(crios|fxios|edgios|opios|brave|duckduckgo|fban|fbav|fbios|instagram|telegram|tiktok|twitter|whatsapp|line\/|micromessenger|snapchat|linkedinapp|pinterest)/i.test(userAgent);
   const isAndroidDevice = /android/i.test(navigator.userAgent);
   let pendingProductImage = null;
   let pendingProductImageUrl = "";
@@ -605,7 +610,7 @@
     banner.hidden = false;
     $("#install-title").textContent = t("installTitle");
     $("#install-description").textContent = t(
-      isIOSDevice ? "installIOSHelp"
+      isIOSDevice ? (isIOSSafari ? "installIOSHelp" : "installIOSOpenSafari")
         : deferredInstallPrompt ? "installReady"
           : isAndroidDevice ? "installAndroidHelp"
             : "installDesktopHelp"
