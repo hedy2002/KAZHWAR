@@ -158,6 +158,8 @@ a { color: inherit; text-decoration: none; }
 .drawer-header h2 { margin: 7px 0 0; font: 500 30px var(--serif); letter-spacing: -.04em; }
 .drawer-header h2 span { color: #9aa396; font: 400 12px var(--sans); }
 .close-button { padding: 0 4px; font-size: 28px; line-height: 1; color: #768174; }
+.orders-back-icon { display: inline-block; }
+[dir="rtl"] .orders-back-icon { transform: scaleX(-1); }
 .checkout-progress { margin: 26px 0 24px; display: flex; gap: 8px; align-items: center; }
 .step-dot { width: 23px; height: 23px; display: grid; place-items: center; border: 1px solid #d8dfd3; border-radius: 50%; color: #9ca59a; font-size: 9px; }
 .step-dot.current, .step-dot.complete { border-color: var(--green); background: var(--green); color: white; }

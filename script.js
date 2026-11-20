@@ -160,6 +160,9 @@
   Object.assign(featureTranslations.en, { refreshApp: "Refresh", refreshingApp: "Refreshing…", refreshFailed: "Unable to refresh right now. Please try again." });
   Object.assign(featureTranslations.ar, { refreshApp: "تحديث", refreshingApp: "جارٍ التحديث…", refreshFailed: "تعذر التحديث الآن. يرجى المحاولة مرة أخرى." });
   Object.assign(featureTranslations.ckb, { refreshApp: "نوێکردنەوە", refreshingApp: "نوێ دەکرێتەوە...", refreshFailed: "ئێستا نوێکردنەوە سەرکەوتوو نەبوو. تکایە دووبارە هەوڵ بدەرەوە." });
+  Object.assign(featureTranslations.en, { backToShop: "Back to shop" });
+  Object.assign(featureTranslations.ar, { backToShop: "العودة إلى المتجر" });
+  Object.assign(featureTranslations.ckb, { backToShop: "گەڕانەوە بۆ فرۆشگا" });
   const readStore = (key, fallback) => {
     try {
       const value = localStorage.getItem(key);
