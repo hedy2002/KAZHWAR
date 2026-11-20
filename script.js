@@ -157,6 +157,9 @@
   Object.assign(featureTranslations.en, { installTitle: "Take Gulnar with you", installReady: "Install Gulnar for quick access on this device.", installAndroidHelp: "Open your browser menu and choose Install app or Add to Home screen.", installIOSHelp: "Tap Share, then choose Add to Home Screen.", installDesktopHelp: "Use your browser’s install option to add Gulnar to your desktop.", installAction: "Install", installDismiss: "Not now", installFailed: "Gulnar could not be installed. Try your browser’s install menu." });
   Object.assign(featureTranslations.ar, { installTitle: "اصطحب جولنار معك", installReady: "ثبّت جولنار للوصول السريع من هذا الجهاز.", installAndroidHelp: "افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية.", installIOSHelp: "اضغط على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».", installDesktopHelp: "استخدم خيار التثبيت في المتصفح لإضافة جولنار إلى سطح المكتب.", installAction: "تثبيت", installDismiss: "ليس الآن", installFailed: "تعذر تثبيت جولنار. جرّب قائمة التثبيت في المتصفح." });
   Object.assign(featureTranslations.ckb, { installTitle: "گوڵنار لەگەڵ خۆت ببە", installReady: "گوڵنار دابمەزرێنە بۆ دەستگەیشتنی خێرا لەم ئامێرە.", installAndroidHelp: "لیستی وێبگەڕەکەت بکەرەوە و دامەزراندن یان زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installIOSHelp: "دوگمەی هاوبەشکردن بکە و زیادکردن بۆ شاشەی سەرەتا هەڵبژێرە.", installDesktopHelp: "لە لیستی وێبگەڕەکەتدا هەڵبژاردەی دامەزراندن بەکاربهێنە بۆ زیادکردنی گوڵنار بۆ سەر مێز.", installAction: "دامەزراندن", installDismiss: "ئێستا نا", installFailed: "دامەزراندنی گوڵنار سەرکەوتوو نەبوو. لیستی دامەزراندنی وێبگەڕەکەت تاقی بکەرەوە." });
+  Object.assign(featureTranslations.en, { refreshApp: "Refresh", refreshingApp: "Refreshing…", refreshFailed: "Unable to refresh right now. Please try again." });
+  Object.assign(featureTranslations.ar, { refreshApp: "تحديث", refreshingApp: "جارٍ التحديث…", refreshFailed: "تعذر التحديث الآن. يرجى المحاولة مرة أخرى." });
+  Object.assign(featureTranslations.ckb, { refreshApp: "نوێکردنەوە", refreshingApp: "نوێ دەکرێتەوە...", refreshFailed: "ئێستا نوێکردنەوە سەرکەوتوو نەبوو. تکایە دووبارە هەوڵ بدەرەوە." });
   const readStore = (key, fallback) => {
     try {
       const value = localStorage.getItem(key);
@@ -299,32 +302,32 @@
   });
 
   async function refreshCloudProducts() {
-    if (!supabaseClient) return;
+    if (!supabaseClient) return true;
     const requestGeneration = ++cloudRefreshGeneration;
     let response;
     try {
       response = await supabaseClient.from("products").select("*").order("name");
     } catch (error) {
-      if (requestGeneration !== cloudRefreshGeneration) return;
+      if (requestGeneration !== cloudRefreshGeneration) return true;
       cloudCatalogReady = false;
       console.error("Unable to load products from Supabase.", error);
       setCatalogStatus("catalogSyncError", { detail: error.message });
-      return;
+      return false;
     }
-    if (requestGeneration !== cloudRefreshGeneration) return;
+    if (requestGeneration !== cloudRefreshGeneration) return true;
     const { data, error } = response;
     if (error) {
       cloudCatalogReady = false;
       console.error("Unable to load products from Supabase.", error);
       setCatalogStatus("catalogSyncError", { detail: error.message });
-      return;
+      return false;
     }
     if (!Array.isArray(data)) {
       cloudCatalogReady = false;
       const error = new Error("Supabase returned an invalid product list.");
       console.error("Unable to load products from Supabase.", error);
       setCatalogStatus("catalogSyncError", { detail: error.message });
-      return;
+      return false;
     }
     products = data.map(rowToProduct);
     cloudCatalogReady = true;
@@ -333,6 +336,7 @@
     renderCart();
     renderAdminProducts();
     setCatalogStatus(realtimeSubscribed ? "catalogConnected" : "catalogSyncing");
+    return true;
   }
 
   async function restoreAdminSession() {
@@ -1089,6 +1093,39 @@
   });
   $("#cart-open").addEventListener("click", () => openOverlay("cart-overlay"));
   $("#orders-open").addEventListener("click", () => openOverlay("customer-orders-overlay"));
+  const reloadApp = () => {
+    if (serviceWorkerReloading) return;
+    serviceWorkerReloading = true;
+    window.location.reload();
+  };
+  const refreshButton = $("#refreshAppBtn");
+  const refreshButtonLabel = $(".refresh-btn-label");
+  refreshButton.addEventListener("click", async () => {
+    if (refreshButton.disabled) return;
+    refreshButton.disabled = true;
+    refreshButtonLabel.textContent = t("refreshingApp");
+    try {
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          await registration.update();
+          if (registration.waiting && navigator.serviceWorker.controller) {
+            registration.waiting.postMessage({ type: "SKIP_WAITING" });
+          }
+        }
+      }
+      if (!await refreshCloudProducts()) {
+        throw new Error("The shared product catalog could not be refreshed.");
+      }
+      reloadApp();
+    } catch (error) {
+      console.error("Unable to refresh Gulnar.", error);
+      showToast(t("refreshFailed"));
+    } finally {
+      refreshButton.disabled = false;
+      refreshButtonLabel.textContent = t("refreshApp");
+    }
+  });
   let adminClickCount = 0;
   let adminClickTimer;
   $("#nursery-logo").addEventListener("click", event => {
@@ -1597,9 +1634,7 @@
   });
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      if (serviceWorkerReloading) return;
-      serviceWorkerReloading = true;
-      window.location.reload();
+      reloadApp();
     });
     navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
       .then(registration => {
